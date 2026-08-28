@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Monitoramento para ticketerias</title>
+    <link rel="icon" href="./assets/icon/favicon2.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/peakstack.css">
+    <script src="./js/sessao.js" defer></script>
+</head>
+<body onload="registrar_checkpoint('acessou_home_peakstack')">
+    <header class="cabecalho">
+        <a class="marca" href="./index.html" aria-label="PeakStack - início">
+            <span class="marca_icone">PS</span>
+            <span>PeakStack</span>
+        </a>
+        <nav class="navegacao" aria-label="Navegação principal">
+            <a href="./index.html">Início</a>
+            <a id="link_eventos" href="./eventos.html">Meus eventos</a>
+            <a id="link_dashboard" href="./dashboard.html">Monitoramento</a>
+            <a id="link_login" href="./login.html">Entrar</a>
+            <a id="link_cadastro" href="./cadastro.html">Cadastrar</a>
+            <button id="btn_logout" class="botao_link" onclick="limparSessao()">Sair</button>
+            <a class="botao botao_primario" href="./criar-evento.html" onclick="registrar_checkpoint('clicou_criar_evento_home')">Criar evento</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero_conteudo">
+                <div class="hero_texto">
+                    <span class="etiqueta">Monitoramento de hardware para ticketerias</span>
+                    <h1>Prepare sua infraestrutura para os picos de venda.</h1>
+                    <p>O PeakStack ajuda equipes a acompanhar a saúde dos servidores durante vendas de ingressos e a reconhecer sinais de sobrecarga antes que eles afetem o evento.</p>
+                    <div class="grupo_botoes">
+                        <a class="botao botao_primario" href="./criar-evento.html" onclick="registrar_checkpoint('clicou_criar_evento_hero')">Criar evento</a>
+                        <a class="botao botao_secundario" href="#solucao">Conhecer a solução</a>
+                    </div>
+                </div>
+
+        </section>
+
+        <section class="secao" id="solucao">
+            <div class="container">
+                <div class="titulo_secao">
+                    <h2>Grandes vendas concentram acessos em poucos minutos.</h2>
+                    <p>Quando a demanda cresce rapidamente, a falta de visibilidade sobre CPU, memória, disco e rede dificulta a tomada de decisão da equipe responsável.</p>
+                </div>
+                <div class="grade_cards">
+                    <article class="card_info">
+                        <h3>Crie o contexto</h3>
+                        <p>Cadastre um evento e seus lotes para representar uma operação de ticketeria.</p>
+                    </article>
+                    <article class="card_info">
+                        <h3>Observe a infraestrutura</h3>
+                        <p>Organize em um único ambiente a futura leitura dos componentes de hardware.</p>
+                    </article>
+                    <article class="card_info">
+                        <h3>Decida com clareza</h3>
+                        <p>Use o histórico e os alertas, em versões futuras, para apoiar decisões técnicas.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="secao secao_destaque">
+            <div class="container chamada_final">
+                <div>
+                    <span class="etiqueta etiqueta_clara">Primeiro passo</span>
+                    <h2>Crie um evento para validar a jornada do PeakStack.</h2>
+                </div>
+                <a class="botao botao_claro" href="./criar-evento.html" onclick="registrar_checkpoint('clicou_criar_evento_rodape')">Criar evento</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <div class="container"><span>PeakStack</span><span>Projeto acadêmico - SPTech</span></div>
+    </footer>
+</body>
+</html>

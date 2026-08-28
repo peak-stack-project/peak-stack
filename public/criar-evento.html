@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Criar evento</title>
+    <link rel="icon" href="./assets/icon/favicon2.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/peakstack.css">
+    <script src="./js/sessao.js" defer></script>
+    <script src="./js/evento.js" defer></script>
+</head>
+<body onload="registrar_checkpoint('acessou_criacao_evento')">
+    <header class="cabecalho">
+        <a class="marca" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+        <nav class="navegacao">
+            <a href="./index.html">Início</a>
+            <a id="link_eventos" href="./eventos.html">Meus eventos</a>
+            <a id="link_dashboard" href="./dashboard.html">Monitoramento</a>
+            <a id="link_login" href="./login.html">Entrar</a>
+            <a id="link_cadastro" href="./cadastro.html">Cadastrar</a>
+            <button id="btn_logout" class="botao_link" onclick="limparSessao()">Sair</button>
+        </nav>
+    </header>
+    <main class="pagina_formulario">
+        <section class="formulario_contexto">
+            <h1>Cadastre seu evento.</h1>
+            <ol>
+                <li>Preencha as informações básicas.</li>
+                <li>Inclua um ou mais lotes.</li>
+            </ol>
+        </section>
+        <section class="formulario_cartao formulario_evento">
+            <div class="topo_formulario">
+                <div><span class="etiqueta">Novo evento</span><h2>Informações do evento</h2></div>
+                <a href="./eventos.html">Cancelar</a>
+            </div>
+            <form id="form_evento" onsubmit="finalizarEventoVisual(event)">
+                <div class="campo campo_largo">
+                    <label for="nome_evento_input">Nome</label>
+                    <input id="nome_evento_input" type="text" placeholder="Ex.: Festival Peak" required>
+                </div>
+                <div class="campo campo_largo">
+                    <label for="descricao_evento_input">Descrição</label>
+                    <textarea id="descricao_evento_input" rows="4" placeholder="Descreva brevemente o evento" required></textarea>
+                </div>
+                <div class="campo campo_largo">
+                    <label for="endereco_evento_input">Endereço</label>
+                    <input id="endereco_evento_input" type="text" placeholder="Rua, número e complemento" required>
+                </div>
+                <div class="linha_campos">
+                    <div class="campo">
+                        <label for="data_evento_input">Data</label>
+                        <input id="data_evento_input" type="date" required>
+                    </div>
+                    <div class="campo">
+                        <label for="horario_evento_input">Horário</label>
+                        <input id="horario_evento_input" type="time" required>
+                    </div>
+                </div>
+
+                <div class="divisor_formulario"></div>
+                <div class="topo_lotes">
+                    <div><span class="etiqueta">Ingressos</span><h2>Lotes</h2></div>
+                    <button class="botao botao_secundario" type="button" onclick="adicionarLote()">Adicionar lote</button>
+                </div>
+                <div id="container_lotes" class="lista_lotes"></div>
+
+                <div id="mensagem_evento" class="mensagem_formulario" aria-live="polite"></div>
+                <div class="acoes_formulario">
+                    <a class="botao botao_secundario" href="./eventos.html">Voltar</a>
+                    <button class="botao botao_primario" type="submit">Criar evento</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    <footer class="rodape"><div class="container"><span>PeakStack</span><span>Projeto acadêmico - SPTech</span></div></footer>
+</body>
+</html>

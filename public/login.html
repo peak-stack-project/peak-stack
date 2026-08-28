@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Login</title>
+    <link rel="icon" href="./assets/icon/favicon2.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/peakstack.css">
+    <script src="./js/sessao.js" defer></script>
+</head>
+<body class="corpo_autenticacao" onload="registrar_checkpoint('acessou_login_peakstack')">
+    <header class="cabecalho cabecalho_claro">
+        <a class="marca" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+        <nav class="navegacao">
+            <a href="./index.html">Início</a>
+            <a href="./cadastro.html">Criar conta</a>
+        </nav>
+    </header>
+    <main class="pagina_formulario pagina_autenticacao">
+        <section class="formulario_contexto">
+            <span class="etiqueta etiqueta_clara">Acesso à plataforma</span>
+            <h1>Bem-vindo de volta ao PeakStack.</h1>
+            <p>Acesse a jornada visual de eventos e o espaço reservado para o monitoramento.</p>
+        </section>
+        <section class="formulario_cartao">
+            <span class="etiqueta">Login</span>
+            <h2>Entre na sua conta</h2>
+            <p class="apoio_formulario">Utilize os dados cadastrados no projeto-base.</p>
+            <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+            <div class="campo">
+                <label for="email_input">E-mail</label>
+                <input id="email_input" type="email" placeholder="seu@email.com">
+            </div>
+            <div class="campo">
+                <label for="senha_input">Senha</label>
+                <input id="senha_input" type="password" placeholder="Sua senha">
+            </div>
+            <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
+            <p class="alternativa_formulario">Ainda não possui conta? <a href="./cadastro.html">Cadastre-se</a></p>
+            <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando"></div>
+            <div id="div_erros_login"></div>
+        </section>
+    </main>
+</body>
+</html>
+
+<script>
+    var fez_login = false;
+
+    function entrar() {
+        aguardar();
+
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "Todos os campos devem ser preenchidos";
+            finalizarAguardar();
+            return false;
+        }
+
+        fetch("/usuarios/autenticar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
+        }).then(function (resposta) {
+            if (resposta.ok) {
+                resposta.json().then(function (json) {
+                    sessionStorage.ID_USUARIO = json.id;
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.GENERO = json.genero;
+                    sessionStorage.IDADE = json.data_nascimento;
+                    sessionStorage.TIPO = json.tipo;
+
+                    fez_login = true;
+                    registrar_checkpoint("login_realizado_peakstack", json.id);
+
+                    setTimeout(function () {
+                        window.location = sessionStorage.TIPO == "admin" ? "/dashboard.html" : "/eventos.html";
+                    }, 1200);
+                });
+            } else {
+                resposta.text().then(function (texto) {
+                    cardErro.style.display = "block";
+                    mensagem_erro.innerHTML = texto + ". Tente novamente.";
+                    finalizarAguardar();
+                    registrar_checkpoint("erro_login_peakstack");
+                });
+            }
+        }).catch(function () {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
+            finalizarAguardar();
+            registrar_checkpoint("falha_conexao_login_peakstack");
+        });
+
+        return false;
+    }
+
+    window.addEventListener("beforeunload", function () {
+        if (!fez_login) registrar_checkpoint("saiu_login_sem_concluir");
+    });
+</script>
