@@ -1,20 +1,20 @@
 :root {
-    /* Opção 1 do Figma - vermelho (paleta ativa neste MVP). */
-    --cor-primaria: #ef2b2d;
-    --cor-primaria-escura: #bd1f26;
-    --cor-primaria-clara: #fff0f0;
+    /* Opção 1 do Figma - vermelho (paleta ativa neste MVP).*/
+    /* --cor-primaria: #5f2c2dd8;
+    --cor-primaria-escura: #7c2327;
+    --cor-primaria-clara: #fff0f0;  */
 
-    /* Opção 2 do Figma - roxo.
-    --cor-primaria: #7a28d8;
+    /* Opção 2 do Figma - roxo.*/
+    /* --cor-primaria: #7a28d8;
     --cor-primaria-escura: #54149e;
     --cor-primaria-clara: #f3ebff;
-    */
+     */
 
-    /* Opção 3 do Figma - azul.
-    --cor-primaria: #3157d8;
-    --cor-primaria-escura: #203b9e;
+    /* Opção 3 do Figma - azul.*/   
+    --cor-primaria: #488399;
+    --cor-primaria-escura: #001975;
     --cor-primaria-clara: #edf1ff;
-    */
+    
 
     --cor-texto: #17171a;
     --cor-texto-suave: #66666f;
@@ -343,7 +343,7 @@ button,
 
 .rodape .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     padding: 28px 0;
     font-size: 13px;
 }
