@@ -47,9 +47,6 @@ CREATE TABLE IF NOT EXISTS maquinas_virtuais (
     FOREIGN KEY (fkServidor) REFERENCES servidor(idServidor)
 );
 
-INSERT INTO maquinas_virtuais (nomeMaquina,fkServidor ) VALUES ("maquina de teste", 1);
-
-
 CREATE TABLE IF NOT EXISTS leituras (
     idLeitura INT PRIMARY KEY AUTO_INCREMENT,
     usoCpu DECIMAL(5,2),
