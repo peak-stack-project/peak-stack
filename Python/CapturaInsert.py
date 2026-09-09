@@ -59,7 +59,7 @@ def capturar_dados():
     }
 
     return dados
-
+        
 
 def verificar_status_cpu(uso_cpu):
 
