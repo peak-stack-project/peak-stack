@@ -1,10 +1,9 @@
 import time
 import psutil
-
 from conexaobd import mydb, mycursor
 
-
 gigabyte = 1024 ** 3
+megabyte = 1024 ** 2
 
 
 def capturar_dados():
@@ -35,6 +34,12 @@ def capturar_dados():
     disco_utilizado = disco.used / gigabyte
     disco_percentual = disco.percent
 
+    rede = psutil.net_io_counters()
+
+    download = rede.bytes_recv / megabyte
+    upload = rede.bytes_sent / megabyte
+    pacotes_perdidos = rede.dropin + rede.dropout
+
     dados = {
         "uso_cpu": uso_cpu,
         "qtd_cpu_log": qtd_cpu_log,
@@ -47,10 +52,65 @@ def capturar_dados():
         "disco_total": disco_total,
         "disco_livre": disco_livre,
         "disco_utilizado": disco_utilizado,
-        "disco_percentual": disco_percentual
+        "disco_percentual": disco_percentual,
+        "download": download,
+        "upload": upload,
+        "pacotes_perdidos": pacotes_perdidos
     }
 
     return dados
+
+
+def verificar_status_cpu(uso_cpu):
+
+    if uso_cpu >= 85:
+        return "Crítico"
+    elif uso_cpu >= 70:
+        return "Atenção"
+    else:
+        return "Normal"
+
+
+def verificar_status_memoria(memoria_percentual):
+
+    if memoria_percentual >= 90:
+        return "Crítico"
+    elif memoria_percentual >= 75:
+        return "Atenção"
+    else:
+        return "Normal"
+
+
+def verificar_status_disco(disco_percentual):
+
+    if disco_percentual >= 85:
+        return "Crítico"
+    elif disco_percentual >= 60:
+        return "Atenção"
+    else:
+        return "Normal"
+
+
+def verificar_status_rede(pacotes_perdidos):
+
+    if pacotes_perdidos >= 500:
+        return "Crítico"
+    elif pacotes_perdidos >= 50:
+        return "Atenção"
+    else:
+        return "Normal"
+
+
+def verificar_status_geral(status_cpu, status_memoria, status_disco, status_rede):
+
+    status_todos = (status_cpu, status_memoria, status_disco, status_rede)
+
+    if "Crítico" in status_todos:
+        return "Crítico"
+    elif "Atenção" in status_todos:
+        return "Atenção"
+    else:
+        return "Normal"
 
 
 def cadastrar_maquina():
@@ -98,6 +158,12 @@ def iniciar_coleta(fk_maquina):
 
         dados = capturar_dados()
 
+        status_cpu = verificar_status_cpu(dados["uso_cpu"])
+        status_memoria = verificar_status_memoria(dados["memoria_percentual"])
+        status_disco = verificar_status_disco(dados["disco_percentual"])
+        status_rede = verificar_status_rede(dados["pacotes_perdidos"])
+        status_geral = verificar_status_geral(status_cpu, status_memoria, status_disco, status_rede)
+
         comando_insert = """
         INSERT INTO leituras (
             usoCpu,
@@ -108,9 +174,17 @@ def iniciar_coleta(fk_maquina):
             discoLivre,
             discoUtilizado,
             percentualDisco,
+            download,
+            upload,
+            pacotesPerdidos,
+            statusCpu,
+            statusMemoria,
+            statusDisco,
+            statusRede,
+            statusGeral,
             fkMaquina
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         valores = (
@@ -122,20 +196,23 @@ def iniciar_coleta(fk_maquina):
             dados["disco_livre"],
             dados["disco_utilizado"],
             dados["disco_percentual"],
+            dados["download"],
+            dados["upload"],
+            dados["pacotes_perdidos"],
+            status_cpu,
+            status_memoria,
+            status_disco,
+            status_rede,
+            status_geral,
             fk_maquina
         )
 
         mycursor.execute(comando_insert, valores)
         mydb.commit()
 
-        print(
-            "Dados inseridos: usoCpu, frequenciaAtual, memoriaDisponivel, "
-            "memoriaUtilizada, percentualMemoria, discoLivre, discoUtilizado, "
-            "percentualDisco, fkMaquina"
-        )
+        print(f"Dados inseridos | Status geral: {status_geral}")
 
-        time.sleep(3)
-
+        time.sleep(2)
 
 if __name__ == "__main__":
     fk_maquina = cadastrar_maquina()
