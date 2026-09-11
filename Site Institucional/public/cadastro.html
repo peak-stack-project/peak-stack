@@ -7,22 +7,20 @@
     <link rel="icon" href="./assets/icon/favicon2.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/peakstack.css">
+    <link rel="stylesheet" href="./css/cadastro.css">
     <script src="./js/sessao.js" defer></script>
 </head>
 <body class="corpo_autenticacao" onload="registrar_checkpoint('acessou_cadastro_peakstack')">
     <header class="cabecalho cabecalho_claro">
-        <a class="marca" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+        <a class="marca" href="./index.html"><span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
+            <span>PeakStack</span></a>
         <nav class="navegacao"><a href="./index.html">Início</a><a href="./login.html">Entrar</a></nav>
     </header>
     <main class="pagina_formulario pagina_autenticacao">
         <section class="formulario_contexto">
-            <span class="etiqueta etiqueta_clara">Comece por aqui</span>
-            <h1>Crie seu acesso ao PeakStack.</h1>
-            <p>Mantivemos os campos do projeto-base para preservar o aprendizado e os caminhos existentes.</p>
+            <h1>Crie seu acesso ao PeakStack.</h1>  
         </section>
         <section class="formulario_cartao formulario_cadastro">
-            <span class="etiqueta">Cadastro</span>
             <h2>Crie sua conta</h2>
             <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
             <div class="campo"><label for="nome_input">Nome</label><input id="nome_input" type="text" placeholder="Seu nome completo"></div>

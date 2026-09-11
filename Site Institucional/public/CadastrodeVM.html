@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeakStack | Criar evento</title>
+    <title>PeakStack | Cadastrar VM</title>
     <link rel="icon" href="./assets/icon/favicon2.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/peakstack.css">
+    <link rel="stylesheet" href="./css/cadastro-vm.css">
     <script src="./js/sessao.js" defer></script>
-    <script src="./js/evento.js" defer></script>
+    <script src="./js/maquina.js" defer></script>
 </head>
-<body onload="registrar_checkpoint('acessou_criacao_evento')">
+<body class="pagina_cadastro_vm" onload="registrar_checkpoint('acessou_cadastro_vm')">
     <header class="cabecalho">
-        <a class="marca" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+        <a class="marca" href="./index.html"><span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
+            <span>PeakStack</span></a>
         <nav class="navegacao">
             <a href="./index.html">Início</a>
-            <a id="link_eventos" href="./eventos.html">Meus eventos</a>
+            <a id="link_eventos" href="./eventos.html">Minnhas máquinas</a>
             <a id="link_dashboard" href="./dashboard.html">Monitoramento</a>
             <a id="link_login" href="./login.html">Entrar</a>
             <a id="link_cadastro" href="./cadastro.html">Cadastrar</a>
@@ -25,53 +26,129 @@
     </header>
     <main class="pagina_formulario">
         <section class="formulario_contexto">
-            <h1>Cadastre sua máquina.</h1>
+            <h1>Prepare o monitoramento da sua VM.</h1>
             <ol>
-                <li>Preencha as especificações da sua máquina</li>
-                <li>Selecione os dados que deseja capturar</li>
-                <li>Defina métricas</li>
+                <li>Informe disco, memória e vCPUs.</li>
+                <li>Selecione os recursos monitorados.</li>
+                <li>Defina as faixas de utilização dos componentes.</li>
             </ol>
         </section>
-        <section class="formulario_cartao formulario_evento">
+        <section class="formulario_cartao formulario_vm">
             <div class="topo_formulario">
-                <div><span class="etiqueta">Novo evento</span><h2>Informações do evento</h2></div>
+                <div><h2>Informações da máquina</h2></div>
                 <a href="./eventos.html">Cancelar</a>
             </div>
-            <form id="form_evento" onsubmit="finalizarEventoVisual(event)">
+            <p id="aviso_rascunho" class="aviso_vm" hidden></p>
+            <form id="form_vm">
                 <div class="campo campo_largo">
-                    <label for="nome_evento_input">Nome</label>
-                    <input id="nome_evento_input" type="text" placeholder="Ex.: Festival Peak" required>
+                    <label for="nome_vm_input">Nome da VM</label>
+                    <input id="nome_vm_input" type="text" maxlength="150" placeholder="Ex.: Servidor de vendas 01" required>
                 </div>
-                <div class="campo campo_largo">
-                    <label for="descricao_evento_input">Descrição</label>
-                    <textarea id="descricao_evento_input" rows="4" placeholder="Descreva brevemente o evento" required></textarea>
-                </div>
-                <div class="campo campo_largo">
-                    <label for="endereco_evento_input">Endereço</label>
-                    <input id="endereco_evento_input" type="text" placeholder="Rua, número e complemento" required>
-                </div>
-                <div class="linha_campos">
+                <div class="especificacoes_vm">
                     <div class="campo">
-                        <label for="data_evento_input">Data</label>
-                        <input id="data_evento_input" type="date" required>
+                        <label for="disco_vm_input">Disco total (GB)</label>
+                        <input id="disco_vm_input" type="number" min="0" step="any" placeholder="Ex.: 256" required>
                     </div>
                     <div class="campo">
-                        <label for="horario_evento_input">Horário</label>
-                        <input id="horario_evento_input" type="time" required>
+                        <label for="ram_vm_input">RAM total (GB)</label>
+                        <input id="ram_vm_input" type="number" min="0" step="any" placeholder="Ex.: 16" required>
+                    </div>
+                    <div class="campo">
+                        <label for="vcpus_vm_input">Quantidade de processadores</label>
+                        <input id="vcpus_vm_input" type="number" min="1" step="1" placeholder="Ex.: 4" required>
                     </div>
                 </div>
 
                 <div class="divisor_formulario"></div>
-                <div class="topo_lotes">
-                    <div><span class="etiqueta">Ingressos</span><h2>Lotes</h2></div>
-                    <button class="botao botao_secundario" type="button" onclick="adicionarLote()">Adicionar lote</button>
-                </div>
-                <div id="container_lotes" class="lista_lotes"></div>
+                <fieldset class="recursos_vm">
+                    <legend>O que deseja monitorar?</legend>
+                    <p class="apoio_formulario" id="apoio_recursos_vm">Selecione pelo menos um recurso.</p>
+                    <div class="opcoes_recursos_vm">
+                        <label><input id="monitorar_cpu" type="checkbox"> CPU</label>
+                        <label><input id="monitorar_ram" type="checkbox" > RAM</label>
+                        <label><input id="monitorar_disco" type="checkbox"> Disco</label>
+                        <label><input id="monitorar_rede" type="checkbox"> Rede</label>
+                    </div>
+                </fieldset>
 
-                <div id="mensagem_evento" class="mensagem_formulario" aria-live="polite"></div>
+
+                <fieldset id="discretizacao_ram" class="discretizacao_vm" hidden disabled>
+                    <legend>Discretização dos dados de RAM</legend>
+                    <p class="apoio_formulario">Personalize o monitoramento. Limites percentuais: 0 < x < y > 100.</p>
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="ram_alerta_input">Alerta a partir de x (%)</label>
+                            <input id="ram_alerta_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 70">
+                        </div>
+                        <div class="campo">
+                            <label for="ram_critico_input">Crítico a partir de y (%)</label>
+                            <input id="ram_critico_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 90">
+                        </div>
+                    </div>
+                    <div id="faixas_ram" class="faixas_vm">
+                        <p>Preencha os dois limites para visualizar as faixas.</p>
+                    </div>
+                </fieldset>
+
+                <fieldset id="discretizacao_cpu" class="discretizacao_vm" hidden disabled>
+                    <legend>Discretização dos dados de CPU</legend>
+                    <p class="apoio_formulario">Personalize o monitoramento. Limites percentuais: 0 < x < y > 100.</p>
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="cpu_alerta_input">Alerta a partir de x (%)</label>
+                            <input id="cpu_alerta_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 70">
+                        </div>
+                        <div class="campo">
+                            <label for="cpu_critico_input">Crítico a partir de y (%)</label>
+                            <input id="cpu_critico_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 90">
+                        </div>
+                    </div>
+                    <div id="faixas_cpu" class="faixas_vm">
+                        <p>Preencha os dois limites para visualizar as faixas.</p>
+                    </div>
+                </fieldset>
+
+                <fieldset id="discretizacao_disco" class="discretizacao_vm" hidden disabled>
+                    <legend>Discretização dos dados de disco</legend>
+                    <p class="apoio_formulario">Personalize o monitoramento. Limites percentuais: 0 < x < y > 100.</p>
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="disco_alerta_input">Alerta a partir de x (%)</label>
+                            <input id="disco_alerta_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 70">
+                        </div>
+                        <div class="campo">
+                            <label for="disco_critico_input">Crítico a partir de y (%)</label>
+                            <input id="disco_critico_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 90">
+                        </div>
+                    </div>
+                    <div id="faixas_disco" class="faixas_vm">
+                        <p>Preencha os dois limites para visualizar as faixas.</p>
+                    </div>
+                </fieldset>
+
+
+                <fieldset id="discretizacao_rede" class="discretizacao_vm" hidden disabled>
+                    <legend>Discretização dos dados de rede</legend>
+                    <p class="apoio_formulario">Personalize o monitoramento. Limites percentuais: 0 < x < y > 100.</p>
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="rede_alerta_input">Críico abaixo de x (%)</label>
+                            <input id="rede_alerta_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 70">
+                        </div>
+                        <div class="campo">
+                            <label for="rede_critico_input">Alerta abaixo de y (%)</label>
+                            <input id="rede_critico_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 90">
+                        </div>
+                    </div>
+                    <div id="faixas_rede" class="faixas_vm">
+                        <p>Preencha os dois limites para visualizar as faixas.</p>
+                    </div>
+                </fieldset>
+
+                <div id="mensagem_vm" class="mensagem_formulario" hidden></div>
                 <div class="acoes_formulario">
                     <a class="botao botao_secundario" href="./eventos.html">Voltar</a>
-                    <button class="botao botao_primario" type="submit">Criar evento</button>
+                    <button class="botao botao_primario" type="submit">Validar cadastro</button>
                 </div>
             </form>
         </section>

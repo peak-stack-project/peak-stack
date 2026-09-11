@@ -1,67 +1,171 @@
-CREATE DATABASE projeto_moda;
-USE projeto_moda;
+DROP DATABASE IF EXISTS dados_computador;
+CREATE DATABASE dados_computador;
+USE dados_computador;
+
+CREATE TABLE empresa (
+    idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    cnpj CHAR(14) UNIQUE NOT NULL,
+    endereco VARCHAR(150)
+);
+
+CREATE TABLE cargo (
+    idCargo INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) UNIQUE NOT NULL,
+    descricao VARCHAR(150)
+);
 
 
-
--- criei a tabela usuario para receber as informações dos cadastros e coloquei o tipo para diferenciar quem é usuario comum e quem é admin 
--- coloquei data de nascimento e genero para usar no funil de conversão, para mostrar a porcentagem de homens e mulheres que visitam o site
--- 
 CREATE TABLE usuario (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	nome VARCHAR(100) NOT NULL,
-	email VARCHAR(70) UNIQUE NOT NULL,
-	senha VARCHAR(30) NOT NULL,
-	tipo VARCHAR(20) DEFAULT 'comum',
-	data_nascimento date NOT NULL,
-	genero varchar(1) not null
+    idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(70) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    data_nascimento DATE NOT NULL,
+    fkEmpresa INT NOT NULL,
+    FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 );
 
--- A tabela metrica_funil será usada para armazenar os dados coletados dentro do site, 
--- como os cliques em botões e visitas em páginas, e será usada para gerar a dashboard
--- 
+
+CREATE TABLE usuario_cargo (
+    fkUsuario INT NOT NULL,
+    fkCargo INT NOT NULL,
+    PRIMARY KEY (fkUsuario, fkCargo),
+    FOREIGN KEY (fkUsuario) REFERENCES usuario(idUsuario),
+    FOREIGN KEY (fkCargo) REFERENCES cargo(idCargo)
+);
+
+
+CREATE TABLE maquina_virtual (
+    idMaquina INT PRIMARY KEY AUTO_INCREMENT,
+    nomeMaquina VARCHAR(150) NOT NULL,
+    endereco_ip VARCHAR(45),
+    memoria_total DECIMAL(10,2),
+    disco_total DECIMAL(10,2),
+    fkEmpresa INT NOT NULL,
+    FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
+);
+
+
+CREATE TABLE tipo_componente (
+    idTipoComponente INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(30) UNIQUE NOT NULL,
+    descricao VARCHAR(150)
+);
+
+
+CREATE TABLE maquina_componente (
+    idMaquinaComponente INT PRIMARY KEY AUTO_INCREMENT,
+    fkMaquina INT NOT NULL,
+    fkTipoComponente INT NOT NULL,
+    coletaAtiva BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (fkMaquina) REFERENCES maquina_virtual(idMaquina),
+    FOREIGN KEY (fkTipoComponente) REFERENCES tipo_componente(idTipoComponente)
+);
+
+CREATE TABLE especificacao_cpu (
+    idCpu INT PRIMARY KEY AUTO_INCREMENT,
+    fkMaquinaComponente INT NOT NULL,
+    quantidade_nucleos INT,
+    quantidade_threads INT,
+    frequencia_mhz DECIMAL(10,2),
+    FOREIGN KEY (fkMaquinaComponente) REFERENCES maquina_componente(idMaquinaComponente)
+);
+
+
+CREATE TABLE especificacao_ram (
+    idRam INT PRIMARY KEY AUTO_INCREMENT,
+    fkMaquinaComponente INT NOT NULL,
+    capacidade_total_gb DECIMAL(10,2),
+    FOREIGN KEY (fkMaquinaComponente) REFERENCES maquina_componente(idMaquinaComponente)
+);
+
+
+CREATE TABLE especificacao_disco (
+    idDisco INT PRIMARY KEY AUTO_INCREMENT,
+    fkMaquinaComponente INT NOT NULL,
+    capacidade_total_gb DECIMAL(10,2),
+    FOREIGN KEY (fkMaquinaComponente) REFERENCES maquina_componente(idMaquinaComponente)
+);
+
+CREATE TABLE tipo_metrica (
+    idTipoMetrica INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) UNIQUE NOT NULL,
+    unidadeMedida VARCHAR(20)
+);
+
+CREATE TABLE leitura (
+    idLeitura BIGINT PRIMARY KEY AUTO_INCREMENT,
+    fkMaquinaComponente INT NOT NULL,
+    fkTipoMetrica INT NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    dataHora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fkMaquinaComponente) REFERENCES maquina_componente(idMaquinaComponente),
+    FOREIGN KEY (fkTipoMetrica) REFERENCES tipo_metrica(idTipoMetrica)
+);
+
+
+CREATE TABLE alerta (
+    idAlerta INT PRIMARY KEY AUTO_INCREMENT,
+    fkLeitura BIGINT NOT NULL,
+    tipo_alerta VARCHAR(50) NOT NULL,
+    nivel VARCHAR(20) NOT NULL,
+    mensagem VARCHAR(255),
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'ATIVO',
+    FOREIGN KEY (fkLeitura) REFERENCES leitura(idLeitura)
+);
+
+
 CREATE TABLE metrica_funil (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	etapa_funil VARCHAR(50) NOT NULL,
-	fk_usuario INT, 
-	data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id)
+    idMetrica INT PRIMARY KEY AUTO_INCREMENT,
+    etapa_funil VARCHAR(50) NOT NULL,
+    fkUsuario INT NOT NULL,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fkUsuario) REFERENCES usuario(idUsuario)
 );
 
 
-CREATE TABLE marca(
-	idmarca INT PRIMARY KEY AUTO_INCREMENT,
-	nome VARCHAR(100) NOT NULL, -- marca ou artista
-	descricao VARCHAR(600)
-);
 
-INSERT INTO marca (nome, descricao) VALUES 
-('Vitonez','A Vitonez traduz a moda como expressão de identidade, memória e pertencimento. Inspirada pela cultura brasileira e sul-americana, a marca valoriza histórias, símbolos e afetos que fazem parte do nosso cotidiano, criando peças com propósito, conforto e autenticidade.Em oposição ao ritmo acelerado do fast fashion, suas coleções celebram a produção consciente, os pequenos produtores e a força criativa da nossa região. Cada peça carrega uma estética urbana, afetiva e artesanal, conectando moda, cultura e responsabilidade.' ),
-('Agustina Comas','Agustina Comas é uma designer uruguaia radicada em São Paulo e referência em upcycling industrial e moda circular. Seu trabalho mostra que sobras, peças paradas e resíduos têxteis podem voltar ao ciclo como matéria-prima de criação.Com o Método Comas, ela transforma reaproveitamento em processo de design: cria a partir do que já existe, valoriza conhecimento técnico e propõe uma moda mais inteligente, menos descartável e mais consciente sobre quem faz.' ),
-('Flavia Aranha','Flavia Aranha construiu sua marca em torno do tingimento natural, pesquisando cores a partir de plantas, minerais e matérias-primas ligadas aos biomas brasileiros. Seu trabalho aproxima moda, natureza e saber artesanal. Em vez de tratar a cor como acabamento industrial invisível, a marca mostra que tingir também é conhecimento, tempo e experimentação. É uma entrada forte para discutir sustentabilidade como processo, não apenas como aparência.' ),
-('Karkaras','Karkarás é um ateliê e studio de tatuagem em Ribeirão Pires, formado por artistas que se aproximam pelo trabalho manual, pela criatividade e pela vontade de transformar ideias em prática. O espaço reúne tatuagem, costura e experimentação, valorizando o processo tanto quanto o resultado. Entre rascunhos, decalques, estudos de tecido, modelagem, corte e costura, a marca mostra que criar exige tempo, técnica e atenção às etapas. Mais do que produzir peças ou tatuagens, a Karkarás funciona como um coletivo que busca melhorar o meio em que atua e fortalecer quem faz parte dele.' );
+INSERT INTO empresa (nome, cnpj, endereco) VALUES
+('Empresa Teste', '12345678000100', 'São Paulo - SP');
 
 
-CREATE TABLE vitrine_marcas(
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	fk_usuario INT NOT NULL,
-	data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-	grau_interesse INT(10) NOT NULL, -- 0~10
-	ja_conhecia CHAR(1) NOT NULL, -- 'S' para Sim (Conhecia), 'N' para Não (Não conhecia)
-	fk_marca INT NOT NULL,
-	
-	
-	CONSTRAINT chk_grau_interesse CHECK (grau_interesse >= 0 AND grau_interesse <= 10),
-	CONSTRAINT chk_ja_conhecia CHECK (ja_conhecia IN ('S', 'N')),
-
-	CONSTRAINT fk_vitrine_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
-	CONSTRAINT fk_vitrine_marca FOREIGN KEY (fk_marca) REFERENCES marca(idmarca)
-);
+INSERT INTO cargo (nome, descricao) VALUES
+('Administrador', 'Acesso administrativo ao sistema'),
+('Analista', 'Responsável pela análise dos dados'),
+('Tecnico', 'Responsável pelo monitoramento técnico'),
+('Comum', 'Usuário comum do sistema');
 
 
--- Insere um administrador no banco de dados, ele terá acesso a dahsboard, diferente dos clientes que serão apenas usuários comuns
--- 
-INSERT INTO usuario (nome, email, senha, tipo, data_nascimento, genero) VALUES 
-('Administrador', 'admin', '6568716d72', 'admin', '2000-01-01', 'N');
+INSERT INTO tipo_componente (nome, descricao) VALUES
+('CPU', 'Processador da máquina'),
+('RAM', 'Memória RAM da máquina'),
+('DISCO', 'Armazenamento da máquina');
 
-SELECT * FROM usuario;
 
+INSERT INTO usuario (nome, email, senha, data_nascimento, fkEmpresa) VALUES
+('Usuario Teste', 'usuario@email.com', '123456', '2000-01-01', 1);
+
+
+INSERT INTO usuario_cargo (fkUsuario, fkCargo) VALUES
+(1, 1);
+
+INSERT INTO tipo_metrica (nome, unidadeMedida)
+VALUES
+('Uso da CPU', '%'),
+('Frequência da CPU', 'MHz'),
+('Memória total', 'GB'),
+('Memória utilizada', 'GB'),
+('Memória disponível', 'GB'),
+('Percentual da memória utilizada', '%'),
+('Percentual da memória disponível', '%'),
+('Disco total', 'GB'),
+('Disco utilizado', 'GB'),
+('Disco disponível', 'GB'),
+('Percentual do disco utilizado', '%'),
+('Percentual do disco disponível', '%');
+
+
+----- EXEMPLO INSERT INTO alerta (fkLeitura, tipo_alerta, nivel, mensagem, status) VALUES
+----- (1,'Uso de CPU', 'NORMAL', 'Uso da CPU dentro do limite esperado','RESOLVIDO');		

@@ -8,23 +8,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/peakstack.css">
+    <link rel="stylesheet" href="./css/home.css">
     <script src="./js/sessao.js" defer></script>
 </head>
-<body onload="registrar_checkpoint('acessou_home_peakstack')">
+<body onload="ajustarNavbarSessao()" >
     <header class="cabecalho">
         <a class="marca" href="./index.html" aria-label="PeakStack - início">
-            <span class="marca_icone">PS</span>
+                <span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
             <span>PeakStack</span>
         </a>
         <nav class="navegacao" aria-label="Navegação principal">
             <a href="./index.html">Início</a>
-            <a id="link_eventos" href="./eventos.html">Meus eventos</a>
+            <a id="link_maquinas" href="./eventos.html">Minhas máquinas</a>
             <a id="link_dashboard" href="./dashboard.html">Monitoramento</a>
             <a id="link_login" href="./login.html">Entrar</a>
             <a id="link_cadastro" href="./cadastro.html">Cadastrar</a>
             <button id="btn_logout" class="botao_link" onclick="limparSessao()">Sair</button>
-            <a class="botao botao_primario" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_home')">Criar evento</a>
+            <a class="botao botao_primario" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_home')">Configurar máquina</a>
         </nav>
     </header>
 
@@ -32,15 +32,41 @@
         <section class="hero">
             <div class="container hero_conteudo">
                 <div class="hero_texto">
-                    <span class="etiqueta">Monitoramento de hardware para ticketerias</span>
-                    <h1>Prepare sua infraestrutura para os picos de venda.</h1>
+                    <h1>Monitore sua infraestrutura para os picos de venda.</h1>
                     <p>O PeakStack ajuda equipes a acompanhar a saúde dos servidores durante vendas de ingressos e a reconhecer sinais de sobrecarga antes que eles afetem o evento.</p>
                     <div class="grupo_botoes">
-                        <a class="botao botao_primario" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_hero')">Criar evento</a>
+                        <a class="botao botao_primario" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_hero')">Configurar máquina</a>
                         <a class="botao botao_secundario" href="#solucao">Conhecer a solução</a>
                     </div>
                 </div>
+            </div>
+        </section>
 
+        <section class="seccaoproblematizacao">
+            <div class="container problematizacao_conteudo">
+                <div class="problematizacao_dados">
+                    <article class="dado_problematizacao">
+                        <strong>57%</strong>
+                        <p>dos participantes disseram que sua interrupção de infraestrutura grave mais recente custou mais de US$ 100 mil.</p>
+                        <a class="fonte_problematizacao" href="https://uptimeinstitute.com/about-ui/press-releases/uptime-announces-annual-outage-analysis-report-2026" target="_blank">
+                            Fonte: Uptime Institute, 2026
+                        </a>
+                    </article>
+
+                    <article class="dado_problematizacao">
+                        <strong>15%</strong>
+                        <p>das interações apresentaram problemas durante uma venda que recebeu 3,5 bilhões de requisições.</p>
+                        <a class="fonte_problematizacao" href="https://business.ticketmaster.com/press-release/taylor-swift-the-eras-tour-onsale-explained/" target="_blank">
+                            Fonte: Ticketmaster, 2022
+                        </a>
+                    </article>
+                </div>
+
+                <div class="texto_problematizacao">
+                    <h2>O problema começa antes da queda.</h2>
+                    <p>Sem monitoramento contínuo, sinais de sobrecarga podem passar despercebidos e dificultar uma resposta rápida da equipe de infraestrutura.</p>
+                </div>
+            </div>
         </section>
 
         <section class="secao" id="solucao">
@@ -51,16 +77,16 @@
                 </div>
                 <div class="grade_cards">
                     <article class="card_info">
-                        <h3>Crie o contexto</h3>
-                        <p>Cadastre um evento e seus lotes para representar uma operação de ticketeria.</p>
+                        <h3>Crie sua instância</h3>
+                        <p>Cadastre suas máquinas virtuais e personalize seus avisos</p>
                     </article>
                     <article class="card_info">
                         <h3>Observe a infraestrutura</h3>
-                        <p>Organize em um único ambiente a futura leitura dos componentes de hardware.</p>
+                        <p>Organize em um único ambiente a leitura dos componentes de hardware.</p>
                     </article>
                     <article class="card_info">
                         <h3>Decida com clareza</h3>
-                        <p>Use o histórico e os alertas, em versões futuras, para apoiar decisões técnicas.</p>
+                        <p>Use o histórico e os alertas para apoiar decisões técnicas.</p>
                     </article>
                 </div>
             </div>
@@ -69,10 +95,9 @@
         <section class="secao secao_destaque">
             <div class="container chamada_final">
                 <div>
-                    <span class="etiqueta etiqueta_clara">Primeiro passo</span>
-                    <h2>Crie um evento para validar a jornada do PeakStack.</h2>
+                    <h2>Crie um evento para iniciar a jornada no PeakStack.</h2>
                 </div>
-                <a class="botao botao_claro" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_rodape')">Criar evento</a>
+                <a class="botao botao_claro" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_rodape')">Configurar máquina</a>
             </div>
         </section>
     </main>

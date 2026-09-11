@@ -7,12 +7,13 @@
     <link rel="icon" href="./assets/icon/favicon2.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/peakstack.css">
+    <link rel="stylesheet" href="./css/login.css">
     <script src="./js/sessao.js" defer></script>
 </head>
 <body class="corpo_autenticacao" onload="registrar_checkpoint('acessou_login_peakstack')">
     <header class="cabecalho cabecalho_claro">
-        <a class="marca" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+        <a class="marca" href="./index.html"><span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
+            <span>PeakStack</span></a>
         <nav class="navegacao">
             <a href="./index.html">Início</a>
             <a href="./cadastro.html">Criar conta</a>
@@ -20,14 +21,10 @@
     </header>
     <main class="pagina_formulario pagina_autenticacao">
         <section class="formulario_contexto">
-            <span class="etiqueta etiqueta_clara">Acesso à plataforma</span>
-            <h1>Bem-vindo de volta ao PeakStack.</h1>
-            <p>Acesse a jornada visual de eventos e o espaço reservado para o monitoramento.</p>
+            <h1>Bem-vindo ao PeakStack.</h1>
         </section>
         <section class="formulario_cartao">
-            <span class="etiqueta">Login</span>
             <h2>Entre na sua conta</h2>
-            <p class="apoio_formulario">Utilize os dados cadastrados no projeto-base.</p>
             <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
             <div class="campo">
                 <label for="email_input">E-mail</label>
