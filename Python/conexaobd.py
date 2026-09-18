@@ -5,7 +5,7 @@ import getpass
 mydb = mysql.connector.connect(
     host="localhost",
     user="aluno",
-    password=getpass.getpass("Insira a senha do banco de dados: "),
+    password= "sptech",
     database="dados_computador"
 )
 
