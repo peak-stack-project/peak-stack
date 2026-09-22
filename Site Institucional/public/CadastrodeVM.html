@@ -72,23 +72,7 @@
                 </fieldset>
 
 
-                <fieldset id="discretizacao_ram" class="discretizacao_vm" hidden disabled>
-                    <legend>Discretização dos dados de RAM</legend>
-                    <p class="apoio_formulario">Personalize o monitoramento. Limites percentuais: 0 < x < y > 100.</p>
-                    <div class="linha_campos">
-                        <div class="campo">
-                            <label for="ram_alerta_input">Alerta a partir de x (%)</label>
-                            <input id="ram_alerta_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 70">
-                        </div>
-                        <div class="campo">
-                            <label for="ram_critico_input">Crítico a partir de y (%)</label>
-                            <input id="ram_critico_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 90">
-                        </div>
-                    </div>
-                    <div id="faixas_ram" class="faixas_vm">
-                        <p>Preencha os dois limites para visualizar as faixas.</p>
-                    </div>
-                </fieldset>
+          
 
                 <fieldset id="discretizacao_cpu" class="discretizacao_vm" hidden disabled>
                     <legend>Discretização dos dados de CPU</legend>
@@ -104,6 +88,24 @@
                         </div>
                     </div>
                     <div id="faixas_cpu" class="faixas_vm">
+                        <p>Preencha os dois limites para visualizar as faixas.</p>
+                    </div>
+                </fieldset>
+                
+      <fieldset id="discretizacao_ram" class="discretizacao_vm" hidden disabled>
+                    <legend>Discretização dos dados de RAM</legend>
+                    <p class="apoio_formulario">Personalize o monitoramento. Limites percentuais: 0 < x < y > 100.</p>
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="ram_alerta_input">Alerta a partir de x (%)</label>
+                            <input id="ram_alerta_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 70">
+                        </div>
+                        <div class="campo">
+                            <label for="ram_critico_input">Crítico a partir de y (%)</label>
+                            <input id="ram_critico_input" type="number" min="0" max="100" step="any" placeholder="Ex.: 90">
+                        </div>
+                    </div>
+                    <div id="faixas_ram" class="faixas_vm">
                         <p>Preencha os dois limites para visualizar as faixas.</p>
                     </div>
                 </fieldset>
