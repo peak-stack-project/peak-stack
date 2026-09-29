@@ -25,17 +25,12 @@
             <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
             <div class="campo"><label for="nome_input">Nome</label><input id="nome_input" type="text" placeholder="Seu nome completo"></div>
             <div class="campo"><label for="email_input">E-mail</label><input id="email_input" type="email" placeholder="seu@email.com"></div>
-            <div class="campo"><label for="data_nascimento_input">Data de nascimento</label><input id="data_nascimento_input" type="date"></div>
-            <fieldset class="campo campo_genero">
-                <legend>Gênero</legend>
-                <label><input type="radio" name="genero" value="M"> Masculino</label>
-                <label><input type="radio" name="genero" value="F"> Feminino</label>
-                <label><input type="radio" name="genero" value="O"> Outro</label>
-            </fieldset>
             <div class="linha_campos">
                 <div class="campo"><label for="senha_input">Senha</label><input id="senha_input" type="password" placeholder="Sua senha"></div>
                 <div class="campo"><label for="confirmacao_senha_input">Confirmar senha</label><input id="confirmacao_senha_input" type="password" placeholder="Repita a senha"></div>
             </div>
+             <div class="campo"><label for="cargo_inpu">Cargo</label><input id="cargo_input" type="text" placeholder="Seu cargo"></div>
+            <div class="campo"><label for="idempresa_input">ID da empresa</label><input id="idempresa_input" type="text" placeholder="ID da empresa na qual você trabalha"></div>
             <button class="botao botao_primario botao_largo" onclick="cadastrar()">Criar conta</button>
             <p class="alternativa_formulario">Já possui conta? <a href="./login.html">Entrar</a></p>
             <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando"></div>
@@ -51,14 +46,12 @@
     function cadastrar() {
         var nomeVar = nome_input.value;
         var emailVar = email_input.value;
-        var data_nascimentoVar = data_nascimento_input.value;
         var senhaVar = senha_input.value;
         var confirmacaoSenhaVar = confirmacao_senha_input.value;
-        var generoSelecionado = document.querySelector('input[name="genero"]:checked');
-        var generoVar = generoSelecionado ? generoSelecionado.value : "";
-        var tipoVar = "comum";
+        var cargoVar = cargo_input.value;
+        var idempresaVar = idempresa_input.value
 
-        if (nomeVar == "" || emailVar == "" || data_nascimentoVar == "" || generoVar == "" || senhaVar == "" || confirmacaoSenhaVar == "") {
+        if (nomeVar == "" || emailVar == "" || cargoVar == "" || senhaVar == "" || confirmacaoSenhaVar == "" || idempresaVar == "") {
             return exibirErroCadastro("Todos os campos devem ser preenchidos");
         } else if (!emailVar.includes("@") || !emailVar.includes(".")) {
             return exibirErroCadastro("Insira um e-mail válido");
@@ -84,10 +77,9 @@
             body: JSON.stringify({
                 nomeServer: nomeVar,
                 emailServer: emailVar,
-                generoServer: generoVar,
-                data_nascimentoServer: data_nascimentoVar,
                 senhaServer: senhaVar,
-                tipoServer: tipoVar
+                cargoServer: cargoVar,
+                idempresaServer: idempresaVar
             })
         }).then(function (resposta) {
             if (resposta.ok) {

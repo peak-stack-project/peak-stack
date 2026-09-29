@@ -39,9 +39,6 @@ function autenticar(req, res) {
                             id: resultadoAutenticar[0].id,
                             email: resultadoAutenticar[0].email,
                             nome: resultadoAutenticar[0].nome,
-                            tipo: resultadoAutenticar[0].tipo,
-                            data_nascimento: resultadoAutenticar[0].data_nascimento,
-                            genero: resultadoAutenticar[0].genero
                         });
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
@@ -65,9 +62,9 @@ function cadastrar(req, res) {
     var nome = req.body.nomeServer;
     var email = req.body.emailServer;
     var senha = criptografarSenha(req.body.senhaServer);
-    var data_nascimento = req.body.data_nascimentoServer;
-    var genero = req.body.generoServer;
-    var tipo = req.body.tipoServer
+    var cargo = req.body.cargoServer;
+    var idempresa = req.body.idempresaServer;
+   
     // não coloquei o tipo pois ele é definido pela senha e usuário no login: 'admin'
 
     // Faça as validações dos valores
@@ -77,14 +74,14 @@ function cadastrar(req, res) {
         res.status(400).send("Seu email está undefined!");
     } else if (senha == undefined) {
         res.status(400).send("Sua senha está undefined!");
-    } else if (data_nascimento == undefined) {
-        res.status(400).send("Sua data de nascimento está undefined!");
-    } else if (genero == undefined) {
-        res.status(400).send("Seu genero está undefined!");
+    } else if (cargo == undefined) {
+        res.status(400).send("Seu cargo está undefined!");
+    } else if (idempresa == undefined) {
+        res.status(400).send("ID da sua empresa está undefined!");
     } else {
 
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        usuarioModel.cadastrar(nome, email, senha, data_nascimento, genero, tipo)
+        usuarioModel.cadastrar(nome, email, senha, cargo, idempresa)
             .then(
                 function (resultado) {
                     res.json(resultado);
