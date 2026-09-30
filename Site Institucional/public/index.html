@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,99 +12,161 @@
     <link rel="stylesheet" href="./css/home.css">
     <script src="./js/sessao.js" defer></script>
 </head>
-<body onload="ajustarNavbarSessao()" >
+<body onload="ajustarNavbarSessao()">
+    <div id="gradient-waves-background" aria-hidden="true">
+        <video autoplay muted loop playsinline>
+            <source src="./assets/onda-fundo.webm" type="video/webm">
+        </video>
+    </div>
     <header class="cabecalho">
-        <a class="marca" href="./index.html" aria-label="PeakStack - início">
-                <span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
-            <span>PeakStack</span>
-        </a>
-        <nav class="navegacao" aria-label="Navegação principal">
-            <a href="./index.html">Início</a>
-            <a id="link_maquinas" href="./eventos.html">Minhas máquinas</a>
-            <a id="link_dashboard" href="./dashboard.html">Monitoramento</a>
-            <a id="link_login" href="./login.html">Entrar</a>
-            <a id="link_cadastro" href="./cadastro.html">Cadastrar</a>
-            <button id="btn_logout" class="botao_link" onclick="limparSessao()">Sair</button>
-            <a class="botao botao_primario" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_home')">Configurar máquina</a>
-        </nav>
-    </header>
+    <a class="marca" href="./index.html" aria-label="PeakStack - início">
+        <span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
+        <span>PeakStack</span>
+    </a>
+    <nav class="navegacao" aria-label="Navegação principal">
+        <a href="./index.html">Início</a>
+        <a id="link_maquinas" href="./eventos.html">Minhas máquinas</a>
+        <a id="link_dashboard" href="./dashboard.html">Monitoramento</a>
+        <a id="link_login" href="./login.html">Entrar</a>
+        <a id="link_cadastro" href="./cadastro.html">Cadastrar</a>
+        <button id="btn_logout" class="botao_link" onclick="limparSessao()">Sair</button>
+    </nav>
+</header>
 
     <main>
         <section class="hero">
             <div class="container hero_conteudo">
                 <div class="hero_texto">
-                    <h1>Monitore sua infraestrutura para os picos de venda.</h1>
-                    <p>O PeakStack ajuda equipes a acompanhar a saúde dos servidores durante vendas de ingressos e a reconhecer sinais de sobrecarga antes que eles afetem o evento.</p>
-                    <div class="grupo_botoes">
-                        <a class="botao botao_primario" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_hero')">Configurar máquina</a>
-                        <a class="botao botao_secundario" href="#solucao">Conhecer a solução</a>
-                    </div>
+                    <span class="etiqueta_pill">Monitoramento pensado para picos de venda</span>
+                    <h1>Infraestrutura pronta para o momento que importa.</h1>
+                    <p>O PeakStack acompanha CPU, memória, disco e rede em tempo real, ajudando equipes de infraestrutura a agir antes que um pico de acesso vire indisponibilidade.</p>
+                    <a class="botao botao_primario" href="#como-funciona">Conhecer solução <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="hero_imagem" aria-hidden="true">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                        <circle cx="9" cy="9" r="1.6"></circle>
+                        <path d="M21 15l-5.5-5.5L7 18"></path>
+                    </svg>
                 </div>
             </div>
         </section>
 
-        <section class="seccaoproblematizacao">
-            <div class="container problematizacao_conteudo">
-                <div class="problematizacao_dados">
-                    <article class="dado_problematizacao">
-                        <strong>57%</strong>
-                        <p>dos participantes disseram que sua interrupção de infraestrutura grave mais recente custou mais de US$ 100 mil.</p>
-                        <a class="fonte_problematizacao" href="https://uptimeinstitute.com/about-ui/press-releases/uptime-announces-annual-outage-analysis-report-2026" target="_blank">
-                            Fonte: Uptime Institute, 2026
-                        </a>
-                    </article>
-
-                    <article class="dado_problematizacao">
-                        <strong>15%</strong>
-                        <p>das interações apresentaram problemas durante uma venda que recebeu 3,5 bilhões de requisições.</p>
-                        <a class="fonte_problematizacao" href="https://business.ticketmaster.com/press-release/taylor-swift-the-eras-tour-onsale-explained/" target="_blank">
-                            Fonte: Ticketmaster, 2022
-                        </a>
-                    </article>
-                </div>
-
-                <div class="texto_problematizacao">
-                    <h2>O problema começa antes da queda.</h2>
-                    <p>Sem monitoramento contínuo, sinais de sobrecarga podem passar despercebidos e dificultar uma resposta rápida da equipe de infraestrutura.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="secao" id="solucao">
+        <section class="secao" id="como-funciona">
             <div class="container">
                 <div class="titulo_secao">
-                    <h2>Grandes vendas concentram acessos em poucos minutos.</h2>
-                    <p>Quando a demanda cresce rapidamente, a falta de visibilidade sobre CPU, memória, disco e rede dificulta a tomada de decisão da equipe responsável.</p>
+                    <h2>Como o sistema funciona</h2>
+                    <p>Da coleta no servidor até o alerta na sua tela, cada etapa reduz o tempo entre o sinal de sobrecarga e a decisão da equipe.</p>
+                </div>
+                <ol class="passos_grade">
+                    <li class="passo">
+                        <span class="passo_icone">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 19h14"></path></svg>
+                        </span>
+                        <span class="passo_numero">01</span>
+                        <h3>Coleta em tempo real</h3>
+                        <p>Um executável em Java captura CPU, RAM, disco e rede diretamente da máquina monitorada.</p>
+                    </li>
+                    <li class="passo">
+                        <span class="passo_icone passo_icone_escuro">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V10"></path><path d="M11 19V5"></path><path d="M18 19v-7"></path></svg>
+                        </span>
+                        <span class="passo_numero">02</span>
+                        <h3>Processamento dos dados</h3>
+                        <p>Scripts em Python tratam as métricas coletadas e as enviam para um banco SQL em nuvem.</p>
+                    </li>
+                    <li class="passo">
+                        <span class="passo_icone">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
+                        </span>
+                        <span class="passo_numero">03</span>
+                        <h3>Dashboard e KPIs</h3>
+                        <p>Os indicadores chegam organizados em painéis, prontos para leitura rápida da equipe.</p>
+                    </li>
+                    <li class="passo">
+                        <span class="passo_icone passo_icone_escuro">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+                        </span>
+                        <span class="passo_numero">04</span>
+                        <h3>Alertas e notificações</h3>
+                        <p>Situações de estresse geram avisos antes que evoluam para uma indisponibilidade.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="secao" id="beneficios">
+            <div class="container">
+                <div class="titulo_secao">
+                    <h2>Benefícios</h2>
                 </div>
                 <div class="grade_cards">
                     <article class="card_info">
-                        <h3>Crie sua instância</h3>
-                        <p>Cadastre suas máquinas virtuais e personalize seus avisos</p>
+                        <h3>Antecipe perigos</h3>
+                        <p>Identifique sinais de sobrecarga antes que eles afetem a disponibilidade da venda.</p>
                     </article>
                     <article class="card_info">
-                        <h3>Observe a infraestrutura</h3>
-                        <p>Organize em um único ambiente a leitura dos componentes de hardware.</p>
+                        <h3>Centralize a leitura</h3>
+                        <p>Acompanhe CPU, memória, disco e rede em um único painel, sem alternar entre ferramentas.</p>
                     </article>
                     <article class="card_info">
-                        <h3>Decida com clareza</h3>
-                        <p>Use o histórico e os alertas para apoiar decisões técnicas.</p>
+                        <h3>Decida com dados</h3>
+                        <p>Use o histórico de métricas e alertas para apoiar decisões técnicas de dimensionamento.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="secao secao_destaque">
-            <div class="container chamada_final">
-                <div>
-                    <h2>Crie um evento para iniciar a jornada no PeakStack.</h2>
+        <section class="secao secao_sinais">
+            <div class="container sinais_conteudo">
+                <div class="sinais_texto">
+                    <h2>Sinais claros para responder na hora certa.</h2>
+                    <p>Sem monitoramento contínuo, sinais de sobrecarga podem passar despercebidos e dificultar uma resposta rápida da equipe de infraestrutura.</p>
                 </div>
-                <a class="botao botao_claro" href="./CadastrodeVM.html" onclick="registrar_checkpoint('clicou_criar_evento_rodape')">Configurar máquina</a>
+                <div class="sinal_item">
+                    <strong>57%</strong>
+                    <p>dos participantes disseram que sua interrupção de infraestrutura grave mais recente custou mais de US$ 100 mil.</p>
+                    <a class="fonte_problematizacao" href="https://uptimeinstitute.com/about-ui/press-releases/uptime-announces-annual-outage-analysis-report-2026" target="_blank">
+                        Fonte: Uptime Institute, 2026
+                    </a>
+                </div>
+                <div class="sinal_item">
+                    <strong>15%</strong>
+                    <p>das interações apresentaram problemas durante uma venda que recebeu 3,5 bilhões de requisições.</p>
+                    <a class="fonte_problematizacao" href="https://business.ticketmaster.com/press-release/taylor-swift-the-eras-tour-onsale-explained/" target="_blank">
+                        Fonte: Ticketmaster, 2022
+                    </a>
+                </div>
             </div>
         </section>
     </main>
 
-    <footer class="rodape">
-        <div class="container"><span>PeakStack</span><span>Projeto acadêmico - SPTech</span></div>
+    <footer class="rodape rodape_grande">
+        <div class="container rodape_grade">
+            <div class="rodape_marca">
+                <a class="marca" href="./index.html" aria-label="PeakStack - início">
+                    <span class="marca_icone"><img src="./assets/icon/favicon2.ico" alt=""></span>
+                    <span>PeakStack</span>
+                </a>
+                <p>Monitoramento de infraestrutura para plataformas de venda de ingressos, pensado para os momentos de maior demanda.</p>
+                <a class="rodape_link_pequeno" href="#">Política de privacidade</a>
+            </div>
+            <div class="rodape_coluna">
+                <span class="rodape_coluna_titulo">Navegação</span>
+                <a href="./index.html">Início</a>
+                <a href="#como-funciona">Como funciona</a>
+                <a href="#beneficios">Benefícios</a>
+                <a href="./dashboard.html">Monitoramento</a>
+            </div>
+            <div class="rodape_coluna">
+                <span class="rodape_coluna_titulo">Contato</span>
+                <a href="mailto:contato@peakstack.com.br">contato@peakstack.com.br</a>
+                <span class="rodape_texto_pequeno">Suporte técnico em até 2 dias úteis</span>
+            </div>
+        </div>
+        <div class="container rodape_base">
+            <span>© 2026 PeakStack — Projeto acadêmico SPTech</span>
+        </div>
     </footer>
 </body>
 </html>
