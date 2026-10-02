@@ -21,6 +21,8 @@
     --vidro-borda: rgba(255, 255, 255, 0.5);
     --vidro-desfoque: blur(10px) saturate(150%);
     --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
+    scroll-behavior: smooth;
+
 }
 
 * {
