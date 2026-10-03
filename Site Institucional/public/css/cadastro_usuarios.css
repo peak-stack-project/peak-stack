@@ -1,3 +1,13 @@
+:root {
+    /* Tokens de vidro (glassmorphism) - reaproveitam a paleta acima */
+    --vidro-claro: rgba(255, 255, 255, 0.3);
+    --vidro-escuro: rgba(135, 206, 235, 0.2);
+    --vidro-borda: rgba(255, 255, 255, 0.5);
+    --vidro-desfoque: blur(10px) saturate(150%);
+    --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
+    scroll-behavior: smooth;
+}
+
 .sessao_cadastro_usuarios {
     width: 100%;
     height: 100%;
@@ -106,11 +116,11 @@
 
 .colunas_tabela {
     width: 100%;
-    min-height: 5vh; 
+    min-height: 5vh;
     display: grid;
     grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1.5fr;
-    gap: 10px; 
-    align-items: center; 
+    gap: 10px;
+    align-items: center;
 }
 
 .linha_tabela {
@@ -118,7 +128,7 @@
     min-height: 5vh;
     display: grid;
     grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1.5fr;
-    gap: 10px; 
+    gap: 10px;
     font-size: 14px;
     align-items: center;
 }
@@ -128,4 +138,38 @@
 .container_acoes button {
     background-color: transparent;
     border: none;
+}
+
+.container_cadastro {
+    background-color: var(--vidro-desfoque);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(47, 47, 47, 0.566);
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100dvh;
+}
+
+.sessao_cadastro{
+        position: absolute;
+        background-color: white;
+        width: 35%;
+        height: 80dvh;
+        padding: 15px;
+        border-radius: 15px;
+
+}
+
+.container_tema{
+
+    height: 15%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px rgba(91, 91, 91, 0.548);
 }
