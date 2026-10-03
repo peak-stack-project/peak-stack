@@ -1,14 +1,14 @@
-.sessao_cadastro_usuarios{
+.sessao_cadastro_usuarios {
     background-color: aqua;
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
 }
 
-.container_cadastro_usuarios{
+.container_cadastro_usuarios {
     width: 95%;
     height: 95%;
     background-color: beige;
@@ -18,14 +18,14 @@
 
 }
 
-.container_inicial{
+.container_inicial {
     background-color: azure;
     width: 100%;
     height: 12dvh;
     display: flex;
 }
 
-.texto_inicial{
+.texto_inicial {
     background-color: blue;
     width: 90%;
     height: 10dvh;
@@ -35,7 +35,7 @@
     font-size: clamp(0.8125rem, 1rem + 0.5vw, 1.125rem);
 }
 
-.container_pesquisa{
+.container_pesquisa {
 
     height: 10dvh;
     display: flex;
@@ -45,21 +45,21 @@
     background-color: blueviolet;
 }
 
-.container_pesquisa input{
+.container_pesquisa input {
     width: 70%;
     height: 4dvh;
     border-radius: 8px;
 
 }
 
-.container_pesquisa button{
+.container_pesquisa button {
 
     background-color: transparent;
     border: none;
 
 }
 
-.container_interacao_usuarios{
+.container_interacao_usuarios {
     background-color: yellow;
     width: 100%;
     height: 8dvh;
@@ -70,15 +70,15 @@
     padding: 10px;
 }
 
-.container_status_usuarios{
+.container_status_usuarios {
     width: 25%;
     display: flex;
     flex-direction: row;
     gap: 2dvw;
-    
+
 }
 
-.status_usuarios{
+.status_usuarios {
     width: 100%;
     font-size: 12px;
     display: flex;
@@ -86,5 +86,68 @@
     justify-content: center;
     background-color: rgba(141, 163, 183, 0.432);
     border-radius: 15px;
+
+}
+
+.container_tabela {
+    background-color: white;
+    border-radius: 15px;
+    width: 100%;
+    height: 70dvh;
+    padding: 10px;
+    border: solid 1px rgba(68, 68, 68, 0.663);
+}
+
+.colunas_tabela {
+    width: 100%;
+    height: 5dvh;
+    display: flex;
+    flex-direction: row;
+    gap: 2dvh;
+}
+
+
+
+.linha_tabela {
+    background-color: brown;
+    width: 100%;
+    height: 7dvh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-top: solid 1px rgba(72, 71, 71, 0.793);
+    border-bottom: solid 1px rgba(72, 71, 71, 0.793);
+}
+
+
+.usuario {
+
+    width: 20%;
+    background-color: azure;
+}
+
+.email {
+    width: 25%;
+    background-color: azure;
+}
+
+.empresa {
+    width: 16%;
+    background-color: azure;
+    display: flex;
+    justify-content: center;
+}
+
+.perfil {
+    width: 10%;
+    background-color: azure;
+    display: flex;
+    justify-content: center;
+}
+
+.estado {
+    width: 10%;
+    background-color: azure;
 
 }
