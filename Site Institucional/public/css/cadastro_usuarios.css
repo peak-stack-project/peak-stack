@@ -151,3 +151,13 @@
     background-color: azure;
 
 }
+
+
+.container_acoes button{
+    gap: 10px;
+}
+
+.container_acoes button{
+    background-color: transparent;
+    border: none;
+} 
