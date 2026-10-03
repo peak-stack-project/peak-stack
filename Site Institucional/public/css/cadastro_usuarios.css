@@ -121,16 +121,19 @@
     grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1.5fr;
     gap: 10px;
     align-items: center;
+
 }
 
 .linha_tabela {
     width: 100%;
-    min-height: 5vh;
+    height: 6vh;
     display: grid;
     grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1.5fr;
     gap: 10px;
     font-size: 14px;
-    align-items: center;
+    align-items: end;
+    border-top: solid 1px rgb(95, 94, 94);
+
 }
 
 
@@ -140,7 +143,7 @@
     border: none;
 }
 
-.container_cadastro {
+#container_cadastro {
     background-color: var(--vidro-desfoque);
     backdrop-filter: blur(2px);
     display: flex;
@@ -152,24 +155,108 @@
     left: 0%;
     width: 100%;
     height: 100dvh;
+    
 }
 
-.sessao_cadastro{
-        position: absolute;
-        background-color: white;
-        width: 35%;
-        height: 80dvh;
-        padding: 15px;
-        border-radius: 15px;
+.sessao_cadastro {
+    position: relative;
+    background-color: white;
+    width: 35%;
+    height: 80dvh;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    top: 11%;
 
 }
 
-.container_tema{
+.container_tema {
 
+    width: 95%;
     height: 15%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     border-bottom: solid 1px rgba(91, 91, 91, 0.548);
+}
+
+.nome_usuario,
+.container_so,
+.email_usuario,
+.senha,
+.container_empresa_usuario {
+
+    height: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.nome_usuario input,
+.container_so input,
+.email_usuario input,
+.senha input,
+.container_empresa_usuario input {
+
+    height: 4dvh;
+    border-radius: 6px;
+    width: 95%;
+}
+
+
+
+.endereco input {
+    height: 4dvh;
+    border-radius: 6px;
+    width: 15dvw;
+}
+
+
+
+.container_atividade_usuario {
+    height: 12%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+#atividades_usuario {
+
+    width: 95%;
+    border-radius: 6px;
+    height: 5dvh;
+    background-color: white;
+}
+
+.botoes_modal_cadastro {
+    width: 95%;
+    height: 10%;
+    display: flex;
+    align-items: end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.botao_cancelar_cadastro_usuario {
+    background-color: white;
+    color: black;
+    width: 49%;
+    height: 5dvh;
+    border-radius: 10px;
+    font-weight: bolder;
+}
+
+.botao_cadastrar_usuario {
+    background-color: blue;
+    color: white;
+    width: 49%;
+    height: 5dvh;
+    border-radius: 10px;
+    font-weight: bolder;
+
 }

@@ -55,7 +55,7 @@
                         <p>1 Inativos</p>
                     </div>
                 </div>
-                <button id="botao_cadastro_funcionarios"> + Adicionar usuarios</button>
+                <button id="botao_cadastro_funcionarios" onclick="chamarCadastro()"> + Adicionar usuarios</button>
             </div>
             <div class="container_usuario_ativos">
                 <div class="container_tabela">
@@ -106,10 +106,10 @@
                 </div>
     </section>
     <section>
-        <div class="container_cadastro">
+        <div id="container_cadastro" style="display: none;">
             <div class="sessao_cadastro">
                 <div class="container_tema">
-                    <h3>Adicionar Máquina</h3>
+                    <h3>Cadastrar Usuários</h3>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-x-circle" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -118,41 +118,34 @@
                     </svg>
                 </div>
 
-                <div class="nome_servidor">
+                <div class="nome_usuario">
                     <h4>Nome</h4>
-                    <input type="text" placeholder="   Ex: SRV-PRINCIPAL">
+                    <input type="text" placeholder="   Nome e Sobrenome">
                 </div>
-                <div class="enderecos_servidor">
-                    <div class="endereco">
-                        <H4>ENDEREÇO IP</H4>
-                        <input type="text">
+                <div class="email_usuario">
+                    <div class="email">
+                        <H4>Email_usuario</H4>
+                        <input type="text" placeholder="   usuario@empresa.com">
                     </div>
-                    <div class="endereco">
-                        <H4>ENDEREÇO IP</H4>
-                        <input type="text">
-                    </div>
-                    <div class="container_so">
-                        <h4>SISTEMA OPERACIONAL</h4>
-                        <input type="text">
-                    </div>
-                    <div class="container_metricas">
-                        <h4>Métricas</h4>
-                        <div class="botoes_metricas">
-                            <button>CPU</button>
-                            <button>RAM</button>
-                            <button>Disco</button>
-                        </div>
-                    </div>
-                    <div class="container_atividade_servidor">
-                        <select name="" id="atividades">
-                            <option value="status_online">Online</option>
-                            <option value="status_inativo">Inativo</option>
-                        </select>
-                    </div>
+                </div>
+                <div class="senha">
+                    <h4>Senha</h4>
+                    <input type="text" placeholder="   Mínimo 6 caracteres">
+                </div>
+                <div class="container_empresa_usuario">
+                    <h4>Empresa</h4>
+                    <input type="text" placeholder="   Nome da Empresa">
+                </div>
+                <div class="container_atividade_usuario">
+                    <h4>Status</h4>
+                    <select name="" id="atividades_usuario">
+                        <option value="status_visualizador">Visualizador</option>
+                        <option value="status_adm">Administrador</option>
+                    </select>
                 </div>
                 <div class="botoes_modal_cadastro">
-                    <button>Cancelar</button>
-                    <button>Cadastrar</button>
+                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
+                    <button class="botao_cadastrar_usuario" onclick="chamarCadastro()">Cadastrar</button>
                 </div>
             </div>
         </div>
@@ -161,6 +154,17 @@
 
 </html>
 <script>
+
+    function chamarCadastro() {
+        const container = document.getElementById("container_cadastro");
+
+        if (container.style.display === "none") {
+            container.style.display = "block";
+        } else {
+            container.style.display = "none";
+        }
+    }
+
     function cadastrarUsuario() {
         const lista = document.getElementById('lista-usuarios');
 
