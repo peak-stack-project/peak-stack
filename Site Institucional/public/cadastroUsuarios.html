@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Monitoramento</title>
+    <link rel="icon" href="./assets/icon/favicon2.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/cadastro_usuarios.css">
+    <script src="./js/sessao.js" defer></script>
+</head>
+
+<body class="corpo_dashboard" onload="registrar_checkpoint('acessou_monitoramento_vazio')">
+    <aside class="menu_lateral">
+        <a class="marca marca_lateral" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <a class="ativo" href="./dashboard.html">Visão geral</a>
+            <a href="./eventos.html">Minnhas máquinas</a>
+            <a href="./CadastrodeVM.html">Configurar máquina</a>
+        </div>
+        <div class="menu_lateral_rodape">
+            <a href="./index.html">Voltar para a Home</a>
+            <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">Sair</button>
+        </div>
+    </aside>
+    <section class="sessao_cadastro_usuarios">
+        <div class="container_cadastro_usuarios">
+
+            <div class="container_inicial">
+                <div class="texto_inicial">
+                    <h3>Usuários</h3>
+                    <p>Cadastros para acesso ao sistema</p>
+                </div>
+                <div class="container_pesquisa">
+                    <input type="text" placeholder="Buscar usuarios">
+                    <button>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black"
+                            class="bi bi-search" viewBox="0 0 16 16">
+                            <path
+                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        </svg></button>
+                </div>
+            </div>
+
+            <div class="container_interacao_usuarios">
+                <div class="container_status_usuarios">
+                    <div class="status_usuarios">
+                        <p>2 Usuários Ativos</p>
+                    </div>
+                    <div class="status_usuarios">
+                        <p>1 Inativos</p>
+                    </div>
+                </div>
+                <button> + Adicionar usuarios</button>
+            </div>
+          
+    </section>
+
+</body>
