@@ -1,5 +1,4 @@
 .sessao_cadastro_usuarios {
-    background-color: aqua;
     width: 100%;
     height: 100%;
     display: flex;
@@ -11,7 +10,6 @@
 .container_cadastro_usuarios {
     width: 95%;
     height: 95%;
-    background-color: beige;
     flex-direction: column;
     display: flex;
     gap: 1dvh;
@@ -19,14 +17,13 @@
 }
 
 .container_inicial {
-    background-color: azure;
     width: 100%;
     height: 12dvh;
     display: flex;
+    border-bottom: solid 1px rgb(223, 223, 255);
 }
 
 .texto_inicial {
-    background-color: blue;
     width: 90%;
     height: 10dvh;
     display: flex;
@@ -42,7 +39,6 @@
     align-items: center;
     justify-content: center;
     gap: 15px;
-    background-color: blueviolet;
 }
 
 .container_pesquisa input {
@@ -60,7 +56,6 @@
 }
 
 .container_interacao_usuarios {
-    background-color: yellow;
     width: 100%;
     height: 8dvh;
     display: flex;
@@ -80,13 +75,24 @@
 
 .status_usuarios {
     width: 100%;
+    height: 4dvh;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(141, 163, 183, 0.432);
+    background-color: rgb(188, 213, 237);
     border-radius: 15px;
+    font-size: clamp(0.654rem, 0.3rem + 0.5vw, 0.125rem);
 
+}
+
+#botao_cadastro_funcionarios{
+    height: 5dvh;
+    width: 15%;
+    background-color: rgb(129, 178, 252);
+    border-radius: 10px;
+    color: white;
+    font-size: clamp(0.654rem, 0.3rem + 0.5vw, 0.125rem);
 }
 
 .container_tabela {
@@ -103,13 +109,12 @@
     height: 5dvh;
     display: flex;
     flex-direction: row;
-    gap: 2dvh;
+    gap: 5dvh;
 }
 
 
 
 .linha_tabela {
-    background-color: brown;
     width: 100%;
     height: 7dvh;
     display: flex;
@@ -123,41 +128,41 @@
 
 .usuario {
 
-    width: 20%;
-    background-color: azure;
+    width: 15%;
+    margin-left: 50px;
+
 }
 
 .email {
-    width: 25%;
-    background-color: azure;
+    width: 15%;
 }
 
 .empresa {
-    width: 16%;
-    background-color: azure;
+    width: 15%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .perfil {
-    width: 10%;
-    background-color: azure;
+    width: 12%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+
 }
 
 .estado {
     width: 10%;
-    background-color: azure;
+    display: flex;
+    justify-content: flex-end;
 
 }
 
 
-.container_acoes button{
+.container_acoes button {
     gap: 10px;
 }
 
-.container_acoes button{
+.container_acoes button {
     background-color: transparent;
     border: none;
-} 
+}
