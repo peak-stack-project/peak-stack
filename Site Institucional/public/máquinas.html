@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PeakStack | Monitoramento</title>
+    <link rel="icon" href="./assets/react.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <script src="./js/sessao.js" defer></script>
+</head>
+
+<body class="corpo_dashboard" onload="registrar_checkpoint('acessou_monitoramento_vazio')">
+    <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <link rel="stylesheet" href="./assets/logo sem fundo.png" />
+            <span>PeakStack</span>
+        </a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <a class="ativo" href="./dashboard.html">Visão geral</a>
+            <a href="./eventos.html">Minnhas máquinas</a>
+            <a href="./CadastrodeVM.html">Configurar máquina</a>
+        </div>
+        <div class="menu_lateral_rodape">
+            <span class="menu_grupo">
+                <a href="./index.html">Sair</a>
+            </span>
+            <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                Sair
+            </button>
+        </div>
+    </aside>
+    <main class="conteudo_dashboard">
+        <header class="topo_dashboard">
+            <div>
+                <span class="etiqueta">PeakStack</span>
+                <h1>Monitoramento</h1>
+            </div>
+        </header>
+        <section class="area_monitoramento_vazia" aria-label="Área vazia reservada para o monitoramento"></section>
+    </main>
+</body>
+
+</html>
