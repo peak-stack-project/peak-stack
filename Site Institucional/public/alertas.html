@@ -11,23 +11,31 @@
     <link rel="stylesheet" href="./css/dashboard.css">
     <link rel="stylesheet" href="./css/cadastro_usuarios.css">
     <link rel="stylesheet" href="./css/alertas.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
     <script src="./js/sessao.js" defer></script>
 </head>
 
 <body class="corpo_dashboard">
 
-    <aside class="menu_lateral">
-        <a class="marca marca_lateral" href="./index.html"><span class="marca_icone">PS</span><span>PeakStack</span></a>
+   <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+            <span>PeakStack</span>
+        </a>
         <div class="menu_grupo">
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard.html">Visão geral</a>
-            <a href="./eventos.html">Minhas máquinas</a>
-            <a href="./CadastrodeVM.html">Configurar máquina</a>
-            <a class="ativo" href="./alertas.html">Alertas</a>
+            <a class="ativo" href="./máquinas.html">Máquinas</a>
+            <a href="./cadastroUsuarios.html">Usuários</a>
+            <a href="./alertas.html">Alertas</a>
         </div>
         <div class="menu_lateral_rodape">
-            <a href="./index.html">Voltar para a Home</a>
-            <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">Sair</button>
+            <span class="menu_grupo">
+                <a href="./index.html">Sair</a>
+            </span>
+            <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                Sair
+            </button>
         </div>
     </aside>
 

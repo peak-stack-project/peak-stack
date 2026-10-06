@@ -1,13 +1,33 @@
 :root {
-    /* Tokens de vidro (glassmorphism) - reaproveitam a paleta acima */
+    --cor-primaria: #2b65ca;
+    --cor-primaria: #2b65ca;
+    --cor-primaria-escura: #001975;
+    --cor-primaria-clara: #edf1ff;
+
+    --cor-primaria-quasepreto: #2c444d;
+    --cor-primaria-quasepreto: #2c444d;
+
+    --cor-texto: #17171a;
+    --cor-texto-suave: #66666f;
+    --cor-fundo: #f6f6f8;
+    --cor-superficie: #ffffff;
+    --cor-borda: #b8b8bb;
+    --cor-escura: #18181c;
+    --sombra: 0 16px 40px rgba(22, 22, 28, 0.09);
+    --raio: 14px;
+
     --vidro-claro: rgba(255, 255, 255, 0.3);
     --vidro-escuro: rgba(135, 206, 235, 0.2);
     --vidro-borda: rgba(255, 255, 255, 0.5);
-    --vidro-desfoque: blur(10px) saturate(150%);
+    --vidro-desfoque: blur(10px) saturate(0%);
     --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
-    scroll-behavior: smooth;
-}
 
+    --vidro-claro: rgba(255, 255, 255, 0.3);
+    --vidro-escuro: rgba(135, 206, 235, 0.2);
+    --vidro-borda: rgba(255, 255, 255, 0.5);
+    --vidro-desfoque: blur(10px) saturate(0%);
+    --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
+}
 .sessao_cadastro_usuarios {
     width: 100%;
     height: 100%;
@@ -90,16 +110,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(188, 213, 237);
+    background-color: var(--cor-primaria);
     border-radius: 15px;
     font-size: clamp(0.654rem, 0.3rem + 0.5vw, 0.125rem);
+    color: var(--cor-fundo);
 
 }
 
 #botao_cadastro_funcionarios {
     height: 5dvh;
     width: 15%;
-    background-color: rgb(129, 178, 252);
+    background-color: var(--cor-primaria-escura);
     border-radius: 10px;
     color: white;
     font-size: clamp(0.654rem, 0.3rem + 0.5vw, 0.125rem);
@@ -109,7 +130,7 @@
     background-color: white;
     border-radius: 15px;
     width: 100%;
-    height: 70dvh;
+    height: 75dvh;
     padding: 10px;
     border: solid 1px rgba(68, 68, 68, 0.663);
 }
