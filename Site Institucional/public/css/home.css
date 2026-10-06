@@ -117,14 +117,20 @@ h1 {
 
 .marca span {
     color: #f7f5ff !important;
+    color: #f7f5ff !important;
     font-weight: 1000;
     font-size: 100%;
 }
 
 
 
+
+
 .marca_icone {
     display: inline-block;
+    padding-top: 2px;
+    width: 10%;
+    height: 10%;
     padding-top: 2px;
     width: 10%;
     height: 10%;
@@ -468,6 +474,7 @@ h1 {
 .rodape {
     color: #dad9e4;
     background: var(--cor-primaria-quasepreto);
+    background: var(--cor-primaria-quasepreto);
     backdrop-filter: var(--vidro-desfoque);
     -webkit-backdrop-filter: var(--vidro-desfoque);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -553,6 +560,7 @@ h1 {
     object-fit: cover;
     object-position: center;
 }
+
 
 
 main {
