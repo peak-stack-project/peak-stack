@@ -46,6 +46,23 @@ body {
     line-height: 1.5;
 }
 
+#gradient-waves-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#gradient-waves-background video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+}
+
+
 a {
     color: inherit;
     text-decoration: none;
@@ -170,23 +187,27 @@ h1 {
 }
 
 .pagina_formulario {
-    display: grid;
-    grid-template-columns: 0.75fr 1.25fr;
-    min-height: calc(100vh - 76px);
+
     background: var(--cor-primaria);
 }
 
 .formulario_contexto {
+    width: 100%;
+    height: 15dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+    position: relative;
     align-self: start;
-    padding: 92px 7vw;
     color: #fff;
 }
 
 .formulario_contexto h1 {
-    max-width: 520px;
-    margin: 16px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
     font-size: 40px;
-    line-height: 1.14;
+    color: #18181c;
 }
 
 .formulario_contexto p {
@@ -202,19 +223,27 @@ h1 {
     margin-bottom: 12px;
 }
 
+.container_login{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
 .formulario_cartao {
+    position: relative;
     align-self: center;
-    width: 520px;
-    margin: 48px auto;
-    padding: 38px;
+    width: 40%;
+    margin: 38px auto;
+    padding: 30px;
     background: #fff;
     border-radius: 18px;
     box-shadow: var(--sombra);
 }
 
 .formulario_cartao h2 {
-    margin: 7px 0 6px;
-    font-size: 28px;
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .apoio_formulario,

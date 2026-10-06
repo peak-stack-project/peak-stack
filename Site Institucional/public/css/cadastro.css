@@ -26,6 +26,14 @@
     --cor-escura: #18181c;
     --sombra: 0 16px 40px rgba(22, 22, 28, 0.09);
     --raio: 14px;
+
+    /* Tokens de vidro (glassmorphism) - reaproveitam a paleta acima */
+    --vidro-claro: rgba(255, 255, 255, 0.3);
+    --vidro-escuro: rgba(135, 206, 235, 0.2);
+    --vidro-borda: rgba(255, 255, 255, 0.5);
+    --vidro-desfoque: blur(10px) saturate(150%);
+    --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
+    scroll-behavior: smooth;
 }
 
 * {
@@ -41,10 +49,25 @@ html {
 body {
     min-width: 1040px;
     color: var(--cor-texto);
-    background: var(--cor-fundo);
     font-family: "Inter", Arial, sans-serif;
     line-height: 1.5;
 }
+#gradient-waves-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#gradient-waves-background video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+}
+
 
 a {
     color: inherit;
@@ -66,15 +89,29 @@ h1 {
 }
 
 .cabecalho {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 96px;
-    padding: 0 5vw;
-    background: var(--cor-superficie);
-    border-bottom: 1px solid var(--cor-borda);
+    position: fixed !important;
+    top: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 99999 !important;
+    
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    
+    height: 10%;
+    width: 95% !important;
+    max-width: 1180px !important;
+    
+    padding: 20px 30px !important; 
+    
+    background-color: var(--vidro-escuro) !important;
+    backdrop-filter: var(--vidro-desfoque) !important;
+    -webkit-backdrop-filter: var(--vidro-desfoque) !important;
+    
+    border-radius: 20px !important; 
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: var(--vidro-sombra) !important;
 }
 
 .cabecalho_claro {
@@ -96,9 +133,8 @@ h1 {
 
 .marca_icone {
     display: inline-block;
-    max-width: 100px;
-    max-height: 70px;
-    vertical-align: middle;
+    width: 50%;
+    height: 50%;
 }
 
 .marca_icone img {
@@ -121,8 +157,9 @@ h1 {
 }
 
 .navegacao > a:not(.botao):hover {
-    color: var(--cor-primaria);
+    color: var(--cor-primaria-clara);
     border-bottom-color: var(--cor-primaria);
+    background-color: rgb(8, 52, 162);
 }
 
 .botao {
@@ -153,7 +190,8 @@ h1 {
 
 .botao_largo {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 20px;
+    
 }
 
 .etiqueta {
@@ -170,53 +208,60 @@ h1 {
 }
 
 .pagina_formulario {
-    display: grid;
-    grid-template-columns: 0.75fr 1.25fr;
-    min-height: calc(100vh - 76px);
-    background: var(--cor-primaria);
+    width: 100%;
+    height: 100%;
+    
+  
 }
-
 .formulario_contexto {
-    align-self: start;
-    padding: 92px 7vw;
-    color: #fff;
+    margin-top: 100px ;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    height: 10dvh;
 }
 
 .formulario_contexto h1 {
-    max-width: 520px;
-    margin: 16px 0;
+    color: var(--cor-escura);
     font-size: 40px;
     line-height: 1.14;
 }
 
 .formulario_contexto p {
-    max-width: 500px;
+    width: 100%;
     color: rgba(255, 255, 255, 0.82);
-}
-
-.formulario_contexto ol {
-    margin: 30px 0 0 20px;
-}
-
-.formulario_contexto li {
-    margin-bottom: 12px;
 }
 
 .formulario_cartao {
     align-self: center;
-    width: 520px;
-    margin: 48px auto;
-    padding: 38px;
+    width: 100%;
+    padding: 20px;
     background: #fff;
     border-radius: 18px;
     box-shadow: var(--sombra);
+    height: max-content;
+    gap: 10px;
+}
+
+.container_cadastro{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 76dvh;
+    
 }
 
 .formulario_cadastro {
-    width: 620px;
+    width: 40%;
+    position: relative;
 }
 
 .formulario_cartao h2 {
+    z-index: 1;
     margin: 7px 0 6px;
     font-size: 28px;
 }
@@ -224,12 +269,11 @@ h1 {
 .alternativa_formulario {
     color: var(--cor-texto-suave);
     font-size: 13px;
+    text-align: center;
+    margin-top: 15px;
 }
 
-.alternativa_formulario {
-    margin-top: 18px;
-    text-align: center;
-}
+
 
 .alternativa_formulario a {
     color: var(--cor-primaria);
@@ -251,11 +295,11 @@ h1 {
 
 .campo input {
     width: 100%;
-    padding: 12px 13px;
+    height: 4dvh;
     color: var(--cor-texto);
     background: #fff;
     border: 1px solid var(--cor-borda);
-    border-radius: 8px;
+    border-radius: 5px;
     outline: none;
 }
 
