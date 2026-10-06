@@ -1,0 +1,100 @@
+/* Só o que é específico da página de alertas.
+   Menu, título, busca, botão e cartão vêm de dashboard.css e cadastro_usuarios.css */
+
+/* três contadores em vez de dois */
+.container_status_alertas {
+    width: 38%;
+}
+
+.status_usuarios.critico { background-color: #f3c3c5; color: #6f1c20; }
+.status_usuarios.atencao { background-color: #f6dd9d; color: #6d4800; }
+
+/* cartão em coluna: cabeçalho em cima, lista preenchendo o resto */
+.tabela_alertas {
+    display: flex;
+    flex-direction: column;
+}
+
+.lista_alertas {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1dvh;
+    padding-top: 1dvh;
+    border-top: solid 1px rgb(95, 94, 94);
+}
+
+/* cores de cada tipo de alerta */
+.alerta.critico { --c: #c8353c; --bg: #fdeeee; --line: #f1b9bc; }
+.alerta.atencao { --c: #b87800; --bg: #fff6df; --line: #f0d38a; }
+.alerta.info    { --c: #2a63c9; --bg: #eaf1ff; --line: #b5cdf5; }
+
+/* cada alerta divide a altura do cartão; texto 14px como as linhas da tabela */
+.alerta {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: 84px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 20px;
+    font-size: 14px;
+    background-color: var(--bg);
+    border: solid 1px var(--line);
+    border-radius: 14px;
+}
+
+.alerta_icone {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    color: var(--c);
+}
+
+.alerta_texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.alerta_info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.gravidade {
+    padding: 1px 12px;
+    color: var(--c);
+    background-color: white;
+    border: solid 1px var(--line);
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+.servidor {
+    color: rgb(102, 102, 111);
+    font-weight: 600;
+}
+
+.alerta_lado {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.horario {
+    color: rgb(102, 102, 111);
+    white-space: nowrap;
+}
+
+.botao_ciente {
+    width: 110px;
+    height: 4dvh;
+    color: var(--c);
+    background-color: white;
+    border: solid 1px var(--line);
+    border-radius: 9px;
+    font-weight: bold;
+}

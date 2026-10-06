@@ -1,5 +1,4 @@
 :root {
-    /* Opção 3 do Figma - azul.*/
     --cor-primaria: #2b65ca;
     --cor-primaria-escura: #001975;
     --cor-primaria-clara: #edf1ff;
@@ -15,11 +14,11 @@
     --sombra: 0 16px 40px rgba(22, 22, 28, 0.09);
     --raio: 14px;
 
-    /* Tokens de vidro (glassmorphism) - reaproveitam a paleta acima */
-    --vidro-claro: rgba(255, 255, 255, 0.3);
+    --vidro-claro: rgba(144, 199, 221, 0.2);
     --vidro-escuro: rgba(135, 206, 235, 0.2);
     --vidro-borda: rgba(255, 255, 255, 0.5);
-    --vidro-desfoque: blur(10px) saturate(150%);
+    --vidro-desfoque: blur(10px) saturate(0%);
+    --vidro-desfoque-card: blur(10px) saturate(50%);
     --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
     scroll-behavior: smooth;
 
@@ -76,10 +75,6 @@ h1 {
     margin: 0 auto;
 }
 
-/* =========================================================
-   NAVBAR - ESTILO PÍLULA EM AZUL ROYAL SÓLIDO
-   ========================================================= */
-
 .cabecalho {
     position: fixed !important;
     top: 15px !important;
@@ -121,16 +116,18 @@ h1 {
 }
 
 .marca span {
-    color: #000000 !important;
+    color: #f7f5ff !important;
     font-weight: 1000;
     font-size: 100%;
 }
 
+
+
 .marca_icone {
     display: inline-block;
-    margin-top: 7px;
-    width: 8%;
-    height: 8%;
+    padding-top: 2px;
+    width: 10%;
+    height: 10%;
 }
 
 .marca_icone img {
@@ -192,9 +189,6 @@ h1 {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* =========================================================
-   ESTILOS DO RESTANTE DA PÁGINA (HERO, SEÇÕES, RODAPÉ)
-   ========================================================= */
 
 .botao {
     display: inline-flex;
@@ -215,7 +209,7 @@ h1 {
 .botao_primario {
     color: #ffffff;
     background: var(--cor-primaria-escura);
-    border-color: var(--cor-primaria);
+    border-color: var(--cor-primaria-escura);
 }
 
 .botao_primario:hover {
@@ -447,9 +441,9 @@ h1 {
 .card_info {
     min-height: 220px;
     padding: 28px;
-    background: var(--vidro-claro);
-    backdrop-filter: var(--vidro-desfoque);
-    -webkit-backdrop-filter: var(--vidro-desfoque);
+    background-color: var(--vidro-escuro) !important;
+    backdrop-filter: var(--vidro-desfoque-card) !important;
+    -webkit-backdrop-filter: var(--vidro-desfoque-card) !important;
     border: 1px solid var(--vidro-borda);
     border-radius: var(--raio);
     box-shadow: var(--vidro-sombra);
@@ -473,7 +467,7 @@ h1 {
 
 .rodape {
     color: #dad9e4;
-    background: var(--cor-primaria-escura);
+    background: var(--cor-primaria-quasepreto);
     backdrop-filter: var(--vidro-desfoque);
     -webkit-backdrop-filter: var(--vidro-desfoque);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -560,7 +554,7 @@ h1 {
     object-position: center;
 }
 
-/* Conteúdo real do site sempre acima do fundo animado */
+
 main {
     position: relative;
     z-index: 1;
