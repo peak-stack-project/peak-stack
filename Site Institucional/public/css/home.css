@@ -290,6 +290,131 @@ h1 {
     margin-bottom: 32px;
 }
 
+.hero_texto1 {
+    grid-column: 1 / -1;
+    justify-self: center;
+    text-align: center;
+}
+
+.hero_texto1 > p {
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.secao_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.secao_grid .titulo_secao p {
+    font-size: 15px;
+}
+
+.valores_titulo {
+    margin-bottom: 36px;
+    font-size: 32px;
+    color: var(--cor-primaria-quasepreto);
+}
+
+.valores_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 48px;
+    padding: 0 20px;
+}
+
+.valor_card {
+    display: flex;
+    gap: 16px;
+    padding: 28px;
+    background: var(--vidro-claro);
+    backdrop-filter: var(--vidro-desfoque);
+    -webkit-backdrop-filter: var(--vidro-desfoque);
+    border: 1px solid var(--vidro-borda);
+    border-radius: var(--raio);
+    box-shadow: var(--vidro-sombra);
+}
+
+.valor_icone {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #fff;
+    background: var(--cor-primaria);
+    border-radius: 8px;
+}
+
+.valor_icone svg {
+    width: 18px;
+    height: 18px;
+}
+
+.valor_card h3 {
+    margin-bottom: 6px;
+    font-size: 16px;
+    color: var(--cor-primaria-quasepreto);
+}
+
+.valor_card p {
+    font-size: 13px;
+    color: var(--cor-texto-suave);
+}
+ 
+.equipe_titulo {
+    margin-bottom: 36px;
+    font-size: 32px;
+    color: var(--cor-primaria-quasepreto);
+}
+ 
+.equipe_grade {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 0 20px;
+}
+ 
+.membro_card {
+    padding: 24px 22px;
+    background: var(--vidro-claro);
+    backdrop-filter: var(--vidro-desfoque);
+    -webkit-backdrop-filter: var(--vidro-desfoque);
+    border: 1px solid var(--vidro-borda);
+    border-radius: var(--raio);
+    box-shadow: var(--vidro-sombra);
+}
+ 
+.membro_avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cor-primaria-quasepreto);
+    background: var(--cor-primaria-clara);
+    border-radius: 10px;
+}
+ 
+
+.membro_area {
+    display: block;
+    margin-bottom: 14px;
+    font-weight: 600;
+    color: var(--cor-primaria);
+}
+
+.membro_card p {
+    font-size: 14px;
+    color: var(--cor-texto-suave);
+}
+
 .hero_imagem {
     display: flex;
     align-items: center;

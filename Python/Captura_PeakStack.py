@@ -17,11 +17,11 @@ BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red")}
 
 DB = dict(
-    user=os.getenv("DB_USER", "NOSSO_USUÁRIO"),
-    password=os.getenv("DB_PASSWORD", "NOSSA_SENHA"),
-    host=os.getenv("DB_HOST", "IP_INSTÂNCIA"),
+    user=os.getenv("DB_USER", "root"),
+    password=os.getenv("DB_PASSWORD", "urubu100"),
+    host=os.getenv("DB_HOST", "23.21.1.106"),
     port=int(os.getenv("DB_PORT", 3306)),
-    database=os.getenv("DB_NAME", "NOSSO_BANCO"),
+    database=os.getenv("DB_NAME", "db_peakstack"),
     use_pure=True,
 )
 
