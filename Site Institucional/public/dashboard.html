@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboard.css">
     <script src="./js/sessao.js" defer></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="corpo_dashboard" onload="registrar_checkpoint('acessou_monitoramento_vazio')">
  <aside class="menu_lateral">
@@ -33,20 +34,217 @@
         </div>
     </aside>
     <main class="conteudo_dashboard">
-        <header class="topo_dashboard">
-            <div><span class="etiqueta">PeakStack</span><h1>Monitoramento</h1></div>
-        </header>
-        <section class="area_monitoramento_vazia" aria-label="Área vazia reservada para o monitoramento"></section>
-    </main>
-</body>
+
+    <header class="topo_dashboard">
+
+        <div>
+            <span class="etiqueta">PeakStack</span>
+            <h1>Monitoramento</h1>
+        </div>
+
+    </header>
+
+
+    <!-- KPIs -->
+
+    <section class="kpis_monitoramento">
+
+        <div class="kpi_card">
+
+            <div class="kpi_icone"></div>
+
+            <div>
+                <span>Total de Servidores</span>
+                <strong>4</strong>
+                <small>2 online · 1 atenção</small>
+            </div>
+
+        </div>
+
+
+        <div class="kpi_card">
+
+            <div class="kpi_icone verde"></div>
+
+            <div>
+                <span>Online agora</span>
+                <strong>2</strong>
+                <small>funcionando normalmente</small>
+            </div>
+
+        </div>
+
+
+        <div class="kpi_card">
+
+            <div class="kpi_icone amarelo"></div>
+
+            <div>
+                <span>Com alertas</span>
+                <strong>2</strong>
+                <small>1 atenção · 1 offline</small>
+            </div>
+
+        </div>
+
+
+        <div class="kpi_card">
+
+            <div class="kpi_icone"></div>
+
+            <div>
+                <span>CPU média</span>
+                <strong>50%</strong>
+                <small>RAM média: 68%</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="area_monitoramento_vazia">
+
+        <div class="grafico_monitoramento">
+
+            <h2>Uso de CPU — últimas 24h</h2>
+
+            <div class="grafico_container">
+                <canvas id="graficoCpu"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="ranking_monitoramento">
+
+        <div class="titulo_ranking">
+
+            <div>
+
+                <h2>Ranking de uso — CPU</h2>
+
+                <span>
+                    Servidores ordenados por carga atual
+                </span>
+
+            </div>
+
+            <span class="tempo_real">
+                Tempo real
+            </span>
+
+        </div>
+
+
+        <div class="tabela_monitoramento">
+
+            <div class="linha_tabela cabecalho">
+
+                <span>#</span>
+                <span>Servidor</span>
+                <span>Empresa</span>
+                <span>CPU</span>
+                <span>RAM</span>
+                <span>Disco</span>
+                <span>Status</span>
+
+            </div>
+
+
+            <div class="linha_tabela">
+
+                <span class="posicao vermelho">1</span>
+
+                <span>SRV-PROD-02</span>
+
+                <span>Sympla</span>
+
+                <span class="valor vermelho_texto">91%</span>
+
+                <span>82%</span>
+
+                <span>87%</span>
+
+                <span class="status alerta">Atenção</span>
+
+            </div>
+
+
+            <div class="linha_tabela">
+
+                <span class="posicao laranja">2</span>
+
+                <span>SRV-PROD-01</span>
+
+                <span>Sympla</span>
+
+                <span>32%</span>
+
+                <span>67%</span>
+
+                <span>45%</span>
+
+                <span class="status online">Online</span>
+
+            </div>
+
+
+            <div class="linha_tabela">
+
+                <span class="posicao cinza">3</span>
+
+                <span>SRV-API-01</span>
+
+                <span>Ingressso.com</span>
+
+                <span>28%</span>
+
+                <span>55%</span>
+
+                <span>62%</span>
+
+                <span class="status online">Online</span>
+
+            </div>
+
+
+            <div class="linha_tabela">
+
+                <span class="posicao cinza">4</span>
+
+                <span>SRV-DB-01</span>
+
+                <span>Ingressso.com</span>
+
+                <span>0%</span>
+
+                <span>0%</span>
+
+                <span class="valor vermelho_texto">93%</span>
+
+                <span class="status offline">Offline</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+</main>
+
 <script>
 
     const ctx = document.getElementById('graficoCpu');
 
     new Chart(ctx, {
+
         type: 'line',
 
         data: {
+
             labels: [
                 '00:00h',
                 '01:00h',
@@ -75,6 +273,7 @@
             ],
 
             datasets: [
+
                 {
                     label: 'Uso de CPU (%)',
 
@@ -99,7 +298,10 @@
                         87,
                         14,
                         72,
-                        61
+                        61,
+                        58,
+                        65,
+                        49
                     ],
 
                     borderWidth: 2,
@@ -108,49 +310,66 @@
 
                     fill: false
                 }
+
             ]
+
         },
 
         options: {
+
             responsive: true,
 
             maintainAspectRatio: false,
 
             scales: {
+
                 y: {
+
                     beginAtZero: true,
+
                     max: 100,
+
                     ticks: {
                         stepSize: 25
                     },
+
                     grid: {
                         drawOnChartArea: true
                     },
+
                     title: {
                         display: true,
                         text: 'CPU (%)'
                     }
+
                 },
+
                 x: {
+
                     grid: {
                         drawOnChartArea: false
                     },
+
                     title: {
                         display: true,
                         text: 'Horário'
                     }
+
                 }
+
             },
 
             plugins: {
+
                 legend: {
                     display: true
                 }
+
             }
+
         }
+
     });
-
-
 
 </script>
 
