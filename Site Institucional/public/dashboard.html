@@ -103,19 +103,68 @@
     </section>
 
 
-    <section class="area_monitoramento_vazia">
+     <section class="graficos_dashboard">
 
-        <div class="grafico_monitoramento">
+        <!-- GRÁFICO DE CPU -->
 
-            <h2>Uso de CPU — últimas 24h</h2>
+        <section class="area_monitoramento_vazia">
 
-            <div class="grafico_container">
-                <canvas id="graficoCpu"></canvas>
+            <div class="grafico_monitoramento">
+
+                <h2>Uso de CPU — últimas 24h</h2>
+
+                <div class="grafico_container">
+                    <canvas id="graficoCpu"></canvas>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATUS DOS SERVIDORES -->
+
+        <div class="card_status">
+
+            <h2>Status dos servidores</h2>
+
+            <span class="subtitulo">
+                Distribuição atual
+            </span>
+
+            <div class="status_conteudo">
+
+                <div class="grafico_pizza">
+                    <canvas id="graficoStatus"></canvas>
+                </div>
+
+                <div class="legenda_status">
+
+                    <div>
+                        <span class="bolinha azul"></span>
+                        Online
+                    </div>
+
+                    <div>
+                        <span class="bolinha laranja"></span>
+                        Atenção
+                    </div>
+
+                    <div>
+                        <span class="bolinha vermelho"></span>
+                        Offline
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
 
     </section>
+
+
+    <!-- RANKING DE USO -->
 
     <section class="ranking_monitoramento">
 
@@ -156,17 +205,11 @@
             <div class="linha_tabela">
 
                 <span class="posicao vermelho">1</span>
-
                 <span>SRV-PROD-02</span>
-
                 <span>Sympla</span>
-
                 <span class="valor vermelho_texto">91%</span>
-
                 <span>82%</span>
-
                 <span>87%</span>
-
                 <span class="status alerta">Atenção</span>
 
             </div>
@@ -175,17 +218,11 @@
             <div class="linha_tabela">
 
                 <span class="posicao laranja">2</span>
-
                 <span>SRV-PROD-01</span>
-
                 <span>Sympla</span>
-
                 <span>32%</span>
-
                 <span>67%</span>
-
                 <span>45%</span>
-
                 <span class="status online">Online</span>
 
             </div>
@@ -194,17 +231,11 @@
             <div class="linha_tabela">
 
                 <span class="posicao cinza">3</span>
-
                 <span>SRV-API-01</span>
-
                 <span>Ingressso.com</span>
-
                 <span>28%</span>
-
                 <span>55%</span>
-
                 <span>62%</span>
-
                 <span class="status online">Online</span>
 
             </div>
@@ -213,17 +244,11 @@
             <div class="linha_tabela">
 
                 <span class="posicao cinza">4</span>
-
                 <span>SRV-DB-01</span>
-
                 <span>Ingressso.com</span>
-
                 <span>0%</span>
-
                 <span>0%</span>
-
                 <span class="valor vermelho_texto">93%</span>
-
                 <span class="status offline">Offline</span>
 
             </div>
@@ -232,7 +257,6 @@
 
     </section>
 
-</main>
 </main>
 
 <script>
@@ -370,6 +394,41 @@
         }
 
     });
+
+
+    const status = document.getElementById('graficoStatus');
+
+    new Chart(status, {
+        type: 'doughnut',
+
+        data: {
+            labels: [
+                'Online',
+                'Atenção',
+                'Offline'
+            ],
+
+            datasets: [{
+                data: [2, 1, 1],
+                borderWidth: 0
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            cutout: '65%'
+        }
+    });
+
+
 
 </script>
 

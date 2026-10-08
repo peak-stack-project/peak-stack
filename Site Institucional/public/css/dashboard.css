@@ -759,3 +759,75 @@ h1 {
     color: #ef4444;
     background-color: #ffebeb;
 }
+
+/*-----------Gráfico pizza--------------- */
+.graficos_dashboard {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.graficos_dashboard .area_monitoramento_vazia {
+    width: 800px;
+    flex-shrink: 0;
+}
+
+.graficos_dashboard .grafico_monitoramento {
+    width: 800px;
+}
+
+.graficos_dashboard .card_status {
+    width: 500px; /* antes: 300px */
+    height: 320px;
+    padding: 9px;
+    background-color: white;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+.status_conteudo {
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.grafico_pizza {
+    width: 170px;
+    height: 170px;
+    flex-shrink: 0;
+}
+
+.legenda_status {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 15px;
+    color: #71809c;
+}
+
+.legenda_status div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.bolinha {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.bolinha.azul {
+    background-color: #3f6df6;
+}
+
+.bolinha.laranja {
+    background-color: #f59e0b;
+}
+
+.bolinha.vermelho {
+    background-color: #ef4444;
+}
