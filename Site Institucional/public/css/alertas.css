@@ -13,6 +13,7 @@
 .tabela_alertas {
     display: flex;
     flex-direction: column;
+    height: 75dvh;
 }
 
 .lista_alertas {
