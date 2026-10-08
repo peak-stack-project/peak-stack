@@ -330,7 +330,7 @@ h1 {
     gap: 16px;
     padding: 28px;
     background: var(--vidro-claro);
-    backdrop-filter: var(--vidro-desfoque);
+    backdrop-filter: var(--vidro-desfoque-card);
     -webkit-backdrop-filter: var(--vidro-desfoque);
     border: 1px solid var(--vidro-borda);
     border-radius: var(--raio);
@@ -381,8 +381,8 @@ h1 {
 .membro_card {
     padding: 24px 22px;
     background: var(--vidro-claro);
-    backdrop-filter: var(--vidro-desfoque);
-    -webkit-backdrop-filter: var(--vidro-desfoque);
+    backdrop-filter: var(--vidro-desfoque-card);
+    -webkit-backdrop-filter: var(--vidro-desfoque-card);
     border: 1px solid var(--vidro-borda);
     border-radius: var(--raio);
     box-shadow: var(--vidro-sombra);
