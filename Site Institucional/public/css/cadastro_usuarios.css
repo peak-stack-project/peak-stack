@@ -28,9 +28,216 @@
     --vidro-desfoque: blur(10px) saturate(0%);
     --vidro-sombra: 0 8px 32px rgba(4, 34, 44, 0.18);
 }
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 1040px;
+    min-height: auto;
+    min-height: auto;
+    color: var(--cor-texto);
+    background: var(--cor-fundo);
+    font-family: "Inter", Arial, sans-serif;
+    line-height: 1.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+button,
+.botao {
+    cursor: pointer;
+}
+
+h1 {
+    color: var(--cor-primaria-quasepreto);
+}
+
+.marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 65px;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.marca span {
+    color:var(--cor-primaria-clara);
+}
+
+.marca_icone {
+    display: inline-block;
+    max-width: 100px;
+    max-height: 70px;
+    vertical-align: middle;
+}
+
+.botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.botao:hover {
+    transform: translateY(-1px);
+}
+
+.etiqueta {
+    display: inline-block;
+    color: var(--cor-primaria);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.topo_dashboard h1 {
+    margin-top: 8px;
+    font-size: 38px;
+    color: var(--cor-primaria-quasepreto);
+}
+
+.corpo_dashboard {
+    padding: 5px;
+    height: 100;
+    position: relative;
+    padding: 5px;
+    min-width: 1040px;
+    min-height: 100dvh;
+    position: relative;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    background: #F1F5F9;
+}
+
+.menu_lateral {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    height: 97dvh;
+    padding: 10px 20px;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #0F1F3D;
+    background-color: #0F1F3D;
+}
+
+.marca_lateral {
+    margin-bottom: 52px;
+    color: #fff;
+}
+
+.marca_lateral .marca_icone {
+    color: var(--cor-primaria);
+    background: #fff;
+}
+
+.menu_grupo {
+    display: grid;
+    gap: 8px;
+}
+
+.menu_grupo a{
+    display: grid;
+    gap: 8px;
+    align-items: center;
+    transition: 0.5s;
+}
+
+.menu_rotulo {
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.menu_grupo a,
+.menu_lateral_rodape > a {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.menu_grupo a:hover,
+.menu_grupo a.ativo {
+    background: var(--cor-primaria);
+
+}
+
+.menu_lateral_rodape {
+    display: grid;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.botao_lateral {
+    width: 100%;
+    color: var(--cor-primaria);
+    background: #fff;
+}
+
+.conteudo_dashboard {
+    max-height: 80dvh;
+    padding: 10px 20px;
+    max-height: 80dvh;
+    padding: 10px 20px;
+}
+
+.topo_dashboard {
+    margin-bottom: 28px;
+}
+
+.caixa_descricao {
+    display: grid;
+    height: auto;
+    flex-shrink: 0;
+    align-self: stretch;
+    grid-template-rows: 38px 49.75px 49.75px 49.75px 49.75px;
+    grid-template-columns: 15% 15% 15% 15% 5% 5% 5% 15% 10%;
+    
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    background-color: var(--vidro-desfoque);
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+
+
+.area_monitoramento_vazia {
+    width: 100%;
+    margin-top: 0;
+    background: transparent;
+    padding: 0;
+}
+
+
 .sessao_cadastro_usuarios {
     width: 100%;
-    height: 100%;
+    height: 95dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -130,7 +337,7 @@
     background-color: white;
     border-radius: 15px;
     width: 100%;
-    height: 75dvh;
+    height: max-content;
     padding: 10px;
     border: solid 1px rgba(68, 68, 68, 0.663);
 }
