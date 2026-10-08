@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PeakStack | Detalhe da máquina</title>
+    <link rel="icon" href="./assets/react.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <script src="./js/sessao.js" defer></script>
+    <script src="./js/maquinas_comum.js"></script>
+</head>
+
+<body class="corpo_dashboard corpo_detalhe">
+
+    <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+            <span>PeakStack</span>
+        </a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <a href="./dashboard.html">Visão geral</a>
+            <a class="ativo" href="./máquinas.html">Minhas máquinas</a>
+            <a href="./CadastrodeVM.html">Configurar máquina</a>
+        </div>
+        <div class="menu_lateral_rodape">
+            <span class="menu_grupo">
+                <a href="./index.html">Sair</a>
+            </span>
+            <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                Sair
+            </button>
+        </div>
+    </aside>
+
+    <main class="conteudo_dashboard conteudo_maquinas" id="conteudo"></main>
+
+    <script>
+        const conteudo = document.getElementById('conteudo');
+
+        if (typeof MAQUINAS === 'undefined') {
+            conteudo.innerHTML = `<section style="padding:40px 24px;background:#fff;border-radius:14px;color:#17171a">
+                <h1 style="font-size:18px;margin-bottom:8px">Não foi possível carregar os dados da máquina</h1>
+                <p>O arquivo <strong>js/maquinas_comum.js</strong> não foi encontrado. Confira se ele está dentro da pasta <strong>js</strong>, ao lado do <strong>sessao.js</strong>.</p>
+            </section>`;
+            throw new Error('js/maquinas_comum.js não foi carregado');
+        }
+
+        const parametroId = new URLSearchParams(window.location.search).get('id');
+        const m = parametroId === null ? MAQUINAS[0] : MAQUINAS.find(x => x.id === Number(parametroId));
+
+        const ICONE_VOLTAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
+        const ICONE_BUSCA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+        const ICONE_SINO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+
+        function topo(titulo, extra) {
+            return `<header class="maq_topo det_topo">
+                <div class="det_topo_info">
+                    <a class="maq_icone_botao" href="./máquinas.html" aria-label="Voltar para Minhas máquinas">${ICONE_VOLTAR}</a>
+                    ${titulo}
+                </div>
+                <div class="maq_topo_acoes">
+                    <button type="button" class="maq_icone_botao" aria-label="Buscar">${ICONE_BUSCA}</button>
+                    <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações">${ICONE_SINO}</button>
+                </div>
+            </header>${extra || ''}`;
+        }
+
+        const CIRC = 2 * Math.PI * 42;
+        function cartaoMetrica(rotulo, valor, icone) {
+            const preenchido = (valor / 100) * CIRC;
+            return `<article class="det_cartao det_metrica ${nivel(valor)}">
+                <span class="det_metrica_icone">${icone}</span>
+                <div class="det_anel" role="img" aria-label="${rotulo}: ${valor}%">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="det_anel_trilho" cx="50" cy="50" r="42"></circle>
+                        <circle class="det_anel_valor" cx="50" cy="50" r="42"
+                            stroke-dasharray="${preenchido.toFixed(1)} ${CIRC.toFixed(1)}"></circle>
+                    </svg>
+                    <span class="det_anel_texto">${valor}%</span>
+                </div>
+                <span class="det_metrica_rotulo">${rotulo}</span>
+            </article>`;
+        }
+
+        function grafico(historico) {
+            const L = 40, R = 10, T = 10, B = 26, W = 720, H = 270;
+            const w = W - L - R, h = H - T - B;
+            const x = i => L + (i / 23) * w;
+            const y = v => T + h - (v / 100) * h;
+
+            let grade = '';
+            [0, 25, 50, 75, 100].forEach(v => {
+                grade += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#eef1f6" />`;
+                grade += `<text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${v}%</text>`;
+            });
+            for (let hr = 0; hr <= 22; hr += 2) {
+                grade += `<text x="${x(hr)}" y="${H - 6}" text-anchor="middle">${String(hr).padStart(2, '0')}h</text>`;
+            }
+
+            const linhaSerie = (dados, cor, largura) =>
+                `<polyline fill="none" stroke="${cor}" stroke-width="${largura}" stroke-linejoin="round" stroke-linecap="round"
+                    points="${dados.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')}" />`;
+
+            return `<svg class="det_grafico" viewBox="0 0 ${W} ${H}" role="img"
+                aria-label="Histórico de uso de CPU e RAM nas últimas 24 horas">
+                ${grade}
+                ${linhaSerie(historico.ram, '#9fb0e0', 2)}
+                ${linhaSerie(historico.cpu, 'var(--cor-primaria)', 2.5)}
+            </svg>`;
+        }
+
+        function renderizar() {
+            if (!m) {
+                conteudo.innerHTML = topo('<h1>Máquina não encontrada</h1>') +
+                    `<section class="det_cartao det_nao_encontrada">
+                        <p>Não encontramos essa máquina. Volte para a lista e escolha uma das máquinas cadastradas.</p>
+                        <p style="margin-top:12px"><a href="./máquinas.html">Voltar para Minhas máquinas</a></p>
+                    </section>`;
+                return;
+            }
+
+            document.title = `PeakStack | ${m.nome}`;
+
+            const titulo = `<span class="maq_nome_icone">${ICONES.monitor}</span>
+                <div>
+                    <div class="det_titulo">
+                        <h1>${esc(m.nome)}</h1>
+                        <span class="maq_status ${m.status}">${ROTULOS[m.status]}</span>
+                    </div>
+                    <p>${esc(m.ip)} · ${esc(m.so)} · ${esc(m.empresa)}</p>
+                </div>`;
+
+            const corpo = `
+                <section class="det_grade_metricas" aria-label="Uso atual dos recursos">
+                    ${cartaoMetrica('CPU', m.cpu, ICONES.cpu)}
+                    ${cartaoMetrica('RAM', m.ram, ICONES.ram)}
+                    ${cartaoMetrica('Disco', m.disco, ICONES.disco)}
+                </section>
+
+                <section class="det_grade_meio">
+                    <article class="det_cartao">
+                        <div class="det_grafico_topo">
+                            <div>
+                                <h2>Histórico de uso — últimas 24h</h2>
+                                <p class="det_cartao_sub">${esc(m.nome)}</p>
+                            </div>
+                            <div class="det_legenda">
+                                <span><i style="background:var(--cor-primaria)"></i>CPU</span>
+                                <span><i style="background:#9fb0e0"></i>RAM</span>
+                            </div>
+                        </div>
+                        ${grafico(m.historico)}
+                    </article>
+
+                    <article class="det_cartao">
+                        <h2>Log de eventos</h2>
+                        <p class="det_cartao_sub">Atividade recente do servidor</p>
+                        <ul class="det_log">
+                            ${m.eventos.map(e => `<li class="evt_${e.tipo}">
+                                <span class="ponto"></span>
+                                <time>${esc(e.hora)}</time>
+                                <p>${esc(e.texto)}</p>
+                            </li>`).join('')}
+                        </ul>
+                    </article>
+                </section>
+
+                <section class="det_cartao">
+                    <h2>Informações do servidor</h2>
+                    <dl class="det_info_grade">
+                        <div class="det_info_item"><dt>Nome</dt><dd>${esc(m.nome)}</dd></div>
+                        <div class="det_info_item"><dt>Endereço IP</dt><dd>${esc(m.ip)}</dd></div>
+                        <div class="det_info_item"><dt>Sistema operacional</dt><dd>${esc(m.so)}</dd></div>
+                        <div class="det_info_item"><dt>Empresa</dt><dd>${esc(m.empresa)}</dd></div>
+                    </dl>
+                </section>`;
+
+            conteudo.innerHTML = topo(titulo) + corpo;
+        }
+
+        renderizar();
+    </script>
+</body>
+
+</html>

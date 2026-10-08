@@ -831,3 +831,310 @@ h1 {
 .bolinha.vermelho {
     background-color: #ef4444;
 }
+/* ==========================================================
+   PÁGINA DETALHE DA MÁQUINA (maquina.html)
+   ========================================================== */
+
+.det_topo_info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.det_topo_info .maq_nome_icone {
+    width: 36px;
+    height: 36px;
+}
+
+.det_topo_info .maq_nome_icone svg {
+    width: 16px;
+    height: 16px;
+}
+
+.det_titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.det_titulo h1 {
+    font-size: 16px;
+}
+
+.det_topo.maq_topo {
+    padding: 12px 24px;
+}
+
+.det_grade_metricas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.det_grade_meio {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.det_cartao {
+    padding: 20px 24px;
+    background: var(--cor-superficie);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+}
+
+.det_cartao h2 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--maq-azul-titulo);
+}
+
+.det_cartao_sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--cor-texto-suave);
+}
+
+/* ---------- Cards de métrica (anel) ---------- */
+.det_metrica {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 24px 18px;
+}
+
+.det_metrica_icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.det_metrica_icone svg {
+    width: 14px;
+    height: 14px;
+}
+
+.det_anel {
+    position: relative;
+    width: 92px;
+    height: 92px;
+}
+
+.det_anel svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.det_anel_trilho {
+    fill: none;
+    stroke: #f1f3f8;
+    stroke-width: 9;
+}
+
+.det_anel_valor {
+    fill: none;
+    stroke-width: 9;
+    stroke-linecap: round;
+}
+
+.det_anel_texto {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--maq-azul-titulo);
+}
+
+.det_metrica_rotulo {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.nivel_ok .det_anel_valor { stroke: var(--cor-primaria); }
+.nivel_alerta .det_anel_valor { stroke: var(--maq-laranja); }
+.nivel_critico .det_anel_valor { stroke: var(--maq-vermelho); }
+.nivel_zero .det_anel_valor { stroke: transparent; }
+
+.nivel_ok .det_metrica_icone { color: var(--cor-primaria); background: var(--cor-primaria-clara); }
+.nivel_alerta .det_metrica_icone { color: var(--maq-laranja); background: var(--maq-laranja-fundo); }
+.nivel_critico .det_metrica_icone { color: var(--maq-vermelho); background: var(--maq-vermelho-fundo); }
+.nivel_zero .det_metrica_icone { color: var(--cor-texto-suave); background: #f1f3f8; }
+
+/* ---------- Gráfico ---------- */
+.det_grafico_topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.det_legenda {
+    display: flex;
+    gap: 14px;
+    font-size: 10px;
+    color: var(--cor-texto-suave);
+}
+
+.det_legenda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.det_legenda i {
+    display: inline-block;
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.det_grafico {
+    width: 100%;
+    height: auto;
+    margin-top: 14px;
+}
+
+.det_grafico text {
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 10px;
+    fill: #9aa3b8;
+}
+
+/* ---------- Log de eventos ---------- */
+.det_log {
+    list-style: none;
+    margin-top: 22px;
+}
+
+.det_log li {
+    position: relative;
+    padding: 0 0 24px 20px;
+}
+
+.det_log li:last-child {
+    padding-bottom: 0;
+}
+
+.det_log li::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 14px;
+    bottom: 0;
+    width: 1px;
+    background: var(--maq-borda);
+}
+
+.det_log li:last-child::before {
+    display: none;
+}
+
+.det_log .ponto {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.evt_alerta .ponto { background: var(--maq-laranja); }
+.evt_info .ponto { background: #9aa3b8; }
+.evt_ok .ponto { background: #16a34a; }
+.evt_critico .ponto { background: var(--maq-vermelho); }
+
+.det_log time {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.det_log p {
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--cor-texto);
+}
+
+/* ---------- Informações do servidor ---------- */
+.det_info_grade {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.det_info_item {
+    padding: 12px 14px;
+    border: 1px solid var(--maq-borda);
+    border-radius: 9px;
+}
+
+.det_info_item dt {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--cor-texto-suave);
+}
+
+.det_info_item dd {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--maq-azul-titulo);
+}
+
+.det_nao_encontrada {
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--cor-texto-suave);
+}
+
+.det_nao_encontrada a {
+    color: var(--cor-primaria);
+    font-weight: 700;
+}
+
+/* detalhe da máquina: a página não rola, só o log de eventos */
+.corpo_detalhe {
+    height: 100dvh;
+    overflow: hidden;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.corpo_detalhe .conteudo_maquinas {
+    min-height: 0;
+}
+
+/* a parte do meio ocupa só o espaço que sobrar */
+.corpo_detalhe .det_grade_meio {
+    flex: 1;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.corpo_detalhe .det_grade_meio .det_cartao {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.corpo_detalhe .det_grafico {
+    flex: 1;
+    min-height: 0;
+}
+
+.corpo_detalhe .det_log {
+    flex: 1;
+    overflow-y: auto;
+}

@@ -11,12 +11,12 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="./css/dashboard.css" />
     <script src="./js/sessao.js" defer></script>
+    <script src="./js/maquinas_comum.js"></script>
 </head>
 
 <body class="corpo_dashboard" onload="registrar_checkpoint('acessou_monitoramento_vazio')">
 
-    <!-- Barra lateral (ilha flutuante) -->
- <aside class="menu_lateral">
+    <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
             <span>PeakStack</span>
@@ -24,9 +24,8 @@
         <div class="menu_grupo">
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard.html">Visão geral</a>
-            <a class="ativo" href="./máquinas.html">Máquinas</a>
-            <a href="./cadastroUsuarios.html">Usuários</a>
-            <a href="./alertas.html">Alertas</a>
+            <a class="ativo" href="./máquinas.html">Minhas máquinas</a>
+            <a href="./CadastrodeVM.html">Configurar máquina</a>
         </div>
         <div class="menu_lateral_rodape">
             <span class="menu_grupo">
@@ -98,15 +97,7 @@
     </main>
 
     <script>
-        // Dados de exemplo. Quando a API estiver pronta, troque este array pelo resultado do fetch
-        // e chame renderizar() em seguida.
-        let maquinas = [
-            { id: 1, nome: 'SRV-PROD-01', ip: '192.168.1.10', so: 'Ubuntu 22.04',         empresa: 'Sympla', status: 'online'  },
-            { id: 2, nome: 'SRV-PROD-02', ip: '192.168.1.11', so: 'CentOS 8',             empresa: 'Sympla', status: 'atencao' },
-            { id: 3, nome: 'SRV-API-01',  ip: '10.0.1.5',     so: 'Debian 11',            empresa: 'Ingresso.com', status: 'online'  },
-            { id: 4, nome: 'SRV-DB-01',   ip: '10.0.1.6',     so: 'Windows Server 2022',  empresa: 'Ingresso.com', status: 'offline' }
-        ];
-
+        let maquinas = [...MAQUINAS];
         let filtroAtivo = null;
 
         const ROTULOS = { online: 'Online', atencao: 'Atenção', offline: 'Offline' };
@@ -144,8 +135,8 @@
         }
 
         function linha(m) {
-            return `<tr>
-                <td><div class="maq_nome"><span class="maq_nome_icone">${ICONES.monitor}</span>${esc(m.nome)}</div></td>
+            return `<tr class="clicavel" data-id="${m.id}">
+                <td><a class="maq_nome" href="./maquina.html?id=${m.id}"><span class="maq_nome_icone">${ICONES.monitor}</span>${esc(m.nome)}</a></td>
                 <td class="maq_ip">${esc(m.ip)}</td>
                 <td>${esc(m.so)}</td>
                 <td>${esc(m.empresa)}</td>
@@ -172,7 +163,7 @@
             const lista = filtroAtivo ? maquinas.filter(m => m.status === filtroAtivo) : maquinas;
             document.getElementById('tabela_maquinas').innerHTML = lista.length
                 ? lista.map(linha).join('')
-                : '<tr><td colspan="9" class="maq_vazio">Nenhuma máquina encontrada. Use "Adicionar máquina" para cadastrar a primeira.</td></tr>';
+                : '<tr><td colspan="6" class="maq_vazio">Nenhuma máquina encontrada. Use "Adicionar máquina" para cadastrar a primeira.</td></tr>';
         }
 
         document.getElementById('filtros').addEventListener('click', e => {
@@ -183,14 +174,19 @@
         });
 
         document.getElementById('tabela_maquinas').addEventListener('click', e => {
-            const btn = e.target.closest('[data-excluir]');
-            if (!btn) return;
-            const id = Number(btn.dataset.excluir);
-            const m = maquinas.find(x => x.id === id);
-            if (m && confirm(`Excluir a máquina ${m.nome}?`)) {
-                maquinas = maquinas.filter(x => x.id !== id);
-                renderizar();
+            const excluir = e.target.closest('[data-excluir]');
+            if (excluir) {
+                const id = Number(excluir.dataset.excluir);
+                const m = maquinas.find(x => x.id === id);
+                if (m && confirm(`Excluir a máquina ${m.nome}?`)) {
+                    maquinas = maquinas.filter(x => x.id !== id);
+                    renderizar();
+                }
+                return;
             }
+            if (e.target.closest('.maq_acoes') || e.target.closest('a')) return;
+            const tr = e.target.closest('tr.clicavel');
+            if (tr) window.location.href = `./maquina.html?id=${tr.dataset.id}`;
         });
 
         renderizar();
