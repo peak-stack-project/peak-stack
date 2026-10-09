@@ -152,13 +152,15 @@ h1 {
 }
 
 .navegacao > a:not(.botao) {
-    padding: 26px 0;
-    border-bottom: 2px solid transparent;
+    color: #424152;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    border-bottom: none !important;
 }
 
 .navegacao > a:not(.botao):hover {
-    color: var(--cor-primaria-clara);
-    border-bottom-color: var(--cor-primaria);
+    color: #ffffff;
     background-color: rgb(8, 52, 162);
 }
 
@@ -179,13 +181,14 @@ h1 {
 }
 
 .botao_primario {
-    color: #fff;
-    background: var(--cor-primaria);
-    border-color: var(--cor-primaria);
+    color: #ffffff;
+    background: var(--cor-primaria-escura);
+    border-color: var(--cor-primaria-escura);
 }
 
 .botao_primario:hover {
-    background: var(--cor-primaria-escura);
+    color: rgb(0, 0, 0);
+    background: #abc4ee;
 }
 
 .botao_largo {
@@ -276,7 +279,7 @@ h1 {
 
 
 .alternativa_formulario a {
-    color: var(--cor-primaria);
+    color: var(--cor-primaria-escura);
     font-weight: 700;
 }
 

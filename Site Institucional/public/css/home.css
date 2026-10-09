@@ -86,6 +86,7 @@ h1 {
     align-items: center !important;
     justify-content: space-between !important;
     
+    height: 10%;
     width: 95% !important;
     max-width: 1180px !important;
     
