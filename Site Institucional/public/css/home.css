@@ -31,7 +31,7 @@
 }
 
 html {
-    scroll-behavior:smooth;
+    scroll-behavior: smooth;
     min-height: 100%;
 }
 
@@ -81,22 +81,22 @@ h1 {
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 99999 !important;
-    
+
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    
+
     height: 10%;
     width: 95% !important;
     max-width: 1180px !important;
-    
-    padding: 20px 30px !important; 
-    
+
+    padding: 20px 30px !important;
+
     background-color: var(--vidro-escuro) !important;
     backdrop-filter: var(--vidro-desfoque) !important;
     -webkit-backdrop-filter: var(--vidro-desfoque) !important;
-    
-    border-radius: 20px !important; 
+
+    border-radius: 20px !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     box-shadow: var(--vidro-sombra) !important;
 }
@@ -151,7 +151,7 @@ h1 {
     font-weight: 600;
 }
 
-.navegacao > a:not(.botao) {
+.navegacao>a:not(.botao) {
     color: #424152;
     padding: 8px 14px;
     border-radius: 20px;
@@ -159,7 +159,7 @@ h1 {
     border-bottom: none !important;
 }
 
-.navegacao > a:not(.botao):hover {
+.navegacao>a:not(.botao):hover {
     color: #ffffff;
     background-color: rgb(8, 52, 162);
 }
@@ -284,7 +284,7 @@ h1 {
     color: var(--cor-primaria-quasepreto);
 }
 
-.hero_texto > p {
+.hero_texto>p {
     max-width: 640px;
     color: var(--cor-texto-suave);
     font-size: 18px;
@@ -297,7 +297,7 @@ h1 {
     text-align: center;
 }
 
-.hero_texto1 > p {
+.hero_texto1>p {
     max-width: 440px;
     margin: 0 auto;
 }
@@ -365,20 +365,20 @@ h1 {
     font-size: 13px;
     color: var(--cor-texto-suave);
 }
- 
+
 .equipe_titulo {
     margin-bottom: 36px;
     font-size: 32px;
     color: var(--cor-primaria-quasepreto);
 }
- 
+
 .equipe_grade {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     padding: 0 20px;
 }
- 
+
 .membro_card {
     padding: 24px 22px;
     background: var(--vidro-claro);
@@ -388,7 +388,7 @@ h1 {
     border-radius: var(--raio);
     box-shadow: var(--vidro-sombra);
 }
- 
+
 .membro_avatar {
     display: flex;
     align-items: center;
@@ -402,7 +402,7 @@ h1 {
     background: var(--cor-primaria-clara);
     border-radius: 10px;
 }
- 
+
 
 .membro_area {
     display: block;
@@ -420,12 +420,6 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 4 / 3;
-    color: var(--cor-texto-suave);
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: var(--vidro-desfoque);
-    -webkit-backdrop-filter: var(--vidro-desfoque);
-    border: 1px solid var(--vidro-borda);
     border-radius: var(--raio);
 }
 
