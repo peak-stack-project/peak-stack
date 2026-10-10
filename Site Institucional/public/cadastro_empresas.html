@@ -21,45 +21,90 @@
         </video>
     </div>
     <header class="cabecalho">
-        <a class="marca" href="./index.html"><span class="marca_icone"><img src="./assets/logo sem fundo.png"alt=""></span>
+        <a class="marca" href="./index.html"><span class="marca_icone"><img src="./assets/logo sem fundo.png"
+                    alt=""></span>
             <span>PeakStack</span></a>
         <nav class="navegacao"><a href="./index.html">Início</a><a href="./login.html">Entrar</a></nav>
     </header>
-    <main class="pagina_formulario pagina_autenticacao">
+        <main class="pagina_formulario pagina_autenticacao">
 
         <section class="formulario_contexto">
-            <h1>Crie seu acesso ao PeakStack.</h1>
+            <h1>Olá Administrador PeakStack!</h1>
         </section>
+
         <section class="container_cadastro">
             <div class="formulario_cartao formulario_cadastro">
-                <h2>Crie sua conta</h2>
-                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
-                <div class="campo"><label for="nome_input">Nome</label><input id="nome_input" type="text"
-                        placeholder="Seu nome completo"></div>
-                <div class="campo"><label for="email_input">E-mail</label><input id="email_input" type="email"
-                        placeholder="seu@email.com"></div>
-                <div class="linha_campos">
-                    <div class="campo"><label for="senha_input">Senha</label><input id="senha_input" type="password"
-                            placeholder="Sua senha"></div>
-                    <div class="campo"><label for="confirmacao_senha_input">Confirmar senha</label><input
-                            id="confirmacao_senha_input" type="password" placeholder="Repita a senha"></div>
-                </div>
-                <div class="linha_campos">
+                
+                <div id="cadastroEmpresa">
+                    <h2>Cadastro Empresa</h2>
                     <div class="campo">
-                        <label for="cargo_input">Cargo</label>
-                        <input id="cargo_input" type="text" placeholder="Seu cargo">
+                        <label for="razao_social_input">Razão Social</label>
+                        <input id="razao_social_input" type="text" placeholder="Razão Social da empresa">
                     </div>
                     <div class="campo">
-                        <label for="idempresa_input">ID da empresa</label>
-                        <input id="idempresa_input" type="text" placeholder="ID da empresa na qual você trabalha">
+                        <label for="nome_fantasia_input">Nome Fantasia</label>
+                        <input id="nome_fantasia_input" type="text" placeholder="Nome Fantasia da empresa">
+                    </div>
+                    <div class="campo">
+                        <label for="cnpj_input">CNPJ</label>
+                        <input id="cnpj_input" type="text" placeholder="00.000.000/0001-00">
+                    </div>
+                    <div class="campo_botao">
+                        <button type="button" class="botao botao_primario botao_largo" id="btnProximo" onclick="passarContainer()">Próximo</button>
                     </div>
                 </div>
 
-                <button class="botao botao_primario botao_largo" onclick="cadastrar()">Criar conta</button>
-                <p class="alternativa_formulario">Já possui conta? <a href="./login.html">Entrar</a></p>
-                <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
+                <div id="cadastroADM" style="display: none;">
+                    <h2>Cadastro Administrador</h2>
+                    <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+                    
+                    <div class="campo">
+                        <label for="nome_input">Nome</label>
+                        <input id="nome_input" type="text" placeholder="Nome completo">
+                    </div>
+                    <div class="campo">
+                        <label for="email_input">E-mail</label>
+                        <input id="email_input" type="email" placeholder="nome@email.com">
+                    </div>
+                    
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="senha_input">Senha</label>
+                            <div class="input-container">
+                                <input id="senha_input" type="password" placeholder="Senha">
+                                <button type="button" class="btn-toggle-senha" onclick="toggleSenha('senha_input', this)">👁️</button>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="confirmacao_senha_input">Confirmar senha</label>
+                            <div class="input-container">
+                                <input id="confirmacao_senha_input" type="password" placeholder="Repita a senha">
+                                <button type="button" class="btn-toggle-senha" onclick="toggleSenha('confirmacao_senha_input', this)">👁️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="linha_campos">
+                        <div class="campo">
+                            <label for="cargo_input">Cargo</label>
+                            <input id="cargo_input" type="text" placeholder="Cargo">
+                        </div>
+                        <div class="campo">
+                            <label for="idempresa_input">ID da empresa</label>
+                            <input id="idempresa_input" type="text" placeholder="ID da Empresa">
+                        </div>
+                    </div>
+
+                    <button class="botao botao_primario botao_largo" onclick="cadastrar()">Criar conta</button>
+                    <p class="alternativa_formulario">Já possui conta? <a href="./login.html">Entrar</a></p>
+                    
+                    <div id="div_aguardar" class="loading-div">
+                        <img src="./assets/circle-loading.gif" alt="Carregando">
+                    </div>
+                    <div id="div_erros_login"></div>
                 </div>
-                <div id="div_erros_login"></div>
+
             </div>
         </section>
     </main>
@@ -140,7 +185,27 @@
         return false;
     }
 
-    window.addEventListener("beforeunload", function () {
-        if (!cadastro_realizado) registrar_checkpoint("saiu_cadastro_sem_concluir");
+
+    function toggleSenha(inputId, botao) {
+        const input = document.getElementById(inputId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            botao.textContent = "🔒";
+        } else {
+            input.type = "password";
+            botao.textContent = "👁️";
+        }
+    }
+
+    document.getElementById('btnProximo').addEventListener('click', function () {
+        var cadastroEmpresa = document.getElementById('cadastroEmpresa');
+        var cadastroADM = document.getElementById('cadastroADM');
+
+        if (cadastroEmpresa && cadastroADM) {
+            cadastroEmpresa.style.display = 'none';
+            cadastroADM.style.display = 'block';
+        }
     });
+
 </script>

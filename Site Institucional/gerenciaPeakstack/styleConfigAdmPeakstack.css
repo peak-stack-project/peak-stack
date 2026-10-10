@@ -1,0 +1,151 @@
+ :root {
+     --blue: #2d65ce;
+     --blue-hover: #2458b8;
+     --background: #171719;
+     --sidebar: #202023;
+     --text: #111318;
+     --muted: #7e91b3;
+     --line: #2d83ff;
+ }
+
+ * {
+     box-sizing: border-box;
+ }
+
+ body {
+     margin: 0;
+     min-height: 100vh;
+     font-family: Arial, Helvetica, sans-serif;
+     background: var(--background);
+     color: #fff;
+ }
+
+ #gradient-waves-background {
+     position: fixed;
+     inset: 0;
+     z-index: 0;
+     overflow: hidden;
+     pointer-events: none;
+     display: flex;
+     justify-content: end;
+     align-items: end;
+ }
+
+ #gradient-waves-background video {
+     width: 75%;
+     height: 100%;
+     display: flex;
+     object-fit: cover;
+     object-position: center;
+ }
+
+
+ .container_menu {
+     width: 100%;
+     display: grid;
+     grid-template-columns: 25% 75%;
+     height: 100vh;
+
+ }
+
+ .menu {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     width: 100%;
+     height: 100%;
+     background: #12386d;
+ }
+
+ .menu_principal {
+     height: 100%;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     gap: 10vh;
+
+ }
+
+ .informacoes {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+     font-size: 14px;
+     width: 80%;
+ }
+
+ .informacoes img {
+     width: 35%;
+     height: 100%;
+ }
+
+
+
+ .titulo_principal {
+     width: 340px;
+     margin: 0 0 14px;
+     font-size: clamp(18px, 2.05vw, 20px);
+     line-height: 1.32;
+ }
+
+
+ .main {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     background-color: rgb(228, 227, 227);
+ }
+
+
+
+ .sessao_interativa {
+     width: 40%;
+     padding: 40px;
+     border-radius: 20px;
+     background: rgb(250, 250, 250);
+     color: var(--text);
+     text-align: center;
+     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    position: relative;
+ }
+
+ .icone {
+
+     display: flex;
+     justify-content: center;
+ }
+
+ .icone svg {
+     width: 60px;
+     height: 60px;
+     display: flex;
+     justify-content: center;
+     color: #fff;
+     border-radius: 16px;
+     background: var(--blue);
+ }
+
+
+
+
+ .acoes {
+     display: grid;
+     gap: 12px;
+ }
+
+ .acoes a {
+     text-decoration: none;
+     color: white;
+     background-color: #2458b8;
+     padding: 10px;
+     border-radius: 25px;
+     margin-top: 15px;
+     font-weight: bold;
+
+ }
+
+ .acoes a:hover {
+     background-color: #2d83ff;
+     transform: scale(1.04);
+     transition: 500ms;
+ }
