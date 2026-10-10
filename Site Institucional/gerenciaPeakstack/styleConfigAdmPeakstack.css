@@ -20,6 +20,26 @@
      color: #fff;
  }
 
+ #gradient-waves-background {
+     position: fixed;
+     inset: 0;
+     z-index: 0;
+     overflow: hidden;
+     pointer-events: none;
+     display: flex;
+     justify-content: end;
+     align-items: end;
+ }
+
+ #gradient-waves-background video {
+     width: 75%;
+     height: 100%;
+     display: flex;
+     object-fit: cover;
+     object-position: center;
+ }
+
+
  .container_menu {
      width: 100%;
      display: grid;
@@ -73,7 +93,7 @@
      display: flex;
      align-items: center;
      justify-content: center;
-     background-color:rgb(228, 227, 227);
+     background-color: rgb(228, 227, 227);
  }
 
 
@@ -82,11 +102,11 @@
      width: 40%;
      padding: 40px;
      border-radius: 20px;
-     background: rgb(207, 227, 248);
+     background: rgb(250, 250, 250);
      color: var(--text);
      text-align: center;
-       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-
+     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    position: relative;
  }
 
  .icone {
@@ -129,5 +149,3 @@
      transform: scale(1.04);
      transition: 500ms;
  }
-
- 
