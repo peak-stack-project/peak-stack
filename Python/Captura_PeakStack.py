@@ -19,19 +19,26 @@ NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red"
 DB = dict(
     user=os.getenv("DB_USER", "root"),
     password=os.getenv("DB_PASSWORD", "urubu100"),
-    host=os.getenv("DB_HOST", "54.145.235.29"),
+    host=os.getenv("DB_HOST", "34.227.82.158"),
     port=int(os.getenv("DB_PORT", 3306)),
     database=os.getenv("DB_NAME", "db_peakstack"),
     use_pure=True,
 )
 
 SQL_COMPONENTES = """
-    SELECT cm.id AS cm_id, c.id AS componente_id, c.nome, c.unidade_medida,
-           c.biblioteca, c.codigo
+    SELECT cm.id AS cm_id,
+           cm.fk_componentes,
+           m.fk_empresa,
+           c.nome,
+           cc.unidade_medida,
+           cc.biblioteca,
+           cc.codigo
     FROM maquina m
-    JOIN componentes_maquina cm ON cm.maquina_id = m.id
-    JOIN componentes c          ON c.id = cm.componentes_id
-    WHERE UPPER(m.mac_adress) = %s AND cm.ativo = 1
+    JOIN config_maq cm    ON cm.fk_maquina = m.id
+    JOIN componentes c          ON c.id = cm.fk_componentes
+    JOIN configuracao_comp cc   ON cc.id = c.fk_configuracao_comp
+    WHERE UPPER(m.mac_address) = %s
+      AND cm.status_config = 'Ativo'
 """
 
 def capturar(mac=None):
@@ -51,15 +58,16 @@ def capturar(mac=None):
             return
 
         # isso aq mostra os limites de cada componente
-        ids = list({c["componente_id"] for c in componentes})
+        fk_empresa = componentes[0]["fk_empresa"]
+        ids = list({c["fk_componentes"] for c in componentes})
         cursor.execute(
-            "SELECT componentes_id, nivel, valor_min, valor_max FROM limites "
-            f"WHERE componentes_id IN ({','.join(['%s'] * len(ids))})",
-            ids,
+        "SELECT fk_componentes, nivel, valor_min, valor_max FROM limites "
+        f"WHERE fk_empresa = %s AND fk_componentes IN ({','.join(['%s'] * len(ids))})",
+        [fk_empresa, *ids],
         )
         limites = {}
         for l in cursor.fetchall():
-            limites.setdefault(l["componentes_id"], []).append(l)
+            limites.setdefault(l["fk_componentes"], []).append(l)
 
         # e essa faz a captura genérica, guiada pela biblioteca e codigo que vieram do BD
         agora = datetime.now()
@@ -81,7 +89,7 @@ def capturar(mac=None):
                 nivel = max(
                     (
                         l["nivel"]
-                        for l in limites.get(c["componente_id"], [])
+                        for l in limites.get(c["fk_componentes"], [])
                         if (l["valor_min"] is None or valor >= float(l["valor_min"]))
                         and (l["valor_max"] is None or valor <= float(l["valor_max"]))
                     ),
@@ -93,7 +101,7 @@ def capturar(mac=None):
                     else ("Sem limite", "white")
                 )
 
-                leituras.append((valor, agora, situacao, c["cm_id"]))
+                leituras.append((valor, agora, c["cm_id"]))
                 print(f"{c['nome']}: [bold {cor}]{valor} {unidade}[/bold {cor}] ({situacao})")
 
             except Exception as erro:  # um componente com problema não derruba os demais
@@ -102,8 +110,8 @@ def capturar(mac=None):
         # aqui os dados capturados são inseridos na leitura
         if leituras:
             cursor.executemany(
-                "INSERT INTO leitura (valor, dt_hr, situacao, componentes_maquina_id) "
-                "VALUES (%s, %s, %s, %s)",
+                "INSERT INTO leitura (valor, dt_hr_leitura, fk_config_maq) "
+                "VALUES (%s, %s, %s)",
                 leituras,
             )
             cnx.commit()
