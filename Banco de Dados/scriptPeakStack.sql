@@ -1,4 +1,3 @@
-
 CREATE SCHEMA IF NOT EXISTS db_peakstack;
 USE db_peakstack ;
 
@@ -28,7 +27,7 @@ CREATE TABLE IF NOT EXISTS endereco (
     );
 
 CREATE TABLE IF NOT EXISTS usuario (
-  id INT auto_increment,
+  id INT auto_increment UNIQUE,
   fk_empresa INT NOT NULL,
   fk_cargo INT NOT NULL,
   nome VARCHAR(45) NOT NULL,
@@ -54,14 +53,14 @@ CREATE TABLE IF NOT EXISTS so (
 );
 
 CREATE TABLE IF NOT EXISTS maquina (
-  id INT auto_increment,
+  id INT auto_increment UNIQUE,
   fk_empresa INT NOT NULL,
   fk_so INT NOT NULL,
   nome VARCHAR(45) NOT NULL,
   mac_address CHAR(12) NOT NULL,
-  created_at DATETIME NOT NULL,
-  updated_at DATETIME NOT NULL,
+  created_at DATETIME DEFAULT current_timestamp,
   updated_by VARCHAR(60) NOT NULL,
+  updated_at DATETIME DEFAULT current_timestamp,
   PRIMARY KEY (id, fk_empresa),
   CONSTRAINT fk_maquina_empresa1
     FOREIGN KEY (fk_empresa)
@@ -80,9 +79,9 @@ CREATE TABLE IF NOT EXISTS configuracao_comp (
 );
 
 CREATE TABLE IF NOT EXISTS componentes (
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT UNIQUE,
   fk_configuracao_comp INT NOT NULL,
-  nome VARCHAR(45) NOT NULL,
+  nome VARCHAR(150) NOT NULL,
   PRIMARY KEY (id, fk_configuracao_comp),
   CONSTRAINT fk_componentes_configuracao_comp1
     FOREIGN KEY (fk_configuracao_comp)
@@ -90,7 +89,7 @@ CREATE TABLE IF NOT EXISTS componentes (
     );
     
 CREATE TABLE IF NOT EXISTS config_maq (
-  id INT NOT NULL,
+  id INT AUTO_INCREMENT UNIQUE,
   fk_componentes INT NOT NULL,
   fk_maquina INT NOT NULL,
   status_config VARCHAR(60) NOT NULL,
@@ -104,7 +103,7 @@ CREATE TABLE IF NOT EXISTS config_maq (
 );
 
 CREATE TABLE IF NOT EXISTS leitura (
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT UNIQUE,
   valor DECIMAL NOT NULL,
   dt_hr_leitura DATETIME DEFAULT current_timestamp,
   fk_config_maq INT NOT NULL,
@@ -115,7 +114,7 @@ CREATE TABLE IF NOT EXISTS leitura (
 );
 
 CREATE TABLE IF NOT EXISTS limites (
-  id INT NOT NULL,
+  id INT auto_increment,
   nivel INT NOT NULL,
   valor_min DECIMAL NOT NULL,
   valor_max DECIMAL NOT NULL,
@@ -153,11 +152,59 @@ CREATE TABLE IF NOT EXISTS slack (
 );
 
 -- INSERTS --
+-- insert da empresa --
 INSERT INTO db_peakstack.empresa (razao_social, nome_fantasia, cnpj) VALUES
 ('PeakStack Soluções em Infraestrutura de TI LTDA','PeakStack',12345678963541);
 
+-- insert do cargo--
 INSERT INTO cargo (nome, descricao)
 VALUES
 ('Administrador', 'Responsável pelo gerenciamento da plataforma'),
 ('Visualizador', 'Responsável pelo acompanhamento dos computadores'),
 ('Operador', 'Responsável pela manutenção dos equipamentos');
+
+-- insert do so--
+INSERT INTO so (nome, versao, descricao) VALUES
+('Windows 11 Home Single Language', '25H2', '      ');
+
+-- insert da máquina--
+INSERT INTO db_peakstack.maquina (nome, mac_address, updated_by ,fk_so, fk_empresa) VALUES
+('Beatriz','A085271564DB','Beatriz', '1', '1');
+  
+SELECT * FROM maquina;
+-- insert da configuracao dos componentes --
+INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
+('CPU', '%', 'psutil', 'cpu_percent(interval=0.1)'),
+('CPU', 'MH', 'psutil', 'cpu_freq().current'),
+('RAM', '%', 'psutil', 'virtual_memory().percent'),
+('RAM', 'GB', 'psutil', 'virtual_memory().total'),
+('Disco', '%', 'psutil', 'disk_usage("C:/").percent'),
+('Rede', 'MB', 'psutil', 'net_io_counters().bytes_recv');
+
+SELECT * FROM configuracao_comp;
+-- insert dos componentes -- 
+INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
+('13th Gen Intel(R) Core(TM) i5-13420H (2.10 GHz)', 1),
+('13th Gen Intel(R) Core(TM) i5-13420H (2.10 GHz)', 2),
+('DDR5', 3),
+('DDR5', 4),
+('SAMSUNG MZAMX512HCLV-00BL2', 5);
+
+SELECT * FROM componentes;
+-- insert da configuração da maquina --
+INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
+(1, 1, 'Ativo'),
+(2, 1, 'Pendente'),
+(3, 1, 'Ativo'),
+(4, 1, 'Não Ativo'),
+(5, 1, 'Ativo'),
+(6, 1, 'Não Ativo');
+
+ SELECT cm.id AS cm_id, c.id AS componente_id, c.nome, cc.unidade_medida,
+           cc.biblioteca, cc.codigo
+    FROM maquina m
+    JOIN config_maq cm ON cm.fk_maquina = m.id
+    JOIN componentes c          ON c.id = cm.fk_componentes
+    JOIN configuracao_comp cc ON c.fk_configuracao_comp = cc.id
+   WHERE cm.status_config LIKE "Ativo";
+
