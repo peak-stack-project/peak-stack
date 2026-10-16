@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -26,7 +26,7 @@
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./máquinas.html">Máquinas</a>
-            <a  class="ativo" href="./cadastro_usuarios.html">Usuários</a>
+            <a class="ativo" href="./cadastro_usuarios.html">Usuários</a>
             <a href="./alertas.html">Alertas</a>
         </div>
         <div class="menu_lateral_rodape">
@@ -117,6 +117,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
     </section>
     <section>
         <div id="container_cadastro" style="display: none;">
@@ -136,32 +137,39 @@
 
                 <div class="nome_usuario">
                     <h4>Nome</h4>
-                    <input type="text" placeholder="   Nome e Sobrenome">
+                    <input type="text" id="nome_input" placeholder="   Nome e Sobrenome">
                 </div>
                 <div class="email_usuario">
                     <div class="email">
-                        <H4>Email_usuario</H4>
-                        <input type="text" placeholder="   usuario@empresa.com">
+                        <H4>Email</H4>
+                        <input type="text" id="email_input" placeholder="   usuario@empresa.com">
                     </div>
                 </div>
                 <div class="senha">
                     <h4>Senha</h4>
-                    <input type="text" placeholder="   Mínimo 6 caracteres">
+                    <input type="password" id="senha_input" placeholder="   Mínimo 6 caracteres">
+                </div>
+                 <div class="senha">
+                    <h4>Confirmar senha</h4>
+                    <input type="password" id="confirmacao_senha_input" placeholder="   Mínimo 6 caracteres">
                 </div>
                 <div class="container_empresa_usuario">
                     <h4>Empresa</h4>
-                    <input type="text" placeholder="   Nome da Empresa">
+                    <select id="empresa_input">
+                        <option value="1">PeakStack</option>
+                    </select>
                 </div>
                 <div class="container_atividade_usuario">
-                    <h4>Status</h4>
-                    <select name="" id="atividades_usuario">
-                        <option value="status_visualizador">Visualizador</option>
-                        <option value="status_adm">Administrador</option>
+                    <h4>Cargo</h4>
+                    <select id="cargo_input">
+                        <option value="1">Administrador</option>
+                        <option value="2">Visualizador</option>
+                        <option value="3">Operador</option>
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
                     <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="chamarCadastro()">Cadastrar</button>
+                    <button class="botao_cadastrar_usuario" onclick="cadastrarUsuario()">Cadastrar</button>
                 </div>
             </div>
         </div>
@@ -183,49 +191,70 @@
 
 
     function cadastrarUsuario() {
-        const lista = document.getElementById('lista-usuarios');
+      
+    let booleano = true;
+    var nomeVar = nome_input.value;
+    var emailVar = email_input.value;
+    var senhaVar = senha_input.value;
+    var confirmacaoSenhaVar = confirmacao_senha_input.value;
+    var cargoVar = cargo_input.value
+    var idEmpresaVar = empresa_input.value;
 
-        const novoUsuarioHTML = `
-        <div class="conteudo_tabela" id="lista_usuarios">
+    // Verificando se há algum campo em branco
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == "" ||
+      cargoVar == "" ||
+      idEmpresaVar == ""
+    ) {
+      booleano = false;
+    } 
 
-                        <div class="conteudo_tabela" id="lista_usuarios">
+    // Enviando o valor da nova input
+    if(senhaVar == confirmacaoSenhaVar && booleano == true){
+    fetch("/usuarios/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // crie um atributo que recebe o valor recuperado aqui
+        // Agora vá para o arquivo routes/usuario.js
+        nomeServer: nomeVar,
+        emailServer: emailVar,
+        senhaServer: senhaVar,
+        cargoServer: cargoVar,
+        idempresaServer: idEmpresaVar
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
 
-                        <div class="linha_tabela">
-                            <div class="campo_usuario">
-                                <div></div>
-                            </div>
-                            <div class="texto_email"></div>
-                            <div class="texto_empresa"></div>
-                            <div>
-                                <div class="area_usuario"></div>
-                            </div>
-                            <div>
-                                <div class="status_atual_usuario"></div>
-                            </div>
-                            <div class="container_acoes">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path fill-rule="evenodd"
-                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-trash3" viewBox="0 0 16 16">
-                                        <path
-                                            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-      `;
+        if (resposta.ok) {
+          cardErro.style.display = "block";
 
-        lista.insertAdjacentHTML('beforeend', novoUsuarioHTML);
+          mensagem_erro.innerHTML =
+            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
 
-        lucide.createIcons();
+          setTimeout(() => {
+            window.location = "login.html";
+          }, "2000");
+
+          limparFormulario();
+          finalizarAguardar();
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        finalizarAguardar();
+      });
+
+    return false;
+  }
+
     }
 </script>
