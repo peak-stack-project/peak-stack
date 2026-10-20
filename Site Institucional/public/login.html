@@ -91,7 +91,7 @@
                     registrar_checkpoint("login_realizado_peakstack", json.id);
 
                     setTimeout(function () {
-                        window.location = sessionStorage.TIPO == "admin" ? "/dashboard.html" : "/eventos.html";
+                        window.location = sessionStorage.TIPO == "admin" ? "/dashboard.html" : "./gerenciaPeakstack/configAdmPeakstack.html";
                     }, 1200);
                 });
             } else {
