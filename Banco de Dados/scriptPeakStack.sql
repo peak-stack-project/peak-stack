@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS usuario (
   nome VARCHAR(45) NOT NULL,
   email VARCHAR(45) NOT NULL,
   senha VARCHAR(45) NOT NULL,
+  dt_nasc DATE,
   created_at DATETIME DEFAULT current_timestamp,
   updated_by VARCHAR(60) NOT NULL,
   updated_at DATETIME DEFAULT current_timestamp,
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     FOREIGN KEY (fk_cargo)
     REFERENCES cargo (id)
     );
-    
+
 CREATE TABLE IF NOT EXISTS so (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(50),
@@ -172,6 +173,7 @@ INSERT INTO db_peakstack.maquina (nome, mac_address, updated_by ,fk_so, fk_empre
 ('Beatriz','A085271564DB','Beatriz', '1', '1');
   
 SELECT * FROM maquina;
+
 -- insert da configuracao dos componentes --
 INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
 ('CPU', '%', 'psutil', 'cpu_percent(interval=0.1)'),
@@ -182,6 +184,7 @@ INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, co
 ('Rede', 'MB', 'psutil', 'net_io_counters().bytes_recv');
 
 SELECT * FROM configuracao_comp;
+
 -- insert dos componentes -- 
 INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
 ('13th Gen Intel(R) Core(TM) i5-13420H (2.10 GHz)', 1),
@@ -191,6 +194,7 @@ INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
 ('SAMSUNG MZAMX512HCLV-00BL2', 5);
 
 SELECT * FROM componentes;
+
 -- insert da configuração da maquina --
 INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
 (1, 1, 'Ativo'),
@@ -207,4 +211,7 @@ INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
     JOIN componentes c          ON c.id = cm.fk_componentes
     JOIN configuracao_comp cc ON c.fk_configuracao_comp = cc.id
    WHERE cm.status_config LIKE "Ativo";
-
+   
+-- Insert de Usuário:
+INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by) VALUES
+(1, 1, 'Mickaela', 'mickaela@sptech.com', 'Peakstack@123456', 'Beatriz');
