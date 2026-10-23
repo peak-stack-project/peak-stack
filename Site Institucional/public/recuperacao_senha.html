@@ -53,6 +53,52 @@
                 <div id="div_erros_login"></div>
             </div>
         </section>
+
+    </main>
+    <main class="container_recuperacao" style="display: none;">
+        
+        <section class="sessao_recuperacao">
+            <div class="formulario_cartao">
+
+
+                <h2>Recupere o acesso sua conta</h2>
+                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+                <div class="campo">
+                    <label for="email_input">Codigo</label>
+                    <input id="email_input" type="email" placeholder="Data Nascimento">
+                </div>
+
+                <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
+                <p class="alternativa_formulario">Retornar?<a href="./login.html"> Login</a></p>
+                <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
+                </div>
+                <div id="div_erros_login"></div>
+            </div>
+    </main>
+
+    <main class="container_nova_senha" style="display: none;">
+        
+        <section class="sessao_recuperacao">
+            <div class="formulario_cartao">
+
+
+                <h2>Recuperação de acesso PeakStack</h2>
+                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+                <div class="campo">
+                    <label for="senha_input">Nova senha</label>
+                    <input id="senha_input" type="password" placeholder="Senha">
+                </div>
+                <div class="campo">
+                    <label for="senha_input">Confirme a senha</label>
+                    <input id="senha_input" type="password" placeholder="Senha">
+                </div>
+
+                <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
+                <p class="alternativa_formulario">Retornar?<a href="./login.html"> Login</a></p>
+                <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
+                </div>
+                <div id="div_erros_login"></div>
+            </div>
     </main>
 </body>
 
