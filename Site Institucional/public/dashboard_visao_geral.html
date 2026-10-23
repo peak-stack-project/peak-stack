@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboard.css">
     <script src="./js/sessao.js" defer></script>
-     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="corpo_dashboard" onload="registrar_checkpoint('acessou_monitoramento_vazio')">
- <aside class="menu_lateral">
+    <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
             <span>PeakStack</span>
@@ -35,86 +37,64 @@
     </aside>
     <main class="conteudo_dashboard">
 
-    <header class="topo_dashboard">
-
-        <div>
-            <span class="etiqueta">PeakStack</span>
-            <h1>Monitoramento</h1>
-        </div>
-
-    </header>
-
-
-    <!-- KPIs -->
-
-    <section class="kpis_monitoramento">
-
-        <div class="kpi_card">
-
-            <div class="kpi_icone"></div>
+        <header class="topo_dashboard">
 
             <div>
-                <span>Total de Servidores</span>
-                <strong>4</strong>
-                <small>2 online · 1 atenção</small>
+                <span class="etiqueta">PeakStack</span>
+                <h1>Monitoramento</h1>
             </div>
 
-        </div>
+        </header>
 
+        <section class="kpis_monitoramento">
 
-        <div class="kpi_card">
+            <div class="kpi_card">
 
-            <div class="kpi_icone verde"></div>
+                <div class="kpi_icone"></div>
 
-            <div>
-                <span>Online agora</span>
-                <strong>2</strong>
-                <small>funcionando normalmente</small>
+                <div>
+                    <span>Total de Servidores</span>
+                    <strong>4</strong>
+                    <small>2 online · 1 atenção</small>
+                </div>
+
             </div>
 
-        </div>
 
+            <div class="kpi_card">
 
-        <div class="kpi_card">
+                <div class="kpi_icone verde"></div>
 
-            <div class="kpi_icone amarelo"></div>
+                <div>
+                    <span>Online agora</span>
+                    <strong>2</strong>
+                    <small>funcionando normalmente</small>
+                </div>
 
-            <div>
-                <span>Com alertas</span>
-                <strong>2</strong>
-                <small>1 atenção · 1 offline</small>
             </div>
 
-        </div>
 
+            <div class="kpi_card">
 
-        <div class="kpi_card">
+                <div class="kpi_icone amarelo"></div>
 
-            <div class="kpi_icone"></div>
+                <div>
+                    <span>Com alertas</span>
+                    <strong>2</strong>
+                    <small>1 atenção · 1 offline</small>
+                </div>
 
-            <div>
-                <span>CPU média</span>
-                <strong>50%</strong>
-                <small>RAM média: 68%</small>
             </div>
 
-        </div>
 
-    </section>
+            <div class="kpi_card">
 
+                <div class="kpi_icone"></div>
 
-     <section class="graficos_dashboard">
-
-        <!-- GRÁFICO DE CPU -->
-
-        <section class="area_monitoramento_vazia">
-
-            <div class="grafico_monitoramento">
-
-                <h2>Uso de CPU — últimas 24h</h2>
-
-                <div class="grafico_container">
-                    <canvas id="graficoCpu"></canvas>
+                <div>
+                    <span>CPU média</span>
+                    <strong>50%</strong>
+                    <small>RAM média: 68%</small>
                 </div>
 
             </div>
@@ -122,315 +102,428 @@
         </section>
 
 
-        <!-- STATUS DOS SERVIDORES -->
+        <section class="graficos_dashboard">
 
-        <div class="card_status">
+            <section class="area_monitoramento_vazia">
 
-            <h2>Status dos servidores</h2>
+                <div class="grafico_monitoramento">
 
-            <span class="subtitulo">
-                Distribuição atual
-            </span>
+                    <h2>Uso de CPU — últimas 24h</h2>
 
-            <div class="status_conteudo">
-
-                <div class="grafico_pizza">
-                    <canvas id="graficoStatus"></canvas>
-                </div>
-
-                <div class="legenda_status">
-
-                    <div>
-                        <span class="bolinha azul"></span>
-                        Online
-                    </div>
-
-                    <div>
-                        <span class="bolinha laranja"></span>
-                        Atenção
-                    </div>
-
-                    <div>
-                        <span class="bolinha vermelho"></span>
-                        Offline
+                    <div class="grafico_container">
+                        <canvas id="graficoCpu"></canvas>
                     </div>
 
                 </div>
 
-            </div>
+            </section>
 
-        </div>
+            <div class="card_status">
 
-    </section>
+                <h2>Status dos servidores</h2>
 
-
-    <!-- RANKING DE USO -->
-
-    <section class="ranking_monitoramento">
-
-        <div class="titulo_ranking">
-
-            <div>
-
-                <h2>Ranking de uso — CPU</h2>
-
-                <span>
-                    Servidores ordenados por carga atual
+                <span class="subtitulo">
+                    Distribuição atual
                 </span>
 
-            </div>
+                <div class="status_conteudo">
 
-            <span class="tempo_real">
-                Tempo real
-            </span>
+                    <div class="grafico_pizza">
+                        <canvas id="graficoStatus"></canvas>
+                    </div>
 
-        </div>
+                    <div class="legenda_status">
 
+                        <div>
+                            <span class="bolinha azul"></span>
+                            Online
+                        </div>
 
-        <div class="tabela_monitoramento">
+                        <div>
+                            <span class="bolinha laranja"></span>
+                            Atenção
+                        </div>
 
-            <div class="linha_tabela cabecalho">
+                        <div>
+                            <span class="bolinha vermelho"></span>
+                            Offline
+                        </div>
 
-                <span>#</span>
-                <span>Servidor</span>
-                <span>Empresa</span>
-                <span>CPU</span>
-                <span>RAM</span>
-                <span>Disco</span>
-                <span>Status</span>
+                    </div>
 
-            </div>
-
-
-            <div class="linha_tabela">
-
-                <span class="posicao vermelho">1</span>
-                <span>SRV-PROD-02</span>
-                <span>Sympla</span>
-                <span class="valor vermelho_texto">91%</span>
-                <span>82%</span>
-                <span>87%</span>
-                <span class="status alerta">Atenção</span>
+                </div>
 
             </div>
 
-
-            <div class="linha_tabela">
-
-                <span class="posicao laranja">2</span>
-                <span>SRV-PROD-01</span>
-                <span>Sympla</span>
-                <span>32%</span>
-                <span>67%</span>
-                <span>45%</span>
-                <span class="status online">Online</span>
-
-            </div>
+        </section>
 
 
-            <div class="linha_tabela">
 
-                <span class="posicao cinza">3</span>
-                <span>SRV-API-01</span>
-                <span>Ingressso.com</span>
-                <span>28%</span>
-                <span>55%</span>
-                <span>62%</span>
-                <span class="status online">Online</span>
+        <section class="painel_inferior">
 
-            </div>
+            <section class="ranking_monitoramento">
+
+                <div class="titulo_ranking">
+                    <div>
+                        <h2>Ranking de uso — CPU</h2>
+                        <span>Servidores ordenados por carga atual</span>
+                    </div>
+
+                    <span class="tempo_real">Tempo real</span>
+                </div>
+
+                <div class="tabela_monitoramento">
+
+                    <div class="linha_tabela cabecalho">
+                        <span>#</span>
+                        <span>Servidor</span>
+                        <span>Empresa</span>
+                        <span>CPU</span>
+                        <span>RAM</span>
+                        <span>Disco</span>
+                        <span>Status</span>
+                    </div>
+
+                    <div class="linha_tabela">
+                        <span class="posicao vermelho">1</span>
+                        <span>SRV-PROD-02</span>
+                        <span>Sympla</span>
+                        <span class="valor vermelho_texto">91%</span>
+                        <span>82%</span>
+                        <span>87%</span>
+                        <span class="status alerta">Atenção</span>
+                    </div>
+
+                    <div class="linha_tabela">
+                        <span class="posicao laranja">2</span>
+                        <span>SRV-PROD-01</span>
+                        <span>Sympla</span>
+                        <span>32%</span>
+                        <span>67%</span>
+                        <span>45%</span>
+                        <span class="status online">Online</span>
+                    </div>
+
+                    <div class="linha_tabela">
+                        <span class="posicao cinza">3</span>
+                        <span>SRV-API-01</span>
+                        <span>Ingressso.com</span>
+                        <span>28%</span>
+                        <span>55%</span>
+                        <span>62%</span>
+                        <span class="status online">Online</span>
+                    </div>
+
+                    <div class="linha_tabela">
+                        <span class="posicao cinza">4</span>
+                        <span>SRV-DB-01</span>
+                        <span>Ingressso.com</span>
+                        <span>0%</span>
+                        <span>0%</span>
+                        <span class="valor vermelho_texto">93%</span>
+                        <span class="status offline">Offline</span>
+                    </div>
+
+                </div>
+            </section>
+
+           
+            <section class="card_disco">
+
+                <h2>Uso de disco por servidor</h2>
+                <span class="subtitulo">Capacidade utilizada atualmente</span>
+
+                <div class="grafico_disco_container">
+                    <canvas id="graficoDisco"></canvas>
+                </div>
+
+            </section>
+
+        </section>
 
 
-            <div class="linha_tabela">
+    </main>
 
-                <span class="posicao cinza">4</span>
-                <span>SRV-DB-01</span>
-                <span>Ingressso.com</span>
-                <span>0%</span>
-                <span>0%</span>
-                <span class="valor vermelho_texto">93%</span>
-                <span class="status offline">Offline</span>
+    <script>
 
-            </div>
+        const ctx = document.getElementById('graficoCpu');
 
-        </div>
+        new Chart(ctx, {
 
-    </section>
+            type: 'line',
 
-</main>
+            data: {
 
-<script>
+                labels: [
+                    '00:00h',
+                    '01:00h',
+                    '02:00h',
+                    '03:00h',
+                    '04:00h',
+                    '05:00h',
+                    '06:00h',
+                    '07:00h',
+                    '08:00h',
+                    '09:00h',
+                    '10:00h',
+                    '11:00h',
+                    '12:00h',
+                    '13:00h',
+                    '14:00h',
+                    '15:00h',
+                    '16:00h',
+                    '17:00h',
+                    '18:00h',
+                    '19:00h',
+                    '20:00h',
+                    '21:00h',
+                    '22:00h',
+                    '23:00h'
+                ],
 
-    const ctx = document.getElementById('graficoCpu');
+                datasets: [
 
-    new Chart(ctx, {
+                    {
+                        label: 'Uso de CPU (%)',
 
-        type: 'line',
+                        data: [
+                            32,
+                            45,
+                            38,
+                            67,
+                            54,
+                            72,
+                            78,
+                            32,
+                            46,
+                            80,
+                            21,
+                            54,
+                            72,
+                            41,
+                            34,
+                            75,
+                            38,
+                            87,
+                            14,
+                            72,
+                            61,
+                            58,
+                            65,
+                            49
+                        ],
 
-        data: {
+                        borderWidth: 2,
 
-            labels: [
-                '00:00h',
-                '01:00h',
-                '02:00h',
-                '03:00h',
-                '04:00h',
-                '05:00h',
-                '06:00h',
-                '07:00h',
-                '08:00h',
-                '09:00h',
-                '10:00h',
-                '11:00h',
-                '12:00h',
-                '13:00h',
-                '14:00h',
-                '15:00h',
-                '16:00h',
-                '17:00h',
-                '18:00h',
-                '19:00h',
-                '20:00h',
-                '21:00h',
-                '22:00h',
-                '23:00h'
-            ],
+                        tension: 0.4,
 
-            datasets: [
+                        fill: false
+                    }
 
-                {
-                    label: 'Uso de CPU (%)',
+                ]
 
-                    data: [
-                        32,
-                        45,
-                        38,
-                        67,
-                        54,
-                        72,
-                        78,
-                        32,
-                        46,
-                        80,
-                        21,
-                        54,
-                        72,
-                        41,
-                        34,
-                        75,
-                        38,
-                        87,
-                        14,
-                        72,
-                        61,
-                        58,
-                        65,
-                        49
-                    ],
+            },
 
-                    borderWidth: 2,
+            options: {
 
-                    tension: 0.4,
+                responsive: true,
 
-                    fill: false
-                }
+                maintainAspectRatio: false,
 
-            ]
+                scales: {
 
-        },
+                    y: {
 
-        options: {
+                        beginAtZero: true,
 
-            responsive: true,
+                        max: 100,
 
-            maintainAspectRatio: false,
+                        ticks: {
+                            stepSize: 25
+                        },
 
-            scales: {
+                        grid: {
+                            drawOnChartArea: true
+                        },
 
-                y: {
+                        title: {
+                            display: true,
+                            text: 'CPU (%)'
+                        }
 
-                    beginAtZero: true,
-
-                    max: 100,
-
-                    ticks: {
-                        stepSize: 25
                     },
 
-                    grid: {
-                        drawOnChartArea: true
-                    },
+                    x: {
 
-                    title: {
-                        display: true,
-                        text: 'CPU (%)'
+                        grid: {
+                            drawOnChartArea: false
+                        },
+
+                        title: {
+                            display: true,
+                            text: 'Horário'
+                        }
+
                     }
 
                 },
 
-                x: {
+                plugins: {
 
-                    grid: {
-                        drawOnChartArea: false
-                    },
-
-                    title: {
-                        display: true,
-                        text: 'Horário'
+                    legend: {
+                        display: true
                     }
 
                 }
 
-            },
-
-            plugins: {
-
-                legend: {
-                    display: true
-                }
-
             }
 
-        }
-
-    });
+        });
 
 
-    const status = document.getElementById('graficoStatus');
+        const status = document.getElementById('graficoStatus');
 
-    new Chart(status, {
-        type: 'doughnut',
+        new Chart(status, {
+            type: 'doughnut',
 
-        data: {
-            labels: [
-                'Online',
-                'Atenção',
-                'Offline'
-            ],
+            data: {
+                labels: [
+                    'Online',
+                    'Atenção',
+                    'Offline'
+                ],
 
-            datasets: [{
-                data: [2, 1, 1],
-                borderWidth: 0
-            }]
-        },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-
-            plugins: {
-                legend: {
-                    display: false
-                }
+                datasets: [{
+                    data: [2, 1, 1],
+                    borderWidth: 0
+                }]
             },
 
-            cutout: '65%'
-        }
-    });
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                cutout: '65%'
+            }
+        });
+
+
+        const disco = document.getElementById('graficoDisco');
+
+        new Chart(disco, {
+            type: 'bar',
+
+            data: {
+                labels: [
+                    'SRV-PROD-01',
+                    'SRV-PROD-02',
+                    'SRV-API-01',
+                    'SRV-DB-01'
+                ],
+
+                datasets: [{
+                    label: 'Uso de disco (%)',
+                    data: [45, 87, 62, 93],
+
+                    backgroundColor: [
+                        '#3f6df6',
+                        '#f59e0b',
+                        '#3f6df6',
+                        '#ef4444'
+                    ],
+
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    barThickness: 13
+                }]
+            },
+
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 20
+                    }
+                },
+
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        beginAtZero: true,
+                        max: 100,
+
+                        ticks: {
+                            stepSize: 25,
+                            callback: valor => valor + '%',
+                            font: {
+                                family: 'Inter',
+                                size: 10
+                            },
+                            color: '#91a0bb'
+                        },
+
+                        grid: {
+                            color: '#f0f2f7',
+                            drawBorder: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    },
+
+                    y: {
+                        afterFit: (scale) => {
+                            scale.width = 105;
+                        },
+                        ticks: {
+                            padding: 8,
+                            font: {
+                                family: 'Inter',
+                                size: 10
+                            },
+                            color: '#52617d'
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: contexto => ` ${contexto.raw}% utilizado`
+                        }
+                    }
+                }
+            }
+        });
 
 
 
-</script>
+
+    </script>
 
 </body>
 
