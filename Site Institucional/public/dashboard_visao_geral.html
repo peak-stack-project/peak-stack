@@ -53,9 +53,9 @@
                 <div class="kpi_icone"></div>
 
                 <div>
-                    <span>Total de Servidores</span>
-                    <strong>4</strong>
-                    <small>2 online · 1 atenção</small>
+                    <span>Disponibilidade Global</span>
+                    <strong>99.95%</strong>
+                    <small>Uptime médio nas últimas 24h</small>
                 </div>
 
             </div>
@@ -66,9 +66,9 @@
                 <div class="kpi_icone verde"></div>
 
                 <div>
-                    <span>Online agora</span>
-                    <strong>2</strong>
-                    <small>funcionando normalmente</small>
+                    <span>Volume de Dados Trafegados</span>
+                    <strong>1.2 TB</strong>
+                    <small>Trafegados nas últimas 24h</small>
                 </div>
 
             </div>
@@ -79,9 +79,9 @@
                 <div class="kpi_icone amarelo"></div>
 
                 <div>
-                    <span>Com alertas</span>
-                    <strong>2</strong>
-                    <small>1 atenção · 1 offline</small>
+                    <span>Alertas Críticos Ativos</span>
+                    <strong>2 Ativos</strong>
+                    <small>1 Crítico • 1 Atenção</small>
                 </div>
 
             </div>
@@ -92,9 +92,9 @@
                 <div class="kpi_icone"></div>
 
                 <div>
-                    <span>CPU média</span>
-                    <strong>50%</strong>
-                    <small>RAM média: 68%</small>
+                    <span>Eficiência de Armazenamento</span>
+                    <strong>12 dias</strong>
+                    <small>Tempo estimado para disco lotar (SRV-DB-01)</small>
                 </div>
 
             </div>
@@ -108,7 +108,7 @@
 
                 <div class="grafico_monitoramento">
 
-                    <h2>Uso de CPU — últimas 24h</h2>
+                    <h2>Uso de Componentes — últimas 24h</h2>
 
                     <div class="grafico_container">
                         <canvas id="graficoCpu"></canvas>
@@ -165,7 +165,7 @@
 
                 <div class="titulo_ranking">
                     <div>
-                        <h2>Ranking de uso — CPU</h2>
+                        <h2>Ranking de uso — Máquinas</h2>
                         <span>Servidores ordenados por carga atual</span>
                     </div>
 
@@ -245,140 +245,92 @@
     </main>
 
     <script>
+const ctx = document.getElementById('graficoCpu');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [
+      '00:00h', '01:00h', '02:00h', '03:00h', '04:00h', '05:00h', '06:00h', '07:00h', 
+      '08:00h', '09:00h', '10:00h', '11:00h', '12:00h', '13:00h', '14:00h', '15:00h', 
+      '16:00h', '17:00h', '18:00h', '19:00h', '20:00h', '21:00h', '22:00h', '23:00h'
+    ],
+        datasets: [
+      {
+        label: 'Uso de CPU (%)',
+        data: [29, 18, 50, 46, 43, 32, 28, 84, 26, 90, 69, 19, 18, 26, 42, 44, 79, 18, 86, 40, 84, 68, 43, 72],
+        borderColor: '#ff6384',
+        backgroundColor: '#ff6384',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
+      },
+      {
+        label: 'Uso de RAM (%)',
+        data: [77, 57, 40, 50, 84, 67, 61, 57, 49, 53, 61, 46, 45, 64, 46, 62, 62, 78, 56, 42, 69, 74, 47, 64],
+        borderColor: '#36a2eb',
+        backgroundColor: '#36a2eb',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
+      },
+      {
+        label: 'Uso de Disco (%)',
+        data: [25, 55, 38, 60, 59, 43, 56, 32, 24, 22, 34, 38, 25, 34, 26, 44, 37, 49, 60, 43, 30, 43, 42, 33],
+        borderColor: '#cc65fe',
+        backgroundColor: '#cc65fe',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
+      },
+      {
+        label: 'Uso de Rede (%)',
+        data: [90, 39, 94, 92, 87, 14, 82, 86, 26, 73, 36, 25, 64, 53, 39, 86, 93, 76, 33, 92, 46, 12, 34, 9],
+        borderColor: '#ffce56',
+        backgroundColor: '#ffce56',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: false
+      }
+    ]
 
-        const ctx = document.getElementById('graficoCpu');
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          stepSize: 25
+        },
+        grid: {
+          drawOnChartArea: true
+        },
+        title: {
+          display: true,
+          text: 'Porcentagem (%)'
+        }
+      },
+      x: {
+        grid: {
+          drawOnChartArea: false
+        },
+        title: {
+          display: true,
+          text: 'Horário'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    }
+  }
+});
 
-        new Chart(ctx, {
-
-            type: 'line',
-
-            data: {
-
-                labels: [
-                    '00:00h',
-                    '01:00h',
-                    '02:00h',
-                    '03:00h',
-                    '04:00h',
-                    '05:00h',
-                    '06:00h',
-                    '07:00h',
-                    '08:00h',
-                    '09:00h',
-                    '10:00h',
-                    '11:00h',
-                    '12:00h',
-                    '13:00h',
-                    '14:00h',
-                    '15:00h',
-                    '16:00h',
-                    '17:00h',
-                    '18:00h',
-                    '19:00h',
-                    '20:00h',
-                    '21:00h',
-                    '22:00h',
-                    '23:00h'
-                ],
-
-                datasets: [
-
-                    {
-                        label: 'Uso de CPU (%)',
-
-                        data: [
-                            32,
-                            45,
-                            38,
-                            67,
-                            54,
-                            72,
-                            78,
-                            32,
-                            46,
-                            80,
-                            21,
-                            54,
-                            72,
-                            41,
-                            34,
-                            75,
-                            38,
-                            87,
-                            14,
-                            72,
-                            61,
-                            58,
-                            65,
-                            49
-                        ],
-
-                        borderWidth: 2,
-
-                        tension: 0.4,
-
-                        fill: false
-                    }
-
-                ]
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                scales: {
-
-                    y: {
-
-                        beginAtZero: true,
-
-                        max: 100,
-
-                        ticks: {
-                            stepSize: 25
-                        },
-
-                        grid: {
-                            drawOnChartArea: true
-                        },
-
-                        title: {
-                            display: true,
-                            text: 'CPU (%)'
-                        }
-
-                    },
-
-                    x: {
-
-                        grid: {
-                            drawOnChartArea: false
-                        },
-
-                        title: {
-                            display: true,
-                            text: 'Horário'
-                        }
-
-                    }
-
-                },
-
-                plugins: {
-
-                    legend: {
-                        display: true
-                    }
-
-                }
-
-            }
-
-        });
 
 
         const status = document.getElementById('graficoStatus');
