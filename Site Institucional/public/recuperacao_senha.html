@@ -31,7 +31,7 @@
             </button>
         </nav>
     </header>
-    <main class="container_recuperacao">
+    <main id="etapa_email" class="container_recuperacao">
         <section class="container_principal">
             <h1>Recuperação de Acesso PeakStack</h1>
         </section>
@@ -40,13 +40,15 @@
 
 
                 <h2>Recupere o acesso sua conta</h2>
-                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+                <div class="alerta_erro" id="cardErroEmail">
+                    <span id="mensagem_erro_email"></span>
+                </div>
                 <div class="campo">
                     <label for="email_input">Email</label>
                     <input id="email_input" type="email" placeholder="seu@email.com">
                 </div>
 
-                <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
+                <button class="botao botao_primario botao_largo" onclick="verificarEmail()">Continuar</button>
                 <p class="alternativa_formulario">Retornar?<a href="./login.html"> Login</a></p>
                 <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
                 </div>
@@ -55,20 +57,26 @@
         </section>
 
     </main>
-    <main class="container_recuperacao" style="display: none;">
-        
+    <main id="etapa_nascimento" class="container_recuperacao" style="display: none;">
+        <section class="container_principal">
+            <h1>Recuperação de Acesso PeakStack</h1>
+        </section>
+
         <section class="sessao_recuperacao">
+
             <div class="formulario_cartao">
 
 
-                <h2>Recupere o acesso sua conta</h2>
-                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+                <h2>Confirme a Identidade</h2>
+                <div class="alerta_erro" id="cardErroNascimento">
+                    <span id="mensagem_erro_nascimento"></span>
+                </div>
                 <div class="campo">
-                    <label for="email_input">Codigo</label>
-                    <input id="email_input" type="email" placeholder="Data Nascimento">
+                    <label for="dataNascimento_input">Codigo</label>
+                    <input id="dataNascimento_input" type="date" placeholder="Data Nascimento">
                 </div>
 
-                <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
+                <button class="botao botao_primario botao_largo" onclick="verificarNascimento()">Continuar</button>
                 <p class="alternativa_formulario">Retornar?<a href="./login.html"> Login</a></p>
                 <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
                 </div>
@@ -76,87 +84,204 @@
             </div>
     </main>
 
-    <main class="container_nova_senha" style="display: none;">
-        
+    <main id="etapa_senha" class="container_nova_senha" style="display: none;">
+        <section class="container_principal">
+            <h1>Recuperação de Acesso PeakStack</h1>
+        </section>
         <section class="sessao_recuperacao">
             <div class="formulario_cartao">
 
 
-                <h2>Recuperação de acesso PeakStack</h2>
-                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
-                <div class="campo">
-                    <label for="senha_input">Nova senha</label>
-                    <input id="senha_input" type="password" placeholder="Senha">
-                </div>
-                <div class="campo">
-                    <label for="senha_input">Confirme a senha</label>
-                    <input id="senha_input" type="password" placeholder="Senha">
+                <h2>Cadastre nova senha</h2>
+                <div class="alerta_erro" id="cardErroSenha">
+                    <span id="mensagem_erro_senha"></span>
                 </div>
 
-                <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
-                <p class="alternativa_formulario">Retornar?<a href="./login.html"> Login</a></p>
-                <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
+                <div class="campo">
+                    <label for="senha_input">Nova senha</label>
+                    <input id="senha_input" type="password" placeholder="Nova senha">
                 </div>
-                <div id="div_erros_login"></div>
-            </div>
+
+                <div class="campo">
+                    <label for="confirmarSenha_input">Confirme a senha</label>
+                    <input id="confirmarSenha_input" type="password" placeholder="Confirme a senha">
+                </div>
+                <button class="botao botao_primario botao_largo" onclick="redefinirSenha()">
+                    Redefinir senha
+                </button>
     </main>
 </body>
 
 </html>
 
 <script>
-    var fez_login = false;
 
-    function entrar() {
+
+    var emailRecuperacao = "";
+    var dataNascimentoRecuperacao = "";
+
+    if (resposta.ok) {
+        document.getElementById("etapa_email").style.display = "none";
+        document.getElementById("etapa_nascimento").style.display = "block";
+    } else {
+        resposta.text().then(function (texto) {
+            alert(texto);
+        });
+    }
+
+    function verificarEmail() {
         aguardar();
 
         var emailVar = email_input.value;
-        var senhaVar = senha_input.value;
 
-        if (emailVar == "" || senhaVar == "") {
-            cardErro.style.display = "block";
-            mensagem_erro.innerHTML = "Todos os campos devem ser preenchidos";
+        if (emailVar == "") {
+            cardErroEmail.style.display = "block";
+            mensagem_erro_email.innerHTML = "Informe seu e-mail.";
             finalizarAguardar();
             return false;
         }
 
-        fetch("/usuarios/autenticar", {
+        fetch("/recuperacao/verificar-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
+            body: JSON.stringify({
+                emailServer: emailVar
+            })
         }).then(function (resposta) {
             if (resposta.ok) {
-                resposta.json().then(function (json) {
-                    sessionStorage.ID_USUARIO = json.id;
-                    sessionStorage.EMAIL_USUARIO = json.email;
-                    sessionStorage.NOME_USUARIO = json.nome;
+                emailRecuperacao = emailVar;
 
-                    fez_login = true;
-                    registrar_checkpoint("login_realizado_peakstack", json.id);
-
-                    setTimeout(function () {
-                        window.location = sessionStorage.TIPO == "admin" ? "/dashboard.html" : "/eventos.html";
-                    }, 1200);
-                });
+                etapa_email.style.display = "none";
+                etapa_nascimento.style.display = "block";
             } else {
                 resposta.text().then(function (texto) {
-                    cardErro.style.display = "block";
-                    mensagem_erro.innerHTML = texto + ". Tente novamente.";
-                    finalizarAguardar();
-                    registrar_checkpoint("erro_login_peakstack");
+                    cardErroEmail.style.display = "block";
+                    mensagem_erro_email.innerHTML = texto;
                 });
             }
-        }).catch(function () {
-            cardErro.style.display = "block";
-            mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
+
             finalizarAguardar();
-            registrar_checkpoint("falha_conexao_login_peakstack");
+        }).catch(function (erro) {
+            console.log(erro);
+            cardErroEmail.style.display = "block";
+            mensagem_erro_email.innerHTML =
+                "Falha na conexão com o servidor.";
+            finalizarAguardar();
         });
 
         return false;
     }
 
-    window.addEventListener("beforeunload", function () {
-        if (!fez_login) registrar_checkpoint("saiu_login_sem_concluir");
-    });
+
+    function verificarNascimento() {
+        aguardar();
+
+        var dataNascimentoVar = dataNascimento_input.value;
+
+        if (dataNascimentoVar == "") {
+            cardErroNascimento.style.display = "block";
+            mensagem_erro_nascimento.innerHTML =
+                "Informe sua data de nascimento.";
+            finalizarAguardar();
+            return false;
+        }
+
+        fetch("/recuperacao/verificar-nascimento", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                emailServer: emailRecuperacao,
+                dataNascimentoServer: dataNascimentoVar
+            })
+        }).then(function (resposta) {
+            if (resposta.ok) {
+                dataNascimentoRecuperacao = dataNascimentoVar;
+
+                etapa_nascimento.style.display = "none";
+                etapa_senha.style.display = "block";
+            } else {
+                resposta.text().then(function (texto) {
+                    cardErroNascimento.style.display = "block";
+                    mensagem_erro_nascimento.innerHTML = texto;
+                });
+            }
+
+            finalizarAguardar();
+        }).catch(function (erro) {
+            console.log(erro);
+            cardErroNascimento.style.display = "block";
+            mensagem_erro_nascimento.innerHTML =
+                "Falha na conexão com o servidor.";
+            finalizarAguardar();
+        });
+
+        return false;
+    }
+
+
+    function redefinirSenha() {
+        aguardar();
+
+        var senhaVar = senha_input.value;
+        var confirmarSenhaVar = confirmarSenha_input.value;
+
+        if (senhaVar == "" || confirmarSenhaVar == "") {
+            cardErroSenha.style.display = "block";
+            mensagem_erro_senha.innerHTML =
+                "Preencha os dois campos de senha.";
+            finalizarAguardar();
+            return false;
+        }
+
+        if (senhaVar != confirmarSenhaVar) {
+            cardErroSenha.style.display = "block";
+            mensagem_erro_senha.innerHTML =
+                "As senhas não coincidem.";
+            finalizarAguardar();
+            return false;
+        }
+
+        if (senhaVar.length < 8) {
+            cardErroSenha.style.display = "block";
+            mensagem_erro_senha.innerHTML =
+                "A senha deve ter pelo menos 8 caracteres.";
+            finalizarAguardar();
+            return false;
+        }
+
+        fetch("/recuperacao/redefinir-senha", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                emailServer: emailRecuperacao,
+                dataNascimentoServer: dataNascimentoRecuperacao,
+                senhaServer: senhaVar,
+                confirmarSenhaServer: confirmarSenhaVar
+            })
+        }).then(function (resposta) {
+            if (resposta.ok) {
+                resposta.json().then(function (json) {
+                    alert(json.mensagem);
+                    window.location.href = "./login.html";
+                });
+            } else {
+                resposta.text().then(function (texto) {
+                    cardErroSenha.style.display = "block";
+                    mensagem_erro_senha.innerHTML = texto;
+                    finalizarAguardar();
+                });
+            }
+        }).catch(function (erro) {
+            console.log(erro);
+            cardErroSenha.style.display = "block";
+            mensagem_erro_senha.innerHTML =
+                "Falha na conexão com o servidor.";
+            finalizarAguardar();
+        });
+
+        return false;
+    }
+
+
+
 </script>

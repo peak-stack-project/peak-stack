@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-var recuperacaoController = require("../controller/recuperacaoController");
+var recuperacaoController = require("../controllers/recuperacaoController");
 
 router.post("/verificar-email", recuperacaoController.verificarEmail);
 
