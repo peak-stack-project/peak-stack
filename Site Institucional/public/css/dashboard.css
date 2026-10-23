@@ -78,14 +78,17 @@ h1 {
 
 .marca span {
     color:var(--cor-primaria-clara);
+    width: 40%;
 }
 
 .marca_icone {
     display: inline-block;
-    max-width: 100px;
+    max-width: 30%;
     max-height: 70px;
     vertical-align: middle;
 }
+
+
 
 .botao {
     display: inline-flex;
@@ -147,7 +150,7 @@ h1 {
 }
 
 .marca_lateral {
-    margin-bottom: 52px;
+    margin-bottom: 30px;
     color: #fff;
 }
 
