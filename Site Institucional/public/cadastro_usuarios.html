@@ -154,10 +154,8 @@
                     <input type="password" id="confirmacao_senha_input" placeholder="   Mínimo 6 caracteres">
                 </div>
                 <div class="container_empresa_usuario">
-                    <h4>Empresa</h4>
-                    <select id="empresa_input">
-                        <option value="1">PeakStack</option>
-                    </select>
+                     <h4>Data de nascimento</h4>
+                  <input type="text" id="data_input" placeholder="   YYYY-MM-DD">
                 </div>
                 <div class="container_atividade_usuario">
                     <h4>Cargo</h4>
@@ -198,7 +196,11 @@
     var senhaVar = senha_input.value;
     var confirmacaoSenhaVar = confirmacao_senha_input.value;
     var cargoVar = cargo_input.value
-    var idEmpresaVar = empresa_input.value;
+    var idEmpresaVar = sessionStorage.getItem("FKEMPRESA_USUARIO");
+    var dataVar = data_input.value;
+    var nomeUsuarioVar = sessionStorage.getItem("NOME_USUARIO")
+    
+
 
     // Verificando se há algum campo em branco
     if (
@@ -207,7 +209,10 @@
       senhaVar == "" ||
       confirmacaoSenhaVar == "" ||
       cargoVar == "" ||
-      idEmpresaVar == ""
+      idEmpresaVar == "" ||
+      dataVar == ""
+      ||
+      nomeUsuarioVar == ""
     ) {
       booleano = false;
     } 
@@ -226,7 +231,9 @@
         emailServer: emailVar,
         senhaServer: senhaVar,
         cargoServer: cargoVar,
-        idempresaServer: idEmpresaVar
+        idempresaServer: idEmpresaVar,
+        dataServer: dataVar,
+        nomeUsuarioServer: nomeUsuarioVar
       }),
     })
       .then(function (resposta) {
