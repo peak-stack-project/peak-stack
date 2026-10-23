@@ -39,6 +39,7 @@ function autenticar(req, res) {
                             id: resultadoAutenticar[0].id,
                             email: resultadoAutenticar[0].email,
                             nome: resultadoAutenticar[0].nome,
+                            fk_empresa: resultadoAutenticar[0].fk_empresa,
                         });
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
@@ -64,6 +65,8 @@ function cadastrar(req, res) {
     var senha = criptografarSenha(req.body.senhaServer);
     var cargo = req.body.cargoServer;
     var idempresa = req.body.idempresaServer;
+    var data = req.body.dataServer;
+    var nomeUsuario = req.body.nomeUsuarioServer;
    
     // não coloquei o tipo pois ele é definido pela senha e usuário no login: 'admin'
 
@@ -78,10 +81,14 @@ function cadastrar(req, res) {
         res.status(400).send("Seu cargo está undefined!");
     } else if (idempresa == undefined) {
         res.status(400).send("ID da sua empresa está undefined!");
+    } else if (data == undefined) {
+        res.status(400).send("Data de nascimento está undefined!");
+    } else if (nomeUsuario == undefined) {
+        res.status(400).send("adm peakstack está undefined!");
     } else {
 
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        usuarioModel.cadastrar(nome, email, senha, cargo, idempresa)
+        usuarioModel.cadastrar(nome, email, senha, cargo, idempresa, data, nomeUsuario)
             .then(
                 function (resultado) {
                     res.json(resultado);
