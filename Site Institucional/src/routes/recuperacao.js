@@ -10,7 +10,7 @@ router.post(
     recuperacaoController.verificarNascimento
 );
 
-router.post(
+router.put(
     "/redefinir-senha",
     recuperacaoController.redefinirSenha
 );
