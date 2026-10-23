@@ -25,7 +25,7 @@
                     alt=""></span>
             <span>PeakStack</span></a>
     </header>
-        <main class="pagina_formulario pagina_autenticacao">
+    <main class="pagina_formulario pagina_autenticacao">
 
         <section class="formulario_contexto">
             <h1>Olá Administrador PeakStack!</h1>
@@ -33,7 +33,7 @@
 
         <section class="container_cadastro">
             <div class="formulario_cartao formulario_cadastro">
-                
+
                 <div id="cadastroEmpresa">
                     <h2>Cadastro Empresa</h2>
                     <div class="campo">
@@ -49,14 +49,15 @@
                         <input id="cnpj_input" type="text" placeholder="00.000.000/0001-00">
                     </div>
                     <div class="campo_botao">
-                        <button type="button" class="botao botao_primario botao_largo" id="btnProximo" onclick="passarContainer()">Próximo</button>
+                        <button type="button" class="botao botao_primario botao_largo" id="btnProximo"
+                            onclick="cadastrar()">Próximo</button>
                     </div>
                 </div>
 
                 <div id="cadastroADM" style="display: none;">
                     <h2>Cadastro Administrador</h2>
                     <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
-                    
+
                     <div class="campo">
                         <label for="nome_input">Nome</label>
                         <input id="nome_input" type="text" placeholder="Nome completo">
@@ -65,13 +66,14 @@
                         <label for="email_input">E-mail</label>
                         <input id="email_input" type="email" placeholder="nome@email.com">
                     </div>
-                    
+
                     <div class="linha_campos">
                         <div class="campo">
                             <label for="senha_input">Senha</label>
                             <div class="input-container">
                                 <input id="senha_input" type="password" placeholder="Senha">
-                                <button type="button" class="btn-toggle-senha" onclick="toggleSenha('senha_input', this)">👁️</button>
+                                <button type="button" class="btn-toggle-senha"
+                                    onclick="toggleSenha('senha_input', this)">👁️</button>
                             </div>
                         </div>
 
@@ -79,7 +81,8 @@
                             <label for="confirmacao_senha_input">Confirmar senha</label>
                             <div class="input-container">
                                 <input id="confirmacao_senha_input" type="password" placeholder="Repita a senha">
-                                <button type="button" class="btn-toggle-senha" onclick="toggleSenha('confirmacao_senha_input', this)">👁️</button>
+                                <button type="button" class="btn-toggle-senha"
+                                    onclick="toggleSenha('confirmacao_senha_input', this)">👁️</button>
                             </div>
                         </div>
                     </div>
@@ -97,7 +100,7 @@
 
                     <button class="botao botao_primario botao_largo" onclick="cadastrar()">Criar conta</button>
                     <p class="alternativa_formulario">Já possui conta? <a href="./login.html">Entrar</a></p>
-                    
+
                     <div id="div_aguardar" class="loading-div">
                         <img src="./assets/circle-loading.gif" alt="Carregando">
                     </div>
@@ -115,67 +118,57 @@
     var cadastro_realizado = false;
 
     function cadastrar() {
+        var razaoSocialVar = razao_social_input.value;
         var nomeVar = nome_input.value;
-        var emailVar = email_input.value;
-        var senhaVar = senha_input.value;
-        var confirmacaoSenhaVar = confirmacao_senha_input.value;
-        var cargoVar = cargo_input.value;
-        var idempresaVar = idempresa_input.value
+        var cnpjVar = cnpj_input.value;
+        var booleano = true;
 
-        if (nomeVar == "" || emailVar == "" || cargoVar == "" || senhaVar == "" || confirmacaoSenhaVar == "" || idempresaVar == "") {
-            return exibirErroCadastro("Todos os campos devem ser preenchidos");
-        } else if (!emailVar.includes("@") || !emailVar.includes(".")) {
-            return exibirErroCadastro("Insira um e-mail válido");
-        } else if (senhaVar.length < 8) {
-            return exibirErroCadastro("A senha deve ter pelo menos 8 caracteres");
-        } else if (senhaVar.includes(" ")) {
-            return exibirErroCadastro("A senha não pode conter espaços");
-        } else if (!/[a-z]/.test(senhaVar) || !/[A-Z]/.test(senhaVar)) {
-            return exibirErroCadastro("A senha deve conter letra maiúscula e minúscula");
-        } else if (!/[0-9]/.test(senhaVar)) {
-            return exibirErroCadastro("A senha deve conter número");
-        } else if (!/[^a-zA-Z0-9]/.test(senhaVar)) {
-            return exibirErroCadastro("A senha deve conter caractere especial");
-        } else if (senhaVar != confirmacaoSenhaVar) {
-            return exibirErroCadastro("As senhas estão diferentes");
+        // aguardar();
+
+        if (
+            nomeVar == "" ||
+            cnpjVar == "" ||
+            razaoSocialVar == ""
+        ) {
+            booleano = false;
         }
 
-        aguardar();
-
-        fetch("/usuarios/cadastrar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                nomeServer: nomeVar,
-                emailServer: emailVar,
-                senhaServer: senhaVar,
-                cargoServer: cargoVar,
-                idempresaServer: idempresaVar
+        if (booleano == true) {
+            fetch("/usuarios/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    // crie um atributo que recebe o valor recuperado aqui
+                    // Agora vá para o arquivo routes/usuario.js
+                    nomeServer: nomeVar,
+                    cnpjServer: cnpjVar,
+                    razaoSocialServer: razaoSocialVar,
+                }),
             })
-        }).then(function (resposta) {
-            if (resposta.ok) {
-                resposta.json().then(function (json) {
-                    cadastro_realizado = true;
-                    registrar_checkpoint("cadastro_realizado_peakstack", json.insertdId);
-                    mensagem_erro.innerHTML = "Cadastro realizado. Redirecionando para o login...";
-                    cardErro.style.display = "block";
-                    finalizarAguardar();
-                    setTimeout(function () { window.location = "login.html"; }, 1200);
-                });
-            } else {
-                resposta.text().then(function (texto) {
-                    exibirErroCadastro(texto.includes("Duplicate entry") ? "E-mail já cadastrado" : "Não foi possível realizar o cadastro");
-                    registrar_checkpoint("erro_cadastro_peakstack");
-                    finalizarAguardar();
-                });
-            }
-        }).catch(function () {
-            exibirErroCadastro("Falha na conexão com o servidor");
-            registrar_checkpoint("falha_conexao_cadastro_peakstack");
-            finalizarAguardar();
-        });
+                .then(function (resposta) {
+                    console.log("resposta: ", resposta);
 
-        return false;
+                    if (resposta.ok) {
+                        cardErro.style.display = "block";
+
+                        mensagem_erro.innerHTML =
+                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                        limparFormulario();
+                        // finalizarAguardar();
+                    } else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                    finalizarAguardar();
+                });
+
+            return false;
+        }
     }
 
     function exibirErroCadastro(mensagem) {

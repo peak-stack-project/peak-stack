@@ -38,21 +38,23 @@
         <section class="container_login">
             <div class="formulario_cartao">
 
-            
-            <h2>Entre na sua conta</h2>
-            <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
-            <div class="campo">
-                <label for="email_input">E-mail</label>
-                <input id="email_input" type="email" placeholder="seu@email.com">
-            </div>
-            <div class="campo">
-                <label for="senha_input">Senha</label>
-                <input id="senha_input" type="password" placeholder="Sua senha">
-            </div>
-            <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
-            <p class="alternativa_formulario">Problemas com acesso?<a href="./recuperacao_senha.html">  Esqueci minha Senha</a></p>
-            <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando"></div>
-            <div id="div_erros_login"></div>
+
+                <h2>Entre na sua conta</h2>
+                <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
+                <div class="campo">
+                    <label for="email_input">E-mail</label>
+                    <input id="email_input" type="email" placeholder="seu@email.com">
+                </div>
+                <div class="campo">
+                    <label for="senha_input">Senha</label>
+                    <input id="senha_input" type="password" placeholder="Sua senha">
+                </div>
+                <button class="botao botao_primario botao_largo" onclick="entrar()">Entrar</button>
+                <p class="alternativa_formulario">Problemas com acesso?<a href="./recuperacao_senha.html"> Esqueci minha
+                        Senha</a></p>
+                <div id="div_aguardar" class="loading-div"><img src="./assets/circle-loading.gif" alt="Carregando">
+                </div>
+                <div id="div_erros_login"></div>
             </div>
         </section>
     </main>
@@ -86,14 +88,22 @@
                     sessionStorage.ID_USUARIO = json.id;
                     sessionStorage.EMAIL_USUARIO = json.email;
                     sessionStorage.NOME_USUARIO = json.nome;
-                    sessionStorage.FKEMPRESA_USUARIO = json.fk_empresa
+                    sessionStorage.FKEMPRESA_USUARIO = json.fk_empresa;
+                    sessionStorage.FKCARGO_USUARIO = json.fk_cargo;
 
                     fez_login = true;
                     registrar_checkpoint("login_realizado_peakstack", json.id);
 
-                    setTimeout(function () {
-                        window.location = sessionStorage.TIPO == "admin" ? "./dashboard_visao_geral.html" : "./gerenciaPeakstack/configAdmPeakstack.html";
-                    }, 1200);
+                    if (json.fk_cargo == 4) {
+                        setTimeout(function () {
+                            window.location = "./gerenciaPeakstack/configAdmPeakstack.html";
+                        }, 1200);
+                    } else {
+                         setTimeout(function () {
+                            window.location = "./dashboard_visao_geral.html";
+                        }, 1200);
+                    }
+
                 });
             } else {
                 resposta.text().then(function (texto) {

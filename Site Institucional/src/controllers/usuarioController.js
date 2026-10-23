@@ -17,7 +17,7 @@ function criptografarSenha(senha) {
 
 function autenticar(req, res) {
     var email = req.body.emailServer;
-    var senha = criptografarSenha(req.body.senhaServer);
+    var senha = req.body.senhaServer;
 
 
     if (email == undefined) {
@@ -40,6 +40,7 @@ function autenticar(req, res) {
                             email: resultadoAutenticar[0].email,
                             nome: resultadoAutenticar[0].nome,
                             fk_empresa: resultadoAutenticar[0].fk_empresa,
+                            fk_cargo: resultadoAutenticar[0].fk_cargo,
                         });
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
