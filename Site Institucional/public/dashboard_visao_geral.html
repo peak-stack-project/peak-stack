@@ -79,7 +79,7 @@
                 <div class="kpi_icone amarelo"></div>
 
                 <div>
-                    <span>Alertas Críticos Ativos</span>
+                    <span>Alertas Ativos</span>
                     <strong>2 Ativos</strong>
                     <small>1 Crítico • 1 Atenção</small>
                 </div>
@@ -169,7 +169,7 @@
                         <span>Servidores ordenados por carga atual</span>
                     </div>
 
-                    <span class="tempo_real">Tempo real</span>
+                    <span class="tempo_real">Ultima Leitura</span>
                 </div>
 
                 <div class="tabela_monitoramento">
@@ -184,19 +184,29 @@
                         <span>Status</span>
                     </div>
 
-                    <div class="linha_tabela">
+                    <div class="linha_tabela" >
                         <span class="posicao vermelho">1</span>
                         <span>SRV-PROD-02</span>
                         <span>Sympla</span>
                         <span class="valor vermelho_texto">91%</span>
-                        <span>82%</span>
-                        <span>87%</span>
+                        <span>58%</span>
+                        <span class="valor vermelho_texto">93%</span>
                         <span class="status offline">Crítico</span>
                     </div>
 
                     <div class="linha_tabela">
                         <span class="posicao laranja">2</span>
-                        <span>SRV-PROD-01</span>
+                        <span>SRV-DB-01</span>
+                        <span>Ingressso.com</span>
+                        <span>29%</span>
+                        <span>40%</span>
+                        <span class="valor amarelo_texto">87%</span>
+                        <span class="status alerta">Atenção</span>
+                    </div>
+
+                    <div class="linha_tabela" >
+                        <span class="posicao cinza">3</span>
+                        <span><a href="./visao_especifica.html">SRV-PROD-01</a></span>
                         <span>Sympla</span>
                         <span>32%</span>
                         <span>67%</span>
@@ -205,7 +215,7 @@
                     </div>
 
                     <div class="linha_tabela">
-                        <span class="posicao cinza">3</span>
+                        <span class="posicao cinza">4</span>
                         <span>SRV-API-01</span>
                         <span>Ingressso.com</span>
                         <span>28%</span>
@@ -214,16 +224,7 @@
                         <span class="status online">Normal</span>
                     </div>
 
-                    <div class="linha_tabela">
-                        <span class="posicao cinza">4</span>
-                        <span>SRV-DB-01</span>
-                        <span>Ingressso.com</span>
-                        <span>0%</span>
-                        <span>0%</span>
-                        <span class="valor amarelo_texto">73%</span>
-                        <span class="status alerta">Atenção</span>
-                    </div>
-
+    
                 </div>
             </section>
 
@@ -374,9 +375,9 @@
             data: {
                 labels: [
                     'SRV-PROD-01',
-                    'SRV-PROD-02',
+                    'SRV-DB-01',
                     'SRV-API-01',
-                    'SRV-DB-01'
+                    'SRV-PROD-02'
                 ],
 
                 datasets: [{
