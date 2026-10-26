@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS discretizada (
     fk_leitura INT,
     situacao VARCHAR(45),
     descricao VARCHAR(100),
-    consciente TINYINT,
+    consciente TINYINT DEFAULT FALSE,
     CONSTRAINT fk_disc_leitura
 		FOREIGN KEY (fk_leitura)
         REFERENCES leitura(id)
@@ -157,12 +157,14 @@ CREATE TABLE IF NOT EXISTS slack (
 INSERT INTO db_peakstack.empresa (razao_social, nome_fantasia, cnpj) VALUES
 ('PeakStack Soluções em Infraestrutura de TI LTDA','PeakStack',12345678963541);
 
+SELECT * FROM empresa;
 -- insert do cargo--
 INSERT INTO cargo (nome, descricao)
 VALUES
 ('Administrador', 'Responsável pelo gerenciamento da plataforma'),
 ('Visualizador', 'Responsável pelo acompanhamento dos computadores'),
-('Operador', 'Responsável pela manutenção dos equipamentos');
+('Operador', 'Responsável pela manutenção dos equipamentos'),
+('Adm PeakStack', 'Responsável por cadastrar empresas.');
 
 -- insert do so--
 INSERT INTO so (nome, versao, descricao) VALUES
@@ -170,9 +172,12 @@ INSERT INTO so (nome, versao, descricao) VALUES
 
 -- insert da máquina--
 INSERT INTO db_peakstack.maquina (nome, mac_address, updated_by ,fk_so, fk_empresa) VALUES
-('Beatriz','A085271564DB','Beatriz', '1', '1');
+('Beatriz','A085271564DB','Beatriz', '1', '1'),
+('Enzo','DC215CF245A9','Beatriz', '1', '1');
   
 SELECT * FROM maquina;
+
+
 
 -- insert da configuracao dos componentes --
 INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
@@ -187,6 +192,7 @@ SELECT * FROM configuracao_comp;
 
 -- insert dos componentes -- 
 INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
+('Intel(R) Wi-Fi 6 AX201 160MHz', 6),
 ('13th Gen Intel(R) Core(TM) i5-13420H (2.10 GHz)', 1),
 ('13th Gen Intel(R) Core(TM) i5-13420H (2.10 GHz)', 2),
 ('DDR5', 3),
@@ -197,21 +203,61 @@ SELECT * FROM componentes;
 
 -- insert da configuração da maquina --
 INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
-(1, 1, 'Ativo'),
-(2, 1, 'Pendente'),
-(3, 1, 'Ativo'),
-(4, 1, 'Não Ativo'),
-(5, 1, 'Ativo'),
-(6, 1, 'Não Ativo');
+(1, 3, 'Ativo'),
+(2, 3, 'Pendente'),
+(3, 3, 'Ativo'),
+(4, 3, 'Não Ativo'),
+(5, 3, 'Ativo'),
+(11, 3, 'Ativo');
 
- SELECT cm.id AS cm_id, c.id AS componente_id, c.nome, cc.unidade_medida,
-           cc.biblioteca, cc.codigo
+select * from componentes;
+   
+SELECT cm.id AS cm_id,
+           cm.fk_componentes,
+           m.fk_empresa,
+           c.nome,
+           cc.unidade_medida,
+           cc.biblioteca,
+           cc.codigo
     FROM maquina m
-    JOIN config_maq cm ON cm.fk_maquina = m.id
+    JOIN config_maq cm    ON cm.fk_maquina = m.id
     JOIN componentes c          ON c.id = cm.fk_componentes
-    JOIN configuracao_comp cc ON c.fk_configuracao_comp = cc.id
-   WHERE cm.status_config LIKE "Ativo";
+    JOIN configuracao_comp cc   ON cc.id = c.fk_configuracao_comp
+    WHERE UPPER(m.mac_address) = 'DC215CF245A9'
+      AND cm.status_config = 'Ativo';
    
 -- Insert de Usuário:
 INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by) VALUES
-(1, 1, 'Mickaela', 'mickaela@sptech.com', 'Peakstack@123456', 'Beatriz');
+-- (1, 1, 'Mickaela', 'mickaela@sptech.com', 'Peakstack@123456', 'Beatriz');
+(1, 4, 'Felipe Dias', 'felipe@peakstack.com', 'Peakstack@123456', 'Beatriz');
+
+SELECT * FROM usuario;
+
+-- LEITURA:
+SELECT
+	l.id AS leitura_id,
+    m.nome AS nome_maquina,
+    l.valor AS valor_leitura,
+    cc.unidade_medida AS unidade_medida,
+    l.dt_hr_leitura AS data_hora_leitura,
+    d.situacao AS situacao_leitura,
+    d.descricao AS descricao_discretizacao,
+    d.consciente AS consciente,
+    cc.tipo AS tipo_componente,
+	c.nome AS nome_componente,
+	cm.id AS config_maquina_id
+FROM leitura l
+INNER JOIN config_maq cm
+    ON cm.id = l.fk_config_maq
+INNER JOIN componentes c
+    ON c.id = cm.fk_componentes
+INNER JOIN configuracao_comp cc
+    ON cc.id = c.fk_configuracao_comp
+INNER JOIN maquina m
+    ON m.id = cm.fk_maquina
+LEFT JOIN discretizada d
+    ON d.fk_leitura = l.id
+ORDER BY l.dt_hr_leitura DESC;
+
+
+
