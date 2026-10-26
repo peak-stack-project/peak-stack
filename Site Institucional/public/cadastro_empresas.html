@@ -93,8 +93,8 @@
                             <input id="cargo_input" type="text" placeholder="Cargo">
                         </div>
                         <div class="campo">
-                            <label for="idempresa_input">ID da empresa</label>
-                            <input id="idempresa_input" type="text" placeholder="ID da Empresa">
+                            <label for="data_input">Data de nascimento</label>
+                            <input id="data_input" type="text" placeholder="YYYY-MM-DD">
                         </div>
                     </div>
 
@@ -116,6 +116,19 @@
 
 <script>
     var cadastro_realizado = false;
+
+
+    function mudarTela() {
+        document.getElementById('btnProximo').addEventListener('click', function () {
+            var cadastroEmpresa = document.getElementById('cadastroEmpresa');
+            var cadastroADM = document.getElementById('cadastroADM');
+
+            if (cadastroEmpresa && cadastroADM) {
+                
+            }
+        });
+
+    }
 
     function cadastrar() {
         console.log("chamei a funcao cadastrar");
@@ -146,15 +159,15 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    
+
                     // crie um atributo que recebe o valor recuperado aqui
                     // Agora vá para o arquivo routes/usuario.js
                     nomeServer: nomeVar,
                     cnpjServer: cnpjVar,
                     razaoSocialServer: razaoSocialVar,
-                    
+
                 }),
-                
+
             })
                 .then(function (resposta) {
                     console.log("chamei as variavel");
@@ -162,18 +175,11 @@
 
                     if (resposta.ok) {
                         console.log("resposta ok");
-                        document.getElementById('btnProximo').addEventListener('click', function () {
-                            var cadastroEmpresa = document.getElementById('cadastroEmpresa');
-                            var cadastroADM = document.getElementById('cadastroADM');
-
-                            if (cadastroEmpresa && cadastroADM) {
-                                cadastroEmpresa.style.display = 'none';
-                                cadastroADM.style.display = 'block';
-                            }
-                        });
-
+                        cadastroEmpresa.style.display = 'none';
+                cadastroADM.style.display = 'block';
                         limparFormulario();
                         finalizarAguardar();
+                        
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
