@@ -13,7 +13,7 @@
     <script src="./js/sessao.js" defer></script>
 </head>
 
-<body class="corpo_autenticacao" onload="registrar_checkpoint('acessou_cadastro_peakstack')">
+<body class="corpo_autenticacao">
 
     <div id="gradient-waves-background" aria-hidden="true">
         <video autoplay muted loop playsinline>
@@ -118,8 +118,9 @@
     var cadastro_realizado = false;
 
     function cadastrar() {
+        console.log("chamei a funcao cadastrar");
         var razaoSocialVar = razao_social_input.value;
-        var nomeVar = nome_input.value;
+        var nomeVar = nome_fantasia_input.value;
         var cnpjVar = cnpj_input.value;
         var booleano = true;
 
@@ -133,31 +134,46 @@
             booleano = false;
         }
 
+        console.log(nomeVar)
+        console.log(cnpjVar)
+        console.log(razaoSocialVar)
+        console.log(booleano)
+
         if (booleano == true) {
-            fetch("/usuarios/cadastrar", {
+            fetch("/empresas/cadastrar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    
                     // crie um atributo que recebe o valor recuperado aqui
                     // Agora vá para o arquivo routes/usuario.js
                     nomeServer: nomeVar,
                     cnpjServer: cnpjVar,
                     razaoSocialServer: razaoSocialVar,
+                    
                 }),
+                
             })
                 .then(function (resposta) {
+                    console.log("chamei as variavel");
                     console.log("resposta: ", resposta);
 
                     if (resposta.ok) {
-                        cardErro.style.display = "block";
+                        console.log("resposta ok");
+                        document.getElementById('btnProximo').addEventListener('click', function () {
+                            var cadastroEmpresa = document.getElementById('cadastroEmpresa');
+                            var cadastroADM = document.getElementById('cadastroADM');
 
-                        mensagem_erro.innerHTML =
-                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+                            if (cadastroEmpresa && cadastroADM) {
+                                cadastroEmpresa.style.display = 'none';
+                                cadastroADM.style.display = 'block';
+                            }
+                        });
 
                         limparFormulario();
-                        // finalizarAguardar();
+                        finalizarAguardar();
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
@@ -170,6 +186,7 @@
             return false;
         }
     }
+
 
     function exibirErroCadastro(mensagem) {
         cardErro.style.display = "block";
@@ -190,14 +207,6 @@
         }
     }
 
-    document.getElementById('btnProximo').addEventListener('click', function () {
-        var cadastroEmpresa = document.getElementById('cadastroEmpresa');
-        var cadastroADM = document.getElementById('cadastroADM');
 
-        if (cadastroEmpresa && cadastroADM) {
-            cadastroEmpresa.style.display = 'none';
-            cadastroADM.style.display = 'block';
-        }
-    });
 
 </script>

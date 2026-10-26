@@ -12,7 +12,7 @@
     <script src="./js/sessao.js" defer></script>
 </head>
 
-<body class="corpo_autenticacao" onload="registrar_checkpoint('acessou_login_peakstack')">
+<body class="corpo_autenticacao">
     <div id="gradient-waves-background" aria-hidden="true">
         <video autoplay muted loop playsinline>
             <source src="./assets/onda-fundo.webm" type="video/webm">
@@ -92,7 +92,7 @@
                     sessionStorage.FKCARGO_USUARIO = json.fk_cargo;
 
                     fez_login = true;
-                    registrar_checkpoint("login_realizado_peakstack", json.id);
+                   
 
                     if (json.fk_cargo == 4) {
                         setTimeout(function () {

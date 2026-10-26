@@ -48,22 +48,5 @@ function finalizarAguardar(texto) {
     }
 }
 
-function registrar_checkpoint(etapaFluxo, fkUsuario) {
-    var idUsuarioSessao = sessionStorage.ID_USUARIO;
-
-    fetch("/metricas/registrar", {
-        method: "POST",
-        keepalive: true,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            etapaServer: etapaFluxo,
-            idUsuarioServer: fkUsuario || idUsuarioSessao
-        })
-    }).then(function (resposta) {
-        if (!resposta.ok) console.warn("Checkpoint não registrado: " + etapaFluxo);
-    }).catch(function () {
-        console.warn("Rastreabilidade indisponível para: " + etapaFluxo);
-    });
-}
 
 document.addEventListener("DOMContentLoaded", ajustarNavbarSessao);
