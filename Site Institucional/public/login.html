@@ -98,9 +98,13 @@
                         setTimeout(function () {
                             window.location = "./gerenciaPeakstack/configAdmPeakstack.html";
                         }, 1200);
-                    } else {
+                    } else if(json.fk_cargo == 2){
                          setTimeout(function () {
                             window.location = "./dashboard_visao_geral.html";
+                        }, 1200);
+                    } else{
+                         setTimeout(function () {
+                            window.location = "./cadastro_maquinas_v1.html";
                         }, 1200);
                     }
 
@@ -110,20 +114,18 @@
                     cardErro.style.display = "block";
                     mensagem_erro.innerHTML = texto + ". Tente novamente.";
                     finalizarAguardar();
-                    registrar_checkpoint("erro_login_peakstack");
                 });
             }
         }).catch(function () {
             cardErro.style.display = "block";
             mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
             finalizarAguardar();
-            registrar_checkpoint("falha_conexao_login_peakstack");
         });
 
         return false;
     }
 
     window.addEventListener("beforeunload", function () {
-        if (!fez_login) registrar_checkpoint("saiu_login_sem_concluir");
+        if (!fez_login);
     });
 </script>
