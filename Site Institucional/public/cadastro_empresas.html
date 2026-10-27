@@ -21,33 +21,33 @@
             <source src="./assets/onda-fundo.webm" type="video/webm">
         </video>
     </div>
-  
+
 
     <main class="pagina_formulario pagina_autenticacao">
 
-    
+
         <aside class="menu_lateral">
-                    <a class="marca marca_lateral">
-                        <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
-                        <h4>PeakStack</h4>
-                    </a><br>
-                    <div class="menu_grupo">
-                        <span class="menu_rotulo">Menu</span>
-                        <a class="ativo" href="./cadastro_empresas.html">Cadastro</a>
-                        <a href="./gerenciaPeakstack/gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
-                    
-                    </div>
-                    <div class="menu_lateral_rodape">
-                        
-                        <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
-                            Sair
-                        </button>
-                    </div>
-                </aside>
+            <a class="marca marca_lateral">
+                <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+                <h4>PeakStack</h4>
+            </a><br>
+            <div class="menu_grupo">
+                <span class="menu_rotulo">Menu</span>
+                <a class="ativo" href="./cadastro_empresas.html">Cadastro</a>
+                <a href="./gerenciaPeakstack/gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
+
+            </div>
+            <div class="menu_lateral_rodape">
+
+                <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                    Sair
+                </button>
+            </div>
+        </aside>
 
         <section class="container_cadastro">
             <div class="formulario_cartao formulario_cadastro">
-                
+
                 <div id="cadastroEmpresa">
                     <h2>Cadastro Empresa</h2>
                     <div class="campo">
@@ -150,6 +150,8 @@
         var nomeVar = nome_fantasia_input.value;
         var cnpjVar = cnpj_input.value;
         var booleano = true;
+        var emailVar = "opa";
+        var senhaVar = "opa";
 
         // aguardar();
 
@@ -202,6 +204,31 @@
                     console.log(`#ERRO: ${resposta}`);
                     finalizarAguardar();
                 });
+
+            fetch("/empresas/listar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
+            }).then(function (resposta) {
+                if (resposta.ok) {
+                    resposta.json().then(function (json) {
+                        sessionStorage.ID_EMPRESA = json.id;
+                        fez_login = true;
+                    });
+                } else {
+                    resposta.text().then(function (texto) {
+                        cardErro.style.display = "block";
+                        mensagem_erro.innerHTML = texto + ". Tente novamente.";
+                        finalizarAguardar();
+                        registrar_checkpoint("erro_login_peakstack");
+                    });
+                }
+            }).catch(function () {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
+                finalizarAguardar();
+                registrar_checkpoint("falha_conexao_login_peakstack");
+            });
 
             return false;
         }
