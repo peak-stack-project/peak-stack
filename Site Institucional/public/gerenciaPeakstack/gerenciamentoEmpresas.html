@@ -1,76 +1,133 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#191a1e">
-  <title>PeakStack | Gerenciamento de Empresas</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./gerenciamentoEmpresas.css">
-  <script src="../js/sessao.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#191a1e">
+    <title>PeakStack | Gerenciamento de Empresas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./gerenciamentoEmpresas.css">
+    <script src="../js/sessao.js" defer></script>
 </head>
+
 <body>
-  <div id="gradient-waves-background" aria-hidden="true">
-    <video autoplay muted loop playsinline>
-      <source src="../assets/onda-fundo.webm" type="video/webm">
-    </video>
-  </div>
-  <div class="layout">
-    <aside class="menu_lateral">
-      <a class="marca marca_lateral" href="../cadastro_empresas.html">
-        <img class="marca_icone" src="../assets/Design%20sem%20nome.png" alt="">
-        <h4>PeakStack</h4>
-      </a>
-      <nav class="menu_grupo" aria-label="Menu principal">
-        <span class="menu_rotulo">Menu</span>
-        <a href="../cadastro_empresas.html">Cadastro</a>
-        <a class="ativo" href="./gerenciamentoEmpresas.html" aria-current="page">Gerenciamento de Empresas</a>
-      </nav>
-      <div class="menu_lateral_rodape">
-        <button id="btn_logout" class="botao botao_lateral" type="button" onclick="if (typeof limparSessao === 'function') limparSessao()">Sair</button>
-      </div>
-    </aside>
+    <div id="gradient-waves-background" aria-hidden="true">
+        <video autoplay muted loop playsinline>
+            <source src="../assets/onda-fundo.webm" type="video/webm">
+        </video>
+    </div>
+    <div class="layout">
+        <aside class="menu_lateral">
+            <a class="marca marca_lateral" href="../cadastro_empresas.html">
+                <img class="marca_icone" src="../assets/Design%20sem%20nome.png" alt="">
+                <h4>PeakStack</h4>
+            </a>
+            <nav class="menu_grupo" aria-label="Menu principal">
+                <span class="menu_rotulo">Menu</span>
+                <a href="../cadastro_empresas.html">Cadastro</a>
+                <a class="ativo" href="./gerenciamentoEmpresas.html" aria-current="page">Gerenciamento de Empresas</a>
+            </nav>
+            <div class="menu_lateral_rodape">
+                <button id="btn_logout" class="botao botao_lateral" type="button"
+                    onclick="if (typeof limparSessao === 'function') limparSessao()">Sair</button>
+            </div>
+        </aside>
 
-    <main class="conteudo">
-      <header class="container_inicial">
-        <div class="texto_inicial">
-          <h3>Gerenciamento de Empresas</h3>
-          <p>Administre as empresas conectadas à PeakStack</p>
-        </div>
-        <label class="container_pesquisa campo_busca">
-          <input id="busca_empresa" type="search" placeholder="Buscar por razão social, CNPJ ou CEO..." autocomplete="off">
-          <button type="button" aria-label="Buscar">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.5"></circle><path d="m16 16 4.2 4.2"></path></svg>
-          </button>
-        </label>
-      </header>
+        <main class="conteudo">
+            <header class="container_inicial">
+                <div class="texto_inicial">
+                    <h3>Gerenciamento de Empresas</h3>
+                    <p>Administre as empresas conectadas à PeakStack</p>
+                </div>
+                <label class="container_pesquisa campo_busca">
+                    <input id="busca_empresa" type="search" placeholder="Buscar por razão social, CNPJ ou CEO..."
+                        autocomplete="off">
+                    <button type="button" aria-label="Buscar">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="10.8" cy="10.8" r="6.5"></circle>
+                            <path d="m16 16 4.2 4.2"></path>
+                        </svg>
+                    </button>
+                </label>
+            </header>
 
-      <section class="area_empresas" aria-label="Lista de empresas">
-        <div class="tabela_scroll">
-          <table>
-            <thead><tr><th>Razão social</th><th>CNPJ</th><th>CEO</th><th>Status</th><th>Ações</th></tr></thead>
-            <tbody id="lista_empresas">
-              <tr data-search="peakstack tecnologia ltda 48.261.395/0001-08 isabella white">
-                <td><div class="empresa"><span class="avatar">P</span><strong>PeakStack Tecnologia Ltda.</strong></div></td><td class="cnpj">48.261.395/0001-08</td><td>Isabella White</td><td><span class="status ativa">Ativa</span></td><td><div class="acoes_linha"><button type="button" aria-label="Editar PeakStack Tecnologia Ltda."><svg viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"></path></svg></button><button type="button" aria-label="Excluir PeakStack Tecnologia Ltda."><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path></svg></button></div></td>
-              </tr>
-              <tr data-search="sympla internet soluções s.a 14.512.528/0001-54 rodrigo cartacho">
-                <td><div class="empresa"><span class="avatar">S</span><strong>Sympla Internet Soluções S.A.</strong></div></td><td class="cnpj">14.512.528/0001-54</td><td>Rodrigo Cartacho</td><td><span class="status ativa">Ativa</span></td><td><div class="acoes_linha"><button type="button" aria-label="Editar Sympla Internet Soluções S.A."><svg viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"></path></svg></button><button type="button" aria-label="Excluir Sympla Internet Soluções S.A."><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path></svg></button></div></td>
-              </tr>
-              <tr data-search="ingresso.com serviços de internet ltda 08.860.469/0001-61 mauro gonzalez">
-                <td><div class="empresa"><span class="avatar">I</span><strong>Ingresso.com Serviços de Internet Ltda.</strong></div></td><td class="cnpj">08.860.469/0001-61</td><td>Mauro Gonzalez</td><td><span class="status ativa">Ativa</span></td><td><div class="acoes_linha"><button type="button" aria-label="Editar Ingresso.com Serviços de Internet Ltda."><svg viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"></path></svg></button><button type="button" aria-label="Excluir Ingresso.com Serviços de Internet Ltda."><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path></svg></button></div></td>
-              </tr>
-              <tr data-search="aurora data serviços digitais ltda 31.982.770/0001-20 marina albuquerque inativa">
-                <td><div class="empresa"><span class="avatar">A</span><strong>Aurora Data Serviços Digitais Ltda.</strong></div></td><td class="cnpj">31.982.770/0001-20</td><td>Marina Albuquerque</td><td><span class="status inativa">Inativa</span></td><td><div class="acoes_linha"><button type="button" aria-label="Editar Aurora Data Serviços Digitais Ltda."><svg viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"></path></svg></button><button type="button" aria-label="Excluir Aurora Data Serviços Digitais Ltda."><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path></svg></button></div></td>
-              </tr>
-              <tr id="sem_resultados" hidden><td colspan="5" class="vazio">Nenhuma empresa encontrada.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-  </div>
+            <section class="area_empresas" aria-label="Lista de empresas">
+                <div class="tabela">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Razão social</th>
+                                <th>CNPJ</th>
+                                <th>CEO</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista_empresas">
+                            <tr>
+                                <td>
+                                    <div class="empresa">
+                                        <span class="avatar">P</span>
+                                        <strong>PeakStack Tecnologia Ltda.</strong>
+                                    </div>
+                                </td>
+                                <td class="cnpj">48.261.395/0001-08</td>
+                                <td>Isabella White</td>
+                                <td><span class="status ativa">Ativa</span></td>
+                                <td>
+                                    <div class="acoes_linha">
+                                        <button type="button" aria-label="Editar PeakStack Tecnologia Ltda."><svg
+                                                viewBox="0 0 24 24">
+                                                <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <button type="button" aria-label="Excluir PeakStack Tecnologia Ltda."><svg
+                                                viewBox="0 0 24 24">
+                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-search="">
+                                <td>
+                                    <div class="empresa">
+                                        <span class="avatar">S</span>
+                                        <strong>Sympla Internet Soluções S.A.</strong>
+                                    </div>
+                                </td>
+                                <td class="cnpj">14.512.528/0001-54</td>
+                                <td>Rodrigo Cartacho</td>
+                                <td><span class="status ativa">Ativa</span></td>
+                                <td>
+                                    <div class="acoes_linha"><button type="button"
+                                            aria-label="Editar Sympla Internet Soluções S.A."><svg viewBox="0 0 24 24">
+                                                <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <button type="button" aria-label="Excluir Sympla Internet Soluções S.A."><svg
+                                                viewBox="0 0 24 24">
+                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="sem_resultados" hidden>
+                                <td colspan="5" class="vazio">Nenhuma empresa encontrada.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
 
 </body>
+
 </html>
