@@ -51,6 +51,8 @@ body {
     color: var(--cor-texto);
     font-family: "Inter", Arial, sans-serif;
     line-height: 1.5;
+    display: flex;
+    flex-direction: row;
 }
 #gradient-waves-background {
     position: fixed;
@@ -58,14 +60,105 @@ body {
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 
 #gradient-waves-background video {
     width: 100%;
     height: 100%;
-    display: block;
+    display: flex;
     object-fit: cover;
     object-position: center;
+}
+
+
+.menu_lateral {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    height: 99dvh;
+    padding: 10px 20px;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #0F1F3D;
+    background-color: #0F1F3D;
+    position: relative;
+    width: 17%;
+    margin-top: 2px;
+    margin-left: 2px;
+    gap: 15px;
+}
+
+.marca_lateral {
+
+    width: 100%;
+    height: 15dvh;
+    color: #fff;
+    margin-top: 2dvh;
+
+}
+
+.marca_lateral img{
+
+    height: 8dvh;
+}
+
+
+.marca_lateral .marca_icone {
+    color: var(--cor-primaria);
+    background: #fff;
+    
+}
+
+.marca_lateral h4{
+    color: #f6f6f8;
+    font-size: 14px;
+}
+
+.menu_grupo {
+    margin-top: 5dvh;
+    display: grid;
+    gap: 8px;
+    height: 10dvh;
+}
+
+.menu_grupo a{
+    display: grid;
+    gap: 8px;
+    align-items: center;
+    transition: 0.5s;
+}
+
+.menu_rotulo {
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.menu_grupo a,
+.menu_lateral_rodape > a {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.menu_grupo a:hover,
+.menu_grupo a.ativo {
+    background: var(--cor-primaria);
+
+}
+
+.menu_lateral_rodape {
+    display: grid;
+    gap: 10px;
+    margin-top: auto;
 }
 
 
@@ -213,6 +306,9 @@ h1 {
 .pagina_formulario {
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     
   
 }
@@ -254,7 +350,8 @@ h1 {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 76dvh;
+    height: max-content;
+    height: 95dvh;
     
 }
 

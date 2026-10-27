@@ -1,40 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PeakStack | Cadastro Adminitração</title>
+  <title>PeakStack | Configuração Administrativa</title>
+  <link rel="icon" href="../assets/react.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/cadastro.css">
   <link rel="stylesheet" href="./styleConfigAdmPeakstack.css">
+  <script src="../js/sessao.js" defer></script>
 </head>
 
 <body>
- 
+  <div id="gradient-waves-background" aria-hidden="true">
+    <video autoplay muted loop playsinline>
+      <source src="./onda-fundo.webm" type="video/webm">
+    </video>
+  </div>
+
   <div class="container_menu">
-    <section class="menu">
-      <div class="menu_principal">
-        <div class="informacoes">
-          <img src="../public/assets/logo para fundo escuro - sem fundo.png" alt="">
-          <h2>PeakStack</h2>
-        </div>
-
-        <div class="titulo_principal">
-          <h1>Painel de<br />Configuração<br />Administrativa</h1>
-          <p>Gerencie usuários e empresas com segurança. Acesso restrito a administradores autorizados.</p>
-          <span>Monitoramento em tempo real</span>
-          <span>Gestão de usuários e permissões</span>
-
-
-        </div>
+    <aside class="menu_lateral">
+      <a class="marca marca_lateral">
+        <img class="marca_icone" src="../assets/Design sem nome.png" alt="" />
+        <h4>PeakStack</h4>
+      </a>
+      <div class="menu_grupo">
+        <span class="menu_rotulo">Menu</span>
+        <a class="ativo" href="../cadastro_empresas.html">Cadastro</a>
+        <a href="">Gerenciamento de Empresas</a>
       </div>
-    </section>
+      <div class="menu_lateral_rodape">
+        <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+          Sair
+        </button>
+      </div>
+    </aside>
 
     <main class="main">
-      <div id="gradient-waves-background" aria-hidden="true">
-        <video autoplay muted loop playsinline>
-            <source src="./onda-fundo.webm" type="video/webm" />
-        </video>
-    </div>
       <section class="sessao_interativa">
         <div class="icone" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -47,17 +52,14 @@
         </div>
         <h2>Bem-vindo, Administrador PeakStack</h2>
         <p>Esta é a área exclusiva de configuração inicial do sistema.</p>
-        <p>Vamos cadastrar um usuário e vinculá-lo a uma empresa? Para continuar, você precisará se
-          autenticar com suas credenciais de administrador.</p>
+        <p>Vamos cadastrar um usuário e vinculá-lo a uma empresa? Para continuar, você precisará se autenticar com suas credenciais de administrador.</p>
 
         <div class="acoes">
           <a href="../cadastro_empresas.html">Começar Cadastro</a>
         </div>
-
       </section>
     </main>
   </div>
-
 </body>
 
 </html>

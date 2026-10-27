@@ -15,25 +15,39 @@
 
 <body class="corpo_autenticacao">
 
+
     <div id="gradient-waves-background" aria-hidden="true">
         <video autoplay muted loop playsinline>
             <source src="./assets/onda-fundo.webm" type="video/webm">
         </video>
     </div>
-    <header class="cabecalho">
-        <a class="marca" href="./index.html"><span class="marca_icone"><img src="./assets/logo sem fundo.png"
-                    alt=""></span>
-            <span>PeakStack</span></a>
-    </header>
+  
+
     <main class="pagina_formulario pagina_autenticacao">
 
-        <section class="formulario_contexto">
-            <h1>Olá Administrador PeakStack!</h1>
-        </section>
+    
+        <aside class="menu_lateral">
+                    <a class="marca marca_lateral">
+                        <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+                        <h4>PeakStack</h4>
+                    </a>
+                    <div class="menu_grupo">
+                        <span class="menu_rotulo">Menu</span>
+                        <a class="ativo" href="./cadastro_empresas.html">Cadastro</a>
+                        <a href="">Gerenciamento de Empresas</a>
+                    
+                    </div>
+                    <div class="menu_lateral_rodape">
+                        
+                        <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                            Sair
+                        </button>
+                    </div>
+                </aside>
 
         <section class="container_cadastro">
             <div class="formulario_cartao formulario_cadastro">
-
+                
                 <div id="cadastroEmpresa">
                     <h2>Cadastro Empresa</h2>
                     <div class="campo">
@@ -124,7 +138,7 @@
             var cadastroADM = document.getElementById('cadastroADM');
 
             if (cadastroEmpresa && cadastroADM) {
-                
+
             }
         });
 
@@ -176,10 +190,10 @@
                     if (resposta.ok) {
                         console.log("resposta ok");
                         cadastroEmpresa.style.display = 'none';
-                cadastroADM.style.display = 'block';
+                        cadastroADM.style.display = 'block';
                         limparFormulario();
                         finalizarAguardar();
-                        
+
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
