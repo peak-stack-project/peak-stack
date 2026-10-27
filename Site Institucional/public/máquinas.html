@@ -140,31 +140,31 @@
 
                 <div class="nome_usuario">
                     <h4>Nome do servidor</h4>
-                    <input type="text" placeholder="   Ex: SRV-PROD-01">
+                    <input type="text" name="nome_input" placeholder="   Ex: SRV-PROD-01">
                 </div>
                 <div class="email_usuario">
                     <div class="email">
                         <H4>Endereço IP</H4>
-                        <input type="text" placeholder="   Ex: 192.168.1.10">
+                        <input type="text" name="ip_input" placeholder="   Ex: 192.168.1.10">
                     </div>
                 </div>
                 <div class="email_usuario">
                     <div class="email">
                         <H4>Endereço MAC</H4>
-                        <input type="text" placeholder="   Ex: AA:BB:CC:DD:EE:FF">
+                        <input type="text" name="mac_input" placeholder="   Ex: AA:BB:CC:DD:EE:FF">
                     </div>
                 </div>
                 <div class="senha">
                     <h4>Sistema operacional</h4>
-                    <input type="text" placeholder="   Ex: Ubuntu 22.04">
+                    <input type="text" name="so_input" placeholder="   Ex: Ubuntu 22.04">
                 </div>
                 <div class="container_empresa_usuario">
                     <h4>Métricas monitoradas</h4>
-                    <input type="text" placeholder="   Ex: CPU, RAM, Disco">
+                    <input type="text" name="componente_input" placeholder="   Ex: CPU, RAM, Disco">
                 </div>
                   <div class="container_empresa_usuario">
                     <h4>Outro componente</h4>
-                    <input type="text" placeholder="   Ex: GPU, Switch, Sensor de temperatura...">
+                    <input type="text" name="outro_componente_input" placeholder="   Ex: GPU, Switch, Sensor de temperatura...">
                 </div>
                 <div class="container_atividade_usuario">
                     <h4>Status</h4>
@@ -194,6 +194,88 @@
             container.style.display = "none";
         }
     }
+    var cadastro_realizado = false;
+
+    function cadastrar() {
+        console.log("chamei a funcao cadastrar");
+        var ipVar= ip_input.value;
+        var nomeVar = nome_input.value;
+        var macVar = mac_input.value;
+        var componenteVar = componente_input.value;
+        var soVar = so_input.value;
+        var outroComponenteVar = outro_componente_input.value;
+        var booleano = true;
+
+        // aguardar();
+
+        if (
+            nomeVar == "" ||
+            ipVar == "" ||
+            macVar == "" || 
+            componenteVar == "" ||
+            soVar == "" ||
+            outroComponenteVar == ""
+        ) {
+            booleano = false;
+        }
+
+        console.log(nomeVar)
+        console.log(ipVar)
+        console.log(macVar)
+        console.log(componenteVar)
+        console.log(componenteVar)
+        console.log(componenteVar)
+        console.log(componenteVar)
+        console.log(booleano)
+
+        if (booleano == true) {
+            fetch("/empresas/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+
+                    // crie um atributo que recebe o valor recuperado aqui
+                    // Agora vá para o arquivo routes/usuario.js
+                    nomeServer: nomeVar,
+                    cnpjServer: cnpjVar,
+                    razaoSocialServer: razaoSocialVar,
+
+                }),
+
+            })
+                .then(function (resposta) {
+                    console.log("chamei as variavel");
+                    console.log("resposta: ", resposta);
+
+                    if (resposta.ok) {
+                        console.log("resposta ok");
+                        cadastroEmpresa.style.display = 'none';
+                        cadastroADM.style.display = 'block';
+                        limparFormulario();
+                        finalizarAguardar();
+
+                    } else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                    finalizarAguardar();
+                });
+
+            return false;
+        }
+    }
+
+
+    function exibirErroCadastro(mensagem) {
+        cardErro.style.display = "block";
+        mensagem_erro.innerHTML = mensagem;
+        return false;
+    }
+
 
 
     function cadastrarUsuario() {
