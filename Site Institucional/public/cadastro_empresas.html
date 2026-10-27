@@ -104,7 +104,9 @@
                     <div class="linha_campos">
                         <div class="campo">
                             <label for="cargo_input">Cargo</label>
-                            <input id="cargo_input" type="text" placeholder="Cargo">
+                             <select id="cargo_input">
+                        <option value="1">Administrador</option>
+                    </select>
                         </div>
                         <div class="campo">
                             <label for="data_input">Data de nascimento</label>
@@ -112,7 +114,7 @@
                         </div>
                     </div>
 
-                    <button class="botao botao_primario botao_largo" onclick="cadastrar()">Criar conta</button>
+                    <button class="botao botao_primario botao_largo" onclick="cadastrarUsuario()">Criar conta</button>
                     <p class="alternativa_formulario">Já possui conta? <a href="./login.html">Entrar</a></p>
 
                     <div id="div_aguardar" class="loading-div">
@@ -130,7 +132,82 @@
 
 <script>
     var cadastro_realizado = false;
+function cadastrarUsuario() {
+      
+    let booleano = true;
+    var nomeVar = nome_input.value;
+    var emailVar = email_input.value;
+    var senhaVar = senha_input.value;
+    var confirmacaoSenhaVar = confirmacao_senha_input.value;
+    var cargoVar = cargo_input.value
+    var idEmpresaVar = sessionStorage.getItem("ID_EMPRESA");
+    var dataVar = data_input.value;
+    var nomeUsuarioVar = sessionStorage.getItem("NOME_USUARIO")
+    
 
+
+    // Verificando se há algum campo em branco
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == "" ||
+      cargoVar == "" ||
+      idEmpresaVar == "" ||
+      dataVar == ""
+      ||
+      nomeUsuarioVar == ""
+    ) {
+      booleano = false;
+    } 
+
+    // Enviando o valor da nova input
+    if(senhaVar == confirmacaoSenhaVar && booleano == true){
+    fetch("/usuarios/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // crie um atributo que recebe o valor recuperado aqui
+        // Agora vá para o arquivo routes/usuario.js
+        nomeServer: nomeVar,
+        emailServer: emailVar,
+        senhaServer: senhaVar,
+        cargoServer: cargoVar,
+        idempresaServer: idEmpresaVar,
+        dataServer: dataVar,
+        nomeUsuarioServer: nomeUsuarioVar
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          cardErro.style.display = "block";
+
+          mensagem_erro.innerHTML =
+            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+          setTimeout(() => {
+            window.location = "login.html";
+          }, "2000");
+
+          limparFormulario();
+          finalizarAguardar();
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        finalizarAguardar();
+      });
+
+    return false;
+  }
+
+    }
 
     function mudarTela() {
         document.getElementById('btnProximo').addEventListener('click', function () {
@@ -212,7 +289,7 @@
             }).then(function (resposta) {
                 if (resposta.ok) {
                     resposta.json().then(function (json) {
-                        sessionStorage.ID_EMPRESA = json.id;
+                        sessionStorage.ID_EMPRESA = json.id + 1;
                         fez_login = true;
                     });
                 } else {
