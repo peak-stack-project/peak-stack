@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./gerenciamentoEmpresas.css">
+    <link rel="shortcut icon" href="../assets/logo para fundo escuro - sem fundo.png" type="image/x-icon">
     <script src="../js/sessao.js" defer></script>
 </head>
 
@@ -172,10 +173,71 @@
     <script>
         const modal = document.getElementById('modalEdicaoEmpresa');
 
+        function listar() {
+            fetch('/empresas/listarEmpresas')
+                .then(function (resposta) {
+                    resposta.json().then(function (json) {
+                        let htmlCodigo = ""
+                        for (let i = 0; i < json.length; i++) {
+                            htmlCodigo +=
+                                ` <tr>
+                                <td>
+                                    <div class="empresa">
+                                        <span class="avatar">P</span>
+                                        <strong>${json[i].razao_social}</strong>
+                                    </div>
+                                </td>
+                                <td class="cnpj">${json[i].cnpj}</td>
+                                <td>${json[i].nome}</td>
+                                <td>
+                                    <div class="acoes_linha">
+                                        <button onclick="editar()" id="botaoEdicao" type="button"
+                                            aria-label="Editar PeakStack Tecnologia Ltda."><svg viewBox="0 0 24 24">
+                                                <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <button onclick="excluir(${json[i].id})" type="button" aria-label="Excluir PeakStack Tecnologia Ltda."><svg
+                                                viewBox="0 0 24 24">
+                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>`
+                        }
+                        console.log(json)
+                        lista_empresas.innerHTML = htmlCodigo;
+                    })
+                })
+                .catch(erro => console.error('Erro ao listar empresas:', erro));
+        }
+
+        listar()
         document.getElementById('botaoEdicao').onclick = () => {
             modal.classList.add('aberto');
             modal.setAttribute('aria-hidden', 'false');
         };
+
+        function excluir(id) {
+            fetch('/empresas/deletar', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        listar();
+                        return response.json();
+                    }
+                    throw new Error('Falha na requisição');
+                })
+                .then(data => console.log('Sucesso:', data))
+                .catch(error => console.error('Erro:', error));
+        }
+
 
         function fecharModal() {
             modal.classList.remove('aberto');

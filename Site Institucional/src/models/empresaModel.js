@@ -31,7 +31,7 @@ function cadastrar(nome, razaoSocial, cnpj) {
 }
 
 function listarEmpresas(req, res) {
-  var instrucaoSql = `SELECT * FROM empresa`
+  var instrucaoSql = `SELECT e.*, u.* FROM empresa as e LEFT JOIN usuario as u ON e.id = u.fk_empresa`
 
   return database.executar(instrucaoSql);
 
@@ -43,17 +43,16 @@ function atualizar(nome, razaoSocial, cnpj, id) {
                       razao_social = '${razaoSocial}', 
                       cnpj = '${cnpj}' 
                       WHERE id = '${id}'`
-                      
+
   return database.executar(instrucaoSql);
 
 }
 
 function deletar(id) {
 
-  var instrucaoSql = `DELETE * FROM empresa where id = '${id}'`
+  var instrucaoSql = `DELETE FROM empresa where id = '${id}'`
 
   return database.executar(instrucaoSql);
-
 }
 
 module.exports = { buscarPorCnpj, buscarPorId, cadastrar, listarEmpresas, listar, atualizar, deletar };
