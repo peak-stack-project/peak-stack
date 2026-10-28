@@ -55,19 +55,18 @@
                                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                         </svg>
                     </button>
-                    <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações"> 
+                    <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações">
 
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 
-                        stroke-linejoin="round" aria-hidden="true"> 
+                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
 
-                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /> 
+                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
 
-                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /> 
+                        </svg>
 
-                    </svg> 
-
-                </button> 
+                    </button>
 
                 </div>
             </div>
@@ -123,7 +122,7 @@
                 </div>
     </section>
     <section>
-        <div id="container_cadastro" style="display: none;">
+        <div id="container_cadastro">
             <div class="sessao_cadastro">
                 <div class="container_tema">
                     <h3>Cadastrar Máquinas</h3>
@@ -140,42 +139,53 @@
 
                 <div class="nome_usuario">
                     <h4>Nome do servidor</h4>
-                    <input type="text" name="nome_input" placeholder="   Ex: SRV-PROD-01">
-                </div>
-                <div class="email_usuario">
-                    <div class="email">
-                        <H4>Endereço IP</H4>
-                        <input type="text" name="ip_input" placeholder="   Ex: 192.168.1.10">
-                    </div>
+                    <input type="text" id="nome_input" placeholder="   Ex: SRV-PROD-01">
                 </div>
                 <div class="email_usuario">
                     <div class="email">
                         <H4>Endereço MAC</H4>
-                        <input type="text" name="mac_input" placeholder="   Ex: AA:BB:CC:DD:EE:FF">
+                        <input type="text" id="mac_input" placeholder="   Ex: AA:BB:CC:DD:EE:FF">
                     </div>
                 </div>
                 <div class="senha">
                     <h4>Sistema operacional</h4>
-                    <input type="text" name="so_input" placeholder="   Ex: Ubuntu 22.04">
-                </div>
-                <div class="container_empresa_usuario">
-                    <h4>Métricas monitoradas</h4>
-                    <input type="text" name="componente_input" placeholder="   Ex: CPU, RAM, Disco">
-                </div>
-                  <div class="container_empresa_usuario">
-                    <h4>Outro componente</h4>
-                    <input type="text" name="outro_componente_input" placeholder="   Ex: GPU, Switch, Sensor de temperatura...">
-                </div>
-                <div class="container_atividade_usuario">
-                    <h4>Status</h4>
-                    <select name="" id="atividades_usuario">
-                        <option value="status_visualizador">Online</option>
-                        <option value="status_adm">Offline</option>
+                    <select name="" id="so_input">
+                        <option value="1">'Windows 11 Home Single Language</option>
+                        <option value="2">Linux Ubuntu Server</option>
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
                     <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="chamarCadastro()">Cadastrar</button>
+                    <button class="botao_cadastrar_usuario" onclick="cadastrar()">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div id="container_cadastro2" style="display: none;">
+            <div class="sessao_cadastro">
+                <div class="container_empresa_usuario">
+                    <h4>Componentes monitoradas</h4>
+                    <select name="" id="atividades_usuario">
+                        <option value="7">CPU (%)</option>
+                        <option value="8">CPU (MH)</option>
+                        <option value="9">RAM (%)</option>
+                        <option value="10">RAM (GB)</option>
+                        <option value="11">DISCO (%)</option>
+                        <option value="12">REDE (MB)</option>
+                    </select>
+                </div>
+                <div class="container_atividade_usuario">
+                    <h4>Status</h4>
+                    <select name="" id="atividades_usuario">
+                        <option value="Ativo">Ativo</option>
+                        <option value="Não Ativo">Não Ativo</option>
+                        <option value="Pendente">Pendente</option>
+                    </select>
+                </div>
+                <div class="botoes_modal_cadastro">
+                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
+                    <button class="botao_cadastrar_usuario" onclick="cadastrarMaquina()">Cadastrar</button>
                 </div>
             </div>
         </div>
@@ -185,51 +195,126 @@
 </html>
 <script>
 
-    function chamarCadastro() {
-        const container = document.getElementById("container_cadastro");
-
-        if (container.style.display === "none") {
-            container.style.display = "block";
-        } else {
-            container.style.display = "none";
-        }
-    }
     var cadastro_realizado = false;
+
+    function cadastrarUsuario() {
+
+        let booleano = true;
+        var nomeVar = nome_input.value;
+        var macVar = mac_input.value;
+        var soVar = so_input.value;
+        var emailVar = "opa";
+        var senhaVar = "opa";
+
+
+
+
+        // Verificando se há algum campo em branco
+        if (
+            nomeVar == "" ||
+            emailVar == "" ||
+            senhaVar == "" ||
+            confirmacaoSenhaVar == "" ||
+            cargoVar == "" ||
+            idEmpresaVar == "" ||
+            dataVar == ""
+            ||
+            nomeUsuarioVar == ""
+        ) {
+            booleano = false;
+        }
+
+        // Enviando o valor da nova input
+        if (senhaVar == confirmacaoSenhaVar && booleano == true) {
+            fetch("/usuarios/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    // crie um atributo que recebe o valor recuperado aqui
+                    // Agora vá para o arquivo routes/usuario.js
+                    nomeServer: nomeVar,
+                    emailServer: emailVar,
+                    senhaServer: senhaVar,
+                    cargoServer: cargoVar,
+                    idempresaServer: idEmpresaVar,
+                    dataServer: dataVar,
+                    nomeUsuarioServer: nomeUsuarioVar
+                }),
+            })
+                .then(function (resposta) {
+                    console.log("resposta: ", resposta);
+
+                    if (resposta.ok) {
+                        cardErro.style.display = "block";
+
+                        mensagem_erro.innerHTML =
+                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                        setTimeout(() => {
+                            window.location = "../gerenciaPeakstack/gerenciamentoEmpresas.html";
+                        }, "2000");
+
+                        limparFormulario();
+                        finalizarAguardar();
+                    } else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                    finalizarAguardar();
+                });
+
+            return false;
+        }
+
+    }
+
+    function mudarTela() {
+        document.getElementById('btnProximo').addEventListener('click', function () {
+            var cadastroEmpresa = document.getElementById('cadastroEmpresa');
+            var cadastroADM = document.getElementById('cadastroADM');
+
+            if (cadastroEmpresa && cadastroADM) {
+
+            }
+        });
+
+    }
 
     function cadastrar() {
         console.log("chamei a funcao cadastrar");
-        var ipVar= ip_input.value;
+        let booleano = true;
         var nomeVar = nome_input.value;
         var macVar = mac_input.value;
-        var componenteVar = componente_input.value;
         var soVar = so_input.value;
-        var outroComponenteVar = outro_componente_input.value;
-        var booleano = true;
+        var emailVar = "opa";
+        var senhaVar = "opa";
+        var idEmpresaVar = sessionStorage.getItem("FKEMPRESA_USUARIO");
+        var nomeUsuarioVar = sessionStorage.getItem("NOME_USUARIO")
+        console.log(soVar)
+        console.log(nomeUsuarioVar)
+        console.log(idEmpresaVar)
 
         // aguardar();
 
         if (
             nomeVar == "" ||
-            ipVar == "" ||
-            macVar == "" || 
-            componenteVar == "" ||
-            soVar == "" ||
-            outroComponenteVar == ""
+            macVar == "" ||
+            soVar == ""
         ) {
             booleano = false;
         }
 
         console.log(nomeVar)
-        console.log(ipVar)
+        console.log(soVar)
         console.log(macVar)
-        console.log(componenteVar)
-        console.log(componenteVar)
-        console.log(componenteVar)
-        console.log(componenteVar)
         console.log(booleano)
 
         if (booleano == true) {
-            fetch("/empresas/cadastrar", {
+            fetch("/maquinas/cadastrarMaquina", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -239,8 +324,10 @@
                     // crie um atributo que recebe o valor recuperado aqui
                     // Agora vá para o arquivo routes/usuario.js
                     nomeServer: nomeVar,
-                    cnpjServer: cnpjVar,
-                    razaoSocialServer: razaoSocialVar,
+                    macServer: macVar,
+                    soServer: soVar,
+                    idEmpresaServer: idEmpresaVar,
+                    nomeUsuarioServer: nomeUsuarioVar
 
                 }),
 
@@ -251,8 +338,8 @@
 
                     if (resposta.ok) {
                         console.log("resposta ok");
-                        cadastroEmpresa.style.display = 'none';
-                        cadastroADM.style.display = 'block';
+                        container_cadastro.style.display = 'none';
+                        container_cadastro2.style.display = 'block';
                         limparFormulario();
                         finalizarAguardar();
 
@@ -265,64 +352,48 @@
                     finalizarAguardar();
                 });
 
+            fetch("/maquinas/listar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
+            }).then(function (resposta) {
+                if (resposta.ok) {
+                    resposta.json().then(function (json) {
+                        sessionStorage.ID_MAQUINA = json.id + 1;
+                        fez_login = true;
+                    });
+                } else {
+                    resposta.text().then(function (texto) {
+                        // cardErro.style.display = "block";
+                        // mensagem_erro.innerHTML = texto + ". Tente novamente.";
+                        finalizarAguardar();
+                        // registrar_checkpoint("erro_login_peakstack");
+                    });
+                }
+            }).catch(function () {
+                // cardErro.style.display = "block";
+                // mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
+                finalizarAguardar();
+                // registrar_checkpoint("falha_conexao_login_peakstack");
+            });
+
             return false;
         }
     }
 
+    function chamarCadastro() {
+        const container = document.getElementById("container_cadastro");
+        const container2 = document.getElementById("container_cadastro2");
 
-    function exibirErroCadastro(mensagem) {
-        cardErro.style.display = "block";
-        mensagem_erro.innerHTML = mensagem;
-        return false;
+        if (container.style.display === "none") {
+            container.style.display = "block";
+            container2.style.display = "none";
+        } else {
+            container.style.display = "none";
+            container2.style.display = "block";
+
+        }
+
     }
 
-
-
-    function cadastrarUsuario() {
-        const lista = document.getElementById('lista-usuarios');
-
-        const novoUsuarioHTML = `
-        <div class="conteudo_tabela" id="lista_usuarios">
-
-                        <div class="conteudo_tabela" id="lista_usuarios">
-
-                        <div class="linha_tabela">
-                            <div class="campo_usuario">
-                                <div></div>
-                            </div>
-                            <div class="texto_email"></div>
-                            <div class="texto_empresa"></div>
-                            <div>
-                                <div class="area_usuario"></div>
-                            </div>
-                            <div>
-                                <div class="status_atual_usuario"></div>
-                            </div>
-                            <div class="container_acoes">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path fill-rule="evenodd"
-                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-trash3" viewBox="0 0 16 16">
-                                        <path
-                                            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-      `;
-
-        lista.insertAdjacentHTML('beforeend', novoUsuarioHTML);
-
-        lucide.createIcons();
-    }
-   
 </script>
