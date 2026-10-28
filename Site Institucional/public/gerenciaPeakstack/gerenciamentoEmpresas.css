@@ -368,6 +368,167 @@ td {
     display: none !important;
 }
 
+.modal_edicao {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgb(25 39 65 / 42%);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.modal_edicao.aberto {
+    display: flex;
+}
+
+.modal_edicao_cartao {
+    width: min(100%, 420px);
+    overflow: hidden;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 20px 55px rgb(21 37 62 / 22%);
+}
+
+.modal_edicao_cabecalho {
+    display: flex;
+    height: 58px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    border-bottom: 1px solid #edf1f7;
+}
+
+.modal_edicao_cabecalho h2 {
+    color: #25262b;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.modal_edicao_fechar {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border: 0;
+    color: #8ba0bf;
+    background: transparent;
+}
+
+.modal_edicao_fechar svg,
+.campo_edicao svg,
+.botao_atualizar_edicao svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+.form_edicao_empresa {
+    display: grid;
+    gap: 8px;
+    padding: 18px 23px 19px;
+}
+
+.form_edicao_empresa > label {
+    margin-top: 3px;
+    color: #7184a3;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .25px;
+    text-transform: uppercase;
+}
+
+.campo_edicao {
+    display: flex;
+    height: 41px;
+    align-items: center;
+    gap: 9px;
+    padding: 0 13px;
+    border: 1px solid #dce5f2;
+    border-radius: 17px;
+    color: #506482;
+}
+
+.campo_edicao:focus-within {
+    border-color: #6b95db;
+    box-shadow: 0 0 0 3px rgb(46 103 213 / 9%);
+}
+
+.campo_edicao svg {
+    flex: 0 0 15px;
+    width: 15px;
+    height: 15px;
+    color: #8da4c6;
+}
+
+.campo_edicao input,
+.campo_edicao select {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    color: #425675;
+    background: transparent;
+    font-size: 11px;
+}
+
+.campo_edicao select {
+    height: 100%;
+    cursor: pointer;
+}
+
+.acoes_edicao {
+    display: flex;
+    gap: 12px;
+    margin-top: 13px;
+}
+
+.acoes_edicao button {
+    display: flex;
+    height: 40px;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #dce5f2;
+    border-radius: 18px;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.botao_cancelar_edicao {
+    color: #506482;
+    background: #fff;
+}
+
+.botao_atualizar_edicao {
+    border-color: #2e67d5 !important;
+    color: #fff;
+    background: #2e67d5;
+}
+
+.botao_atualizar_edicao:hover {
+    background: #2459bd;
+}
+
+@media (max-width: 480px) {
+    .modal_edicao {
+        padding: 16px;
+    }
+
+    .form_edicao_empresa {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+}
+
 @media (max-width: 760px) {
     .menu_lateral {
         width: 17%;

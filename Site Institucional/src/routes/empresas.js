@@ -20,4 +20,16 @@ router.post("/listar", function (req, res) {
   empresaController.listar(req, res);
 });
 
+router.get("/listarEmpresas", function(req, res){
+  empresaController.listarEmpresas(req, res);
+});
+
+router.put("/atualizar", function (req,res){
+  empresaController.atualizar(req,res);
+});
+
+router.delete("/deletar", function (req,res){
+  empresaController.deletar(req,res);
+});
+
 module.exports = router;

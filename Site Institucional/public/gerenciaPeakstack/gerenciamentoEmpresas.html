@@ -62,7 +62,6 @@
                                 <th>Razão social</th>
                                 <th>CNPJ</th>
                                 <th>CEO</th>
-                                <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -76,11 +75,10 @@
                                 </td>
                                 <td class="cnpj">48.261.395/0001-08</td>
                                 <td>Isabella White</td>
-                                <td><span class="status ativa">Ativa</span></td>
                                 <td>
                                     <div class="acoes_linha">
-                                        <button type="button" aria-label="Editar PeakStack Tecnologia Ltda."><svg
-                                                viewBox="0 0 24 24">
+                                        <button id="botaoEdicao" type="button"
+                                            aria-label="Editar PeakStack Tecnologia Ltda."><svg viewBox="0 0 24 24">
                                                 <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
                                                 </path>
                                             </svg>
@@ -102,7 +100,6 @@
                                 </td>
                                 <td class="cnpj">14.512.528/0001-54</td>
                                 <td>Rodrigo Cartacho</td>
-                                <td><span class="status ativa">Ativa</span></td>
                                 <td>
                                     <div class="acoes_linha"><button type="button"
                                             aria-label="Editar Sympla Internet Soluções S.A."><svg viewBox="0 0 24 24">
@@ -119,7 +116,7 @@
                                 </td>
                             </tr>
                             <tr id="sem_resultados" hidden>
-                                <td colspan="5" class="vazio">Nenhuma empresa encontrada.</td>
+                                <td colspan="4" class="vazio">Nenhuma empresa encontrada.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -127,6 +124,73 @@
             </section>
         </main>
     </div>
+
+    <div id="modalEdicaoEmpresa" class="modal_edicao" aria-hidden="true">
+        <section class="modal_edicao_cartao" role="dialog" aria-modal="true" aria-labelledby="tituloEdicaoEmpresa">
+            <header class="modal_edicao_cabecalho">
+                <h2 id="tituloEdicaoEmpresa">Editar empresa</h2>
+                <button class="modal_edicao_fechar" type="button" aria-label="Fechar edição" data-fechar-modal>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </header>
+            <form id="formEdicaoEmpresa" class="form_edicao_empresa">
+                <label for="edicaoRazaoSocial">Razão social *</label>
+                <div class="campo_edicao campo_com_icone">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M4 21h16M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 7h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2">
+                        </path>
+                    </svg>
+                    <input id="edicaoRazaoSocial" name="razaoSocial" value="PeakStack Tecnologia Ltda." required>
+                </div>
+                <label for="edicaoNomeFantasia">Nome fantasia</label>
+                <div class="campo_edicao">
+                    <input id="edicaoNomeFantasia" name="nomeFantasia" value="PeakStack">
+                </div>
+                <label for="edicaoCnpj">CNPJ *</label>
+                <div class="campo_edicao"><input id="edicaoCnpj" name="cnpj" value="48.261.395/0001-08" required></div>
+                <label for="edicaoCeo">CEO *</label>
+                <div class="campo_edicao campo_com_icone">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="8" r="3.5"></circle>
+                        <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
+                    </svg>
+                    <input id="edicaoCeo" name="ceo" value="Isabella White" required>
+                </div>
+                <div class="acoes_edicao">
+                    <button class="botao_cancelar_edicao" type="button" data-fechar-modal>Cancelar</button>
+                    <button class="botao_atualizar_edicao" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>Atualizar empresa</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalEdicaoEmpresa');
+
+        document.getElementById('botaoEdicao').onclick = () => {
+            modal.classList.add('aberto');
+            modal.setAttribute('aria-hidden', 'false');
+        };
+
+        function fecharModal() {
+            modal.classList.remove('aberto');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        document.querySelectorAll('[data-fechar-modal]').forEach(botao => {
+            botao.onclick = fecharModal;
+        });
+
+        document.getElementById('formEdicaoEmpresa').onsubmit = evento => {
+            evento.preventDefault();
+            fecharModal();
+        };
+    </script>
 
 </body>
 
