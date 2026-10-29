@@ -156,19 +156,19 @@
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
+                    <button class="botao_cancelar_cadastro_usuario" onclick="fechar()">Cancelar</button>
                     <button class="botao_cadastrar_usuario" onclick="cadastrar()">Adicionar</button>
                 </div>
             </div>
         </div>
     </section>
-    
+
     <section>
         <div id="container_cadastro2" style="display: none;">
             <div class="sessao_cadastro2">
                 <div class="container_empresa_usuario">
                     <h4>Componentes monitoradas</h4>
-                    <select name="" id="atividades_usuario">
+                    <select name="" id="componente_input">
                         <option value="7">CPU (%)</option>
                         <option value="8">CPU (MH)</option>
                         <option value="9">RAM (%)</option>
@@ -179,15 +179,15 @@
                 </div>
                 <div class="container_atividade_usuario">
                     <h4>Status</h4>
-                    <select name="" id="atividades_usuario">
+                    <select name="" id="status_input">
                         <option value="Ativo">Ativo</option>
                         <option value="Não Ativo">Não Ativo</option>
                         <option value="Pendente">Pendente</option>
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="cadastrar()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="cadastrarMaquina()">Cadastrar</button>
+                    <button class="botao_cancelar_cadastro_usuario" onclick="fechar()">Cancelar</button>
+                    <button class="botao_cadastrar_usuario" onclick="cadastrarComponente()">Cadastrar</button>
                 </div>
             </div>
         </div>
@@ -199,67 +199,58 @@
 
     var cadastro_realizado = false;
 
-    function cadastrarUsuario() {
-
+    function cadastrarComponente() {
+        console.log("chamei a funcao cadastrar");
         let booleano = true;
-        var nomeVar = nome_input.value;
-        var macVar = mac_input.value;
-        var soVar = so_input.value;
-        var emailVar = "opa";
-        var senhaVar = "opa";
+        var componenteVar = componente_input.value;
+        var statusVar = status_input.value;
+        var idMaquinaVar = sessionStorage.getItem("ID_MAQUINA");
+        console.log(componenteVar)
+        console.log(statusVar)
+        console.log(idMaquinaVar)
 
+        // aguardar();
 
-
-
-        // Verificando se há algum campo em branco
         if (
-            nomeVar == "" ||
-            emailVar == "" ||
-            senhaVar == "" ||
-            confirmacaoSenhaVar == "" ||
-            cargoVar == "" ||
-            idEmpresaVar == "" ||
-            dataVar == ""
-            ||
-            nomeUsuarioVar == ""
+            componenteVar == "" ||
+            statusVar == ""
         ) {
             booleano = false;
         }
 
-        // Enviando o valor da nova input
-        if (senhaVar == confirmacaoSenhaVar && booleano == true) {
-            fetch("/usuarios/cadastrar", {
+        console.log(componenteVar)
+        console.log(statusVar)
+        console.log(idMaquinaVar)
+        console.log(booleano)
+
+        if (booleano == true) {
+            fetch("/maquinas/cadastrarComponente", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+
                     // crie um atributo que recebe o valor recuperado aqui
                     // Agora vá para o arquivo routes/usuario.js
-                    nomeServer: nomeVar,
-                    emailServer: emailVar,
-                    senhaServer: senhaVar,
-                    cargoServer: cargoVar,
-                    idempresaServer: idEmpresaVar,
-                    dataServer: dataVar,
-                    nomeUsuarioServer: nomeUsuarioVar
+                    commponenteServer: componenteVar,
+                    statusServer: statusVar,
+                    idMaquinaServer: idMaquinaVar
+
                 }),
+
             })
                 .then(function (resposta) {
+                    console.log("chamei as variavel");
                     console.log("resposta: ", resposta);
 
                     if (resposta.ok) {
-                        cardErro.style.display = "block";
-
-                        mensagem_erro.innerHTML =
-                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-                        setTimeout(() => {
-                            window.location = "../gerenciaPeakstack/gerenciamentoEmpresas.html";
-                        }, "2000");
-
+                        console.log("resposta ok");
+                        container_cadastro.style.display = 'none';
+                        container_cadastro2.style.display = 'flex';
                         limparFormulario();
                         finalizarAguardar();
+
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
@@ -271,7 +262,6 @@
 
             return false;
         }
-
     }
 
     function mudarTela() {
@@ -396,6 +386,11 @@
 
         }
 
+    }
+
+    function fechar() {
+        document.getElementById("container_cadastro").style.display = "none";
+        document.getElementById("container_cadastro2").style.display = "none";
     }
 
 </script>

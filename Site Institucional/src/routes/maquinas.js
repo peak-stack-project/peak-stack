@@ -9,7 +9,7 @@ router.post("/cadastrarMaquina", function (req, res) {
 })
 
 router.post("/cadastrarComponente", function (req, res) {
-    maquinasController.buscarPorCnpj(req, res);
+    maquinasController.cadastrarComponente(req, res);
 });
 
 router.post("/listar", function (req, res) {

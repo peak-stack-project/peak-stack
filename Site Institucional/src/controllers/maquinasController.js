@@ -29,12 +29,12 @@ function cadastrarMaquina(req, res) {
 
 function cadastrarComponente(req, res) {
     // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
-    var nome = req.body.nomeServer;
-    var razaoSocial = req.body.razaoSocialServer;
-    var cnpj = req.body.cnpjServer;
+    var status = req.body.statusServer;
+    var componente = req.body.commponenteServer;
+    var idMaquina = req.body.idMaquinaServer;
    
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        maquinasModel.cadastrar(nome, razaoSocial, cnpj)
+        maquinasModel.cadastrarComponente(componente, idMaquina, status)
             .then(
                 function (resultado) {
                     res.json(resultado);
@@ -63,7 +63,7 @@ function listar(req, res) {
          res.status(400).send("Sua senha está indefinida!");
      } else {
  
-         empresaModel.listar(email, senha)
+         maquinasModel.listar(email, senha)
              .then(
                  function (resultadoAutenticar) {
                      console.log(`\nResultados encontrados: ${resultadoAutenticar.length}`);
