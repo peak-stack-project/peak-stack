@@ -17,20 +17,20 @@ function limparSessao() {
     window.location = "/login.html";
 }
 
-function ajustarNavbarSessao() {
-    var idUsuario = sessionStorage.ID_USUARIO;
-    var linkLogin = document.getElementById("link_login");
-    var linkCadastro = document.getElementById("link_cadastro");
-    var botaoLogout = document.getElementById("btn_logout");
-    var linkDashboard = document.getElementById("link_dashboard")
-    var linkMaquinas = document.getElementById("link_maquinas")
+// function ajustarNavbarSessao() {
+//     var idUsuario = sessionStorage.ID_USUARIO;
+//     var linkLogin = document.getElementById("link_login");
+//     var linkCadastro = document.getElementById("link_cadastro");
+//     var botaoLogout = document.getElementById("btn_logout");
+//     var linkDashboard = document.getElementById("link_dashboard")
+//     var linkMaquinas = document.getElementById("link_maquinas")
 
-    if (linkLogin) linkLogin.style.display = idUsuario == undefined ? "block" : "none";
-    if (linkCadastro) linkCadastro.style.display = idUsuario == undefined ? "block" : "none";
-    if (botaoLogout) botaoLogout.style.display = idUsuario == undefined ? "none" : "block";
-    if (linkMaquinas) linkMaquinas.style.display = idUsuario == undefined ? "none" : "block";
-    if (linkDashboard) linkDashboard.style.display = idUsuario == undefined ? "none" : "block"
-}
+//     if (linkLogin) linkLogin.style.display = idUsuario == undefined ? "block" : "none";
+//     if (linkCadastro) linkCadastro.style.display = idUsuario == undefined ? "block" : "none";
+//     if (botaoLogout) botaoLogout.style.display = idUsuario == undefined ? "none" : "block";
+//     if (linkMaquinas) linkMaquinas.style.display = idUsuario == undefined ? "none" : "block";
+//     if (linkDashboard) linkDashboard.style.display = idUsuario == undefined ? "none" : "block"
+// }
 
 function aguardar() {
     var divAguardar = document.getElementById("div_aguardar");

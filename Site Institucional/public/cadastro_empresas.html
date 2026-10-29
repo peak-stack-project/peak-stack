@@ -132,7 +132,8 @@
 
 <script>
     var cadastro_realizado = false;
-function cadastrarUsuario() {
+
+    function cadastrarUsuario() {
       
     let booleano = true;
     var nomeVar = nome_input.value;
@@ -190,7 +191,7 @@ function cadastrarUsuario() {
             "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
 
           setTimeout(() => {
-            window.location = "login.html";
+            window.location = "../gerenciaPeakstack/gerenciamentoEmpresas.html";
           }, "2000");
 
           limparFormulario();
@@ -208,7 +209,7 @@ function cadastrarUsuario() {
   }
 
     }
-
+    
     function mudarTela() {
         document.getElementById('btnProximo').addEventListener('click', function () {
             var cadastroEmpresa = document.getElementById('cadastroEmpresa');
