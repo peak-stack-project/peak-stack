@@ -99,12 +99,12 @@ function listarEmpresas(res, res){
 
 function atualizar(req, res) {
 
-    var nome = req.body.nomeServer;
-    var razaoSocial = req.body.razaoSocialServer;
-    var cnpj = req.body.cnpjServer;
-    var id = req.params.id;
+   const id = req.params.id;
+    const razaoSocial = req.body.razao_social;
+    const nomeFantasia = req.body.nome_fantasia;
+    const cnpj = req.body.cnpj;
 
-    empresaModel.atualizar(nome, razaoSocial, cnpj, id)
+    empresaModel.atualizar(nomeFantasia, razaoSocial, cnpj, id)
         .then(
             function (resultado) {
                 res.json(resultado)

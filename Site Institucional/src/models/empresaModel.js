@@ -37,9 +37,9 @@ function listarEmpresas(req, res) {
 
 }
 
-function atualizar(nome, razaoSocial, cnpj, id) {
+function atualizar( nomeFantasia, razaoSocial, cnpj, id) {
   var instrucaoSql = `UPDATE empresa 
-                      SET nome_fantasia = '${nome}', 
+                      SET nome_fantasia = '${nomeFantasia}', 
                       razao_social = '${razaoSocial}', 
                       cnpj = '${cnpj}' 
                       WHERE id = '${id}'`

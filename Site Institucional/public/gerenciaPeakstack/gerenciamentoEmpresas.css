@@ -79,13 +79,18 @@ a {
 
 .marca_lateral {
 
-    width: 100%;
-    height: 15dvh;
-    color: #fff;
-    margin-top: 2dvh;
-    display: flex;
+   display: inline-flex;
     align-items: center;
+    gap: 10px;
+    height: 13%;
+    font-size: 21px;
+    font-weight: 800;
 
+}
+
+.marca_lateral h4{
+    color: #f6f6f8;
+    font-size: 14px;
 }
 
 .marca_lateral img{
@@ -94,22 +99,26 @@ a {
 }
 
 
-.marca_lateral .marca_icone {
-    color: var(--cor-primaria);
-    background: #fff;
-    
+.marca span {
+    color:var(--cor-primaria-quasepreto);
 }
 
-.marca_lateral h4{
-    color: #f6f6f8;
-    font-size: 14px;
+.marca_icone {
+    display: inline-block;
+    width: 50%;
+    height: 50%;
+}
+
+.marca_icone img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .menu_grupo {
-    margin-top: 5dvh;
     display: grid;
     gap: 8px;
-    height: 10dvh;
+    height: 11dvh;
 }
 
 .menu_grupo a{
@@ -129,14 +138,13 @@ a {
 }
 
 .menu_grupo a,
-.menu_lateral_rodape > a {
+.menu_lateral_rodape  a {
     padding: 12px 14px;
     border-radius: 8px;
     font-weight: 600;
 }
 
-.menu_grupo a:hover,
-.menu_grupo a.ativo {
+.menu_grupo a:hover {
     background: var(--cor-primaria);
 
 }
@@ -145,6 +153,12 @@ a {
     display: grid;
     gap: 10px;
     margin-top: auto;
+}
+
+.menu_grupo a:hover,
+.menu_grupo a.ativo {
+    background: var(--cor-primaria);
+
 }
 
 
@@ -196,40 +210,6 @@ button,
     font-size: 14px;
 }
 
-.container_pesquisa {
-    display: flex;
-    width: 35%;
-    height: 10dvh;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-.container_pesquisa input {
-    width: 70%;
-    height: 4dvh;
-    padding: 0 10px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 8px;
-}
-
-.container_pesquisa button {
-    display: grid;
-    place-items: center;
-    padding: 6px;
-    border: 0;
-    background: transparent;
-}
-
-.container_pesquisa svg {
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.5;
-}
 
 .area_empresas {
     margin: 22px 17px;
@@ -364,9 +344,7 @@ td {
     text-align: center;
 }
 
-[hidden] {
-    display: none !important;
-}
+
 
 .modal_edicao {
     position: fixed;
@@ -509,13 +487,22 @@ td {
 }
 
 .botao_atualizar_edicao {
-    border-color: #2e67d5 !important;
+    border-color: #2e67d5;
     color: #fff;
     background: #2e67d5;
 }
 
 .botao_atualizar_edicao:hover {
     background: #2459bd;
+}
+
+.botao_lateral{
+
+    border-radius: 10px;
+    height: 6dvh;
+    color: black;
+    font-weight: bold;
+
 }
 
 @media (max-width: 480px) {

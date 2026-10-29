@@ -24,7 +24,7 @@ router.get("/listarEmpresas", function(req, res){
   empresaController.listarEmpresas(req, res);
 });
 
-router.put("/atualizar", function (req,res){
+router.put("/atualizar/:id", function (req,res){
   empresaController.atualizar(req,res);
 });
 
