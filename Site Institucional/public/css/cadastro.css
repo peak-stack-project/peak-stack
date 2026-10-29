@@ -120,10 +120,9 @@ body {
 }
 
 .menu_grupo {
-    margin-top: 5dvh;
     display: grid;
     gap: 8px;
-    height: 10dvh;
+    height: 11dvh;
 }
 
 .menu_grupo a{
@@ -157,6 +156,7 @@ body {
 
 .menu_lateral_rodape {
     display: grid;
+
     gap: 10px;
     margin-top: auto;
 }
@@ -212,7 +212,7 @@ h1 {
 }
 
 .marca {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 10px;
     height: 65px;

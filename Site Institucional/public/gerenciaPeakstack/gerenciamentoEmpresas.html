@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./gerenciamentoEmpresas.css">
+    <link rel="shortcut icon" href="../assets/logo para fundo escuro - sem fundo.png" type="image/x-icon">
     <script src="../js/sessao.js" defer></script>
 </head>
 
@@ -28,29 +29,21 @@
             <nav class="menu_grupo" aria-label="Menu principal">
                 <span class="menu_rotulo">Menu</span>
                 <a href="../cadastro_empresas.html">Cadastro</a>
-                <a class="ativo" href="./gerenciamentoEmpresas.html" aria-current="page">Gerenciamento de Empresas</a>
+                <a class="ativo" href="./gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
             </nav>
-            <span class="menu_grupo">
-                <a href="../index.html">Sair</a>
-            </span>
+            <div class="menu_lateral_rodape">
+                <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                    Sair
+                </button>
+            </div>
         </aside>
 
         <main class="conteudo">
             <header class="container_inicial">
                 <div class="texto_inicial">
                     <h3>Gerenciamento de Empresas</h3>
-                    <p>Administre as empresas conectadas à PeakStack</p>
                 </div>
-                <label class="container_pesquisa campo_busca">
-                    <input id="busca_empresa" type="search" placeholder="Buscar por razão social, CNPJ ou CEO..."
-                        autocomplete="off">
-                    <button type="button" aria-label="Buscar">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <circle cx="10.8" cy="10.8" r="6.5"></circle>
-                            <path d="m16 16 4.2 4.2"></path>
-                        </svg>
-                    </button>
-                </label>
+                
             </header>
 
             <section class="area_empresas" aria-label="Lista de empresas">
@@ -61,71 +54,184 @@
                                 <th>Razão social</th>
                                 <th>CNPJ</th>
                                 <th>CEO</th>
-                                <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="lista_empresas">
-                            <tr>
-                                <td>
-                                    <div class="empresa">
-                                        <span class="avatar">P</span>
-                                        <strong>PeakStack Tecnologia Ltda.</strong>
-                                    </div>
-                                </td>
-                                <td class="cnpj">48.261.395/0001-08</td>
-                                <td>Isabella White</td>
-                                <td><span class="status ativa">Ativa</span></td>
-                                <td>
-                                    <div class="acoes_linha">
-                                        <button type="button" aria-label="Editar PeakStack Tecnologia Ltda."><svg
-                                                viewBox="0 0 24 24">
-                                                <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                        <button type="button" aria-label="Excluir PeakStack Tecnologia Ltda."><svg
-                                                viewBox="0 0 24 24">
-                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr data-search="">
-                                <td>
-                                    <div class="empresa">
-                                        <span class="avatar">S</span>
-                                        <strong>Sympla Internet Soluções S.A.</strong>
-                                    </div>
-                                </td>
-                                <td class="cnpj">14.512.528/0001-54</td>
-                                <td>Rodrigo Cartacho</td>
-                                <td><span class="status ativa">Ativa</span></td>
-                                <td>
-                                    <div class="acoes_linha"><button type="button"
-                                            aria-label="Editar Sympla Internet Soluções S.A."><svg viewBox="0 0 24 24">
-                                                <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                        <button type="button" aria-label="Excluir Sympla Internet Soluções S.A."><svg
-                                                viewBox="0 0 24 24">
-                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr id="sem_resultados" hidden>
-                                <td colspan="5" class="vazio">Nenhuma empresa encontrada.</td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
             </section>
         </main>
     </div>
+
+    <div id="modalEdicaoEmpresa" class="modal_edicao" aria-hidden="true">
+        <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloEdicaoEmpresa">
+            <header class="modal_edicao_cabecalho">
+                <h2 id="tituloEdicaoEmpresa">Editar empresa</h2>
+                <button class="modal_edicao_fechar" type="button" aria-label="Fechar edição" data-fechar-modal>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </header>
+            <form id="formEdicaoEmpresa" class="form_edicao_empresa">
+                <label for="edicaoRazaoSocial">Razão social</label>
+                <div class="campo_edicao campo_com_icone">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M4 21h16M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 7h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2">
+                        </path>
+                    </svg>
+                    <input id="atualizacaoRazaoSocial" name="razaoSocial" placeholder=" Empresa LTDA">
+                </div>
+                <label for="edicaoNomeFantasia">Nome fantasia</label>
+                <div class="campo_edicao">
+                    <input id="atualizacaoNomeFantasia" name="nomeFantasia" placeholder=" Empresa">
+                </div>
+                <label for="edicaoCnpj">CNPJ *</label>
+                <div class="campo_edicao">
+                    <input id="atualizacaoCNPJ" name="cnpj" placeholder="00.000.000/0000-00"></div>
+                <label for="edicaoCeo">CEO *</label>
+                <div class="campo_edicao campo_com_icone">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="8" r="3.5"></circle>
+                        <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
+                    </svg>
+                    <input id="atualizacaoCeo" name="ceo" placeholder="Ana Marques">
+                </div>
+                <div class="acoes_edicao">
+                    <button class="botao_cancelar_edicao" type="button" data-fechar-modal>Cancelar</button>
+                    <button class="botao_atualizar_edicao" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>Atualizar empresa</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script>
+
+        function listar() {
+            fetch('/empresas/listarEmpresas')
+                .then(function (resposta) {
+                    resposta.json().then(function (json) {
+                        let htmlCodigo = ""
+                        for (let i = 0; i < json.length; i++) {
+                            htmlCodigo +=
+                                ` <tr>
+                                <td>
+                                    <div class="empresa">
+                                        <span class="avatar">*</span>
+                                        <strong>${json[i].razao_social}</strong>
+                                    </div>
+                                </td>
+                                <td class="cnpj">${json[i].cnpj}</td>
+                                <td>${json[i].nome}</td>
+                                <td>
+                                    <div class="acoes_linha">
+                                        <button onclick="editar(${json[i].id})" id="botaoEdicao" type="button"
+                                            aria-label="Editar PeakStack Tecnologia Ltda."><svg viewBox="0 0 24 24">
+                                                <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <button onclick="excluir(${json[i].id})" type="button" aria-label="Excluir PeakStack Tecnologia Ltda."><svg
+                                                viewBox="0 0 24 24">
+                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>`
+                        }
+                        console.log(json)
+                        lista_empresas.innerHTML = htmlCodigo;
+                    })
+                })
+                .catch(erro => console.error('Erro ao listar empresas:', erro));
+        }
+
+        listar()
+
+        const modal = document.getElementById('modalEdicaoEmpresa');
+
+        let idEmpresa;
+
+        function editar(id) {
+            idEmpresa = id;
+            console.log(id)
+
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+
+            console.log('ID da empresa selecionada:', idEmpresa);
+        }
+
+        function fecharModal() {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        document.querySelectorAll('[data-fechar-modal]').forEach(function (botao) {
+            botao.addEventListener('click', fecharModal);
+        });
+
+        document.getElementById('formEdicaoEmpresa').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (idEmpresa == null) {
+                alert('Selecione uma empresa para editar.');
+                return;
+            }
+            let razaoSocial = atualizacaoRazaoSocial.value
+            let nomeFantasia = atualizacaoNomeFantasia.value
+            let cnpjNovo = atualizacaoCNPJ.value
+            let nomeCeo = atualizacaoCeo.value
+
+            if (razaoSocial == '') {
+                alert("Razão social Invalida, deve ter ao menos 5 caracteres")
+                return;
+            }
+            if (nomeFantasia == null || nomeFantasia.length < 5) {
+                alert("Nome Fantasia Invalida, deve ter ao menos 5 caracteres")
+                return;
+            }
+            if (cnpjNovo == null || (cnpjNovo.length < 5 || cnpjNovo.length >= 15)) {
+                alert("CNPJ invalido, deve ter ao menos 5 e no maximo 14 caracteres")
+                return;
+            }
+
+
+
+            fetch(`/empresas/atualizar/${idEmpresa}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    razao_social: razaoSocial,
+                    nome_fantasia: nomeFantasia,
+                    cnpj: cnpjNovo,
+                    nome: nomeCeo
+                })
+            })
+                .then(function (resposta) {
+                    if (resposta.ok) {
+                        alert('Empresa atualizada com sucesso!');
+                        fecharModal();
+                        listar();
+                    } else {
+                        alert('Erro ao atualizar a empresa.');
+                    }
+                })
+                .catch(function (erro) {
+                    console.error('Erro ao atualizar:', erro);
+                });
+        });
+
+    </script>
 
 </body>
 
