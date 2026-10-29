@@ -122,7 +122,8 @@
                 </div>
     </section>
     <section>
-        <div id="container_cadastro">
+
+        <div id="container_cadastro" style="display: none;">
             <div class="sessao_cadastro">
                 <div class="container_tema">
                     <h3>Cadastrar Máquinas</h3>
@@ -161,9 +162,10 @@
             </div>
         </div>
     </section>
+    
     <section>
         <div id="container_cadastro2" style="display: none;">
-            <div class="sessao_cadastro">
+            <div class="sessao_cadastro2">
                 <div class="container_empresa_usuario">
                     <h4>Componentes monitoradas</h4>
                     <select name="" id="atividades_usuario">
@@ -184,7 +186,7 @@
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
+                    <button class="botao_cancelar_cadastro_usuario" onclick="cadastrar()">Cancelar</button>
                     <button class="botao_cadastrar_usuario" onclick="cadastrarMaquina()">Cadastrar</button>
                 </div>
             </div>
@@ -339,7 +341,7 @@
                     if (resposta.ok) {
                         console.log("resposta ok");
                         container_cadastro.style.display = 'none';
-                        container_cadastro2.style.display = 'block';
+                        container_cadastro2.style.display = 'flex';
                         limparFormulario();
                         finalizarAguardar();
 
@@ -386,11 +388,11 @@
         const container2 = document.getElementById("container_cadastro2");
 
         if (container.style.display === "none") {
-            container.style.display = "block";
+            container.style.display = "flex";
             container2.style.display = "none";
         } else {
             container.style.display = "none";
-            container2.style.display = "block";
+            container2.style.display = "flex";
 
         }
 
