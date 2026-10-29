@@ -67,7 +67,7 @@
     </div>
 
     <div id="modalEdicaoEmpresa" class="modal_edicao" aria-hidden="true">
-        <section class="modal_edicao_cartao" role="dialog" aria-modal="true" aria-labelledby="tituloEdicaoEmpresa">
+        <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloEdicaoEmpresa">
             <header class="modal_edicao_cabecalho">
                 <h2 id="tituloEdicaoEmpresa">Editar empresa</h2>
                 <button class="modal_edicao_fechar" type="button" aria-label="Fechar edição" data-fechar-modal>
@@ -84,21 +84,22 @@
                             d="M4 21h16M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 7h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2">
                         </path>
                     </svg>
-                    <input id="atualizacaoRazaoSocial" name="razaoSocial">
+                    <input id="atualizacaoRazaoSocial" name="razaoSocial" placeholder=" Empresa LTDA">
                 </div>
                 <label for="edicaoNomeFantasia">Nome fantasia</label>
                 <div class="campo_edicao">
-                    <input id="atualizacaoNomeFantasia" name="nomeFantasia">
+                    <input id="atualizacaoNomeFantasia" name="nomeFantasia" placeholder=" Empresa">
                 </div>
                 <label for="edicaoCnpj">CNPJ *</label>
-                <div class="campo_edicao"><input id="atualizacaoCNPJ" name="cnpj"></div>
+                <div class="campo_edicao">
+                    <input id="atualizacaoCNPJ" name="cnpj" placeholder="00.000.000/0000-00"></div>
                 <label for="edicaoCeo">CEO *</label>
                 <div class="campo_edicao campo_com_icone">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <circle cx="12" cy="8" r="3.5"></circle>
                         <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
                     </svg>
-                    <input id="atualizacaoCeo" name="ceo">
+                    <input id="atualizacaoCeo" name="ceo" placeholder="Ana Marques">
                 </div>
                 <div class="acoes_edicao">
                     <button class="botao_cancelar_edicao" type="button" data-fechar-modal>Cancelar</button>

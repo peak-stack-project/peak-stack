@@ -48,11 +48,5 @@ function atualizar( nomeFantasia, razaoSocial, cnpj, id) {
 
 }
 
-function deletar(id) {
 
-  var instrucaoSql = `DELETE FROM empresa where id = '${id}'`
-
-  return database.executar(instrucaoSql);
-}
-
-module.exports = { buscarPorCnpj, buscarPorId, cadastrar, listarEmpresas, listar, atualizar, deletar };
+module.exports = { buscarPorCnpj, buscarPorId, cadastrar, listarEmpresas, listar, atualizar};
