@@ -29,6 +29,8 @@
             <a href="#">Sobre</a>
             <a id="link_login" href="./login.html">Entrar</a>
         </nav>
+        <button class="menu_toggle" aria-label="Abrir menu"
+            onclick="document.querySelector('.navegacao').classList.toggle('aberto')">☰</button>
     </header>
 
     <main>
@@ -55,7 +57,7 @@
                         painel único, com alertas automáticos que chegam antes que o servidor ceda.</p>
                 </div>
                 <div class="hero_imagem" aria-hidden="true">
-                    <image src="./assets/imagem_sobre_nos.png" mode="">
+                    <img src="./assets/imagem_sobre_nos.png" alt="">
                 </div>
             </div>
         </section>
@@ -167,35 +169,36 @@
                 </div>
             </div>
         </section>
+    </main>
 
-        <footer class="rodape rodape_grande">
-            <div class="container rodape_grade">
-                <div class="rodape_marca">
-                    <a class="marca" href="./index.html" aria-label="PeakStack - início">
-                        <span class="marca_icone"><img src="./assets/logo para fundo escuro - sem fundo.png" alt=""></span>
-                        <span>PeakStack</span>
-                    </a>
-                    <p>Monitoramento de infraestrutura para plataformas de venda de ingressos, pensado para os momentos
-                        de
-                        maior demanda.</p>
-                    <a class="rodape_link_pequeno" href="#">Política de privacidade</a>
-                </div>
-                <div class="rodape_coluna">
-                    <span class="rodape_coluna_titulo">Navegação</span>
-                    <a href="./index.html">Início</a>
-                    <a href="#como-funciona">Como funciona</a>
-                    <a href="#beneficios">Benefícios</a>
-                </div>
-                <div class="rodape_coluna">
-                    <span class="rodape_coluna_titulo">Contato</span>
-                    <a href="mailto:contato@peakstack.com.br">contato@peakstack.com.br</a>
-                    <span class="rodape_texto_pequeno">Suporte técnico em até 2 dias úteis</span>
-                </div>
+    <footer class="rodape rodape_grande">
+        <div class="container rodape_grade">
+            <div class="rodape_marca">
+                <a class="marca" href="./index.html" aria-label="PeakStack - início">
+                    <span class="marca_icone"><img src="./assets/logo para fundo escuro - sem fundo.png" alt=""></span>
+                    <span>PeakStack</span>
+                </a>
+                <p>Monitoramento de infraestrutura para plataformas de venda de ingressos, pensado para os momentos
+                    de
+                    maior demanda.</p>
+                <a class="rodape_link_pequeno" href="#">Política de privacidade</a>
             </div>
-            <div class="container rodape_base">
-                <span>© 2026 PeakStack — Projeto acadêmico SPTech</span>
+            <div class="rodape_coluna">
+                <span class="rodape_coluna_titulo">Navegação</span>
+                <a href="./index.html">Início</a>
+                <a href="#como-funciona">Como funciona</a>
+                <a href="#beneficios">Benefícios</a>
             </div>
-        </footer>
+            <div class="rodape_coluna">
+                <span class="rodape_coluna_titulo">Contato</span>
+                <a href="mailto:contato@peakstack.com.br">contato@peakstack.com.br</a>
+                <span class="rodape_texto_pequeno">Suporte técnico em até 2 dias úteis</span>
+            </div>
+        </div>
+        <div class="container rodape_base">
+            <span>© 2026 PeakStack — Projeto acadêmico SPTech</span>
+        </div>
+    </footer>
 </body>
 
 </html>
