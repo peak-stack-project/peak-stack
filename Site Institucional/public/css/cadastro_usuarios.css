@@ -244,22 +244,57 @@ h1 {
     font-size: clamp(0.654rem, 0.3rem + 0.5vw, 0.125rem);
 }
 
+.container_usuario_ativos {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
 .container_tabela {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     background-color: white;
     border-radius: 15px;
     width: 100%;
-    height: max-content;
+    min-height: 0;
     padding: 10px;
+    overflow: hidden;
 }
 
 .colunas_tabela {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex: 0 0 auto;
     width: 100%;
     min-height: 5vh;
     display: grid;
     grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1.5fr;
     gap: 10px;
     align-items: center;
+    background: #fff;
 
+}
+
+.conteudo_tabela {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #aebbd0 transparent;
+}
+
+.conteudo_tabela::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.conteudo_tabela::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #aebbd0;
 }
 
 .linha_tabela {
