@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS usuario (
   fk_empresa INT NOT NULL,
   fk_cargo INT NOT NULL,
   nome VARCHAR(45) NOT NULL,
-  email VARCHAR(45) NOT NULL,
+  email VARCHAR(45) NOT NULL UNIQUE,
   senha VARCHAR(45) NOT NULL,
   dt_nasc DATE,
   created_at DATETIME DEFAULT current_timestamp,
