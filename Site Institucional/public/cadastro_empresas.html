@@ -290,7 +290,7 @@
             }).then(function (resposta) {
                 if (resposta.ok) {
                     resposta.json().then(function (json) {
-                        sessionStorage.ID_EMPRESA = json.id + 1;
+                        sessionStorage.ID_EMPRESA = json.id;
                         fez_login = true;
                     });
                 } else {

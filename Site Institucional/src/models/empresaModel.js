@@ -34,13 +34,14 @@ function listarEmpresas(req, res) {
   SELECT 
     e.*,
     u.*
-    FROM empresa e
-    LEFT JOIN usuario u
-    ON u.fk_empresa = e.id
-    AND u.created_at = (
-        SELECT MIN(u2.created_at)
+FROM empresa e
+LEFT JOIN usuario u
+    ON u.id = (
+        SELECT u2.id
         FROM usuario u2
         WHERE u2.fk_empresa = e.id
+        ORDER BY u2.created_at ASC, u2.id ASC
+        LIMIT 1
     );`
 
   return database.executar(instrucaoSql);
@@ -48,7 +49,7 @@ function listarEmpresas(req, res) {
 }
 
 
-function atualizar( nomeFantasia, razaoSocial, cnpj, id) {
+function atualizar(nomeFantasia, razaoSocial, cnpj, id) {
   var instrucaoSql = `UPDATE empresa 
                       SET nome_fantasia = '${nomeFantasia}', 
                       razao_social = '${razaoSocial}', 
@@ -60,4 +61,4 @@ function atualizar( nomeFantasia, razaoSocial, cnpj, id) {
 }
 
 
-module.exports = { buscarPorCnpj, buscarPorId, cadastrar, listarEmpresas, listar, atualizar};
+module.exports = { buscarPorCnpj, buscarPorId, cadastrar, listarEmpresas, listar, atualizar };
