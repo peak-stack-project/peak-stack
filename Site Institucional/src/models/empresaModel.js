@@ -24,7 +24,6 @@ function buscarPorCnpj(cnpj) {
 
 function cadastrar(nome, razaoSocial, cnpj) {
   var instrucaoSql = `INSERT INTO empresa (nome_fantasia,razao_social, cnpj) VALUES ('${nome}','${razaoSocial}', '${cnpj}')`;
-
   return database.executar(instrucaoSql);
 
 
