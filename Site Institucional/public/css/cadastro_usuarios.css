@@ -324,6 +324,13 @@ h1 {
 
 }
 
+#cargo_input{
+    border-radius: 15px;
+    height: 4dvh;
+    border: solid 1px black;
+    width: 95%;
+}
+
 #botao_cadastro_funcionarios {
     height: 5dvh;
     width: 15%;
@@ -416,7 +423,7 @@ h1 {
 
 #so_input {
     border-radius: 15px;
-    border: black;
+    border: solid 1px black;
     height: 4vh;
     width: 95%;
 }
