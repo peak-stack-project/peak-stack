@@ -32,7 +32,8 @@
                 <a class="ativo" href="./gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
             </nav>
             <div class="menu_lateral_rodape">
-                <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                <button id="btn_logout" class="botao botao_lateral"
+                    onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='../index.html';">
                     Sair
                 </button>
             </div>
@@ -43,7 +44,7 @@
                 <div class="texto_inicial">
                     <h3>Gerenciamento de Empresas</h3>
                 </div>
-                
+
             </header>
 
             <section class="area_empresas" aria-label="Lista de empresas">
@@ -92,7 +93,8 @@
                 </div>
                 <label for="edicaoCnpj">CNPJ *</label>
                 <div class="campo_edicao">
-                    <input id="atualizacaoCNPJ" name="cnpj" placeholder="00.000.000/0000-00"></div>
+                    <input id="atualizacaoCNPJ" name="cnpj" placeholder="00.000.000/0000-00">
+                </div>
                 <label for="edicaoCeo">CEO *</label>
                 <div class="campo_edicao campo_com_icone">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -230,6 +232,8 @@
                     console.error('Erro ao atualizar:', erro);
                 });
         });
+
+
 
     </script>
 

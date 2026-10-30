@@ -24,18 +24,29 @@ function buscarPorCnpj(cnpj) {
 
 function cadastrar(nome, razaoSocial, cnpj) {
   var instrucaoSql = `INSERT INTO empresa (nome_fantasia,razao_social, cnpj) VALUES ('${nome}','${razaoSocial}', '${cnpj}')`;
-
   return database.executar(instrucaoSql);
 
 
 }
 
 function listarEmpresas(req, res) {
-  var instrucaoSql = `SELECT e.*, u.* FROM empresa as e LEFT JOIN usuario as u ON e.id = u.fk_empresa`
+  var instrucaoSql = `
+  SELECT 
+    e.*,
+    u.*
+    FROM empresa e
+    LEFT JOIN usuario u
+    ON u.fk_empresa = e.id
+    AND u.created_at = (
+        SELECT MIN(u2.created_at)
+        FROM usuario u2
+        WHERE u2.fk_empresa = e.id
+    );`
 
   return database.executar(instrucaoSql);
 
 }
+
 
 function atualizar( nomeFantasia, razaoSocial, cnpj, id) {
   var instrucaoSql = `UPDATE empresa 

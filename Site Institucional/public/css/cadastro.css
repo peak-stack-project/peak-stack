@@ -161,6 +161,23 @@ body {
     margin-top: auto;
 }
 
+.menu_lateral_rodape .botao_lateral {
+    width: 100%;
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: transparent;
+    font-weight: 600;
+    text-align: left;
+}
+
+.menu_lateral_rodape .botao_lateral:hover {
+    background: var(--cor-primaria);
+}
+
 
 a {
     color: inherit;

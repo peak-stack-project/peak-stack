@@ -17,7 +17,9 @@
 
 body {
     min-width: 1040px;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
     color: var(--cor-texto);
 }
 
@@ -39,7 +41,9 @@ a {
     position: relative;
     z-index: 1;
     display: flex;
-    min-height: 100vh;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
 }
 
 #gradient-waves-background {
@@ -179,7 +183,12 @@ button,
 
 .conteudo {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
     background: transparent;
 }
 
@@ -212,6 +221,10 @@ button,
 
 
 .area_empresas {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
     margin: 22px 17px;
     overflow: hidden;
     border: 1px solid #d7e0ed;
@@ -221,7 +234,21 @@ button,
 }
 
 .tabela {
-    overflow-x: auto;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #aebbd0 transparent;
+}
+
+.tabela::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.tabela::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #aebbd0;
 }
 
 table {
@@ -235,12 +262,16 @@ thead {
 }
 
 th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     height: 38px;
     padding: 0 18px;
     color: #8192af;
     font-size: 10px;
     letter-spacing: .7px;
     text-transform: uppercase;
+    background: #fbfcfe;
 }
 
 td {
@@ -496,13 +527,21 @@ td {
     background: #2459bd;
 }
 
-.botao_lateral{
+.menu_lateral_rodape .botao_lateral {
+    width: 100%;
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: transparent;
+    font-weight: 600;
+    text-align: left;
+}
 
-    border-radius: 10px;
-    height: 6dvh;
-    color: black;
-    font-weight: bold;
-
+.menu_lateral_rodape .botao_lateral:hover {
+    background: var(--cor-primaria);
 }
 
 @media (max-width: 480px) {
