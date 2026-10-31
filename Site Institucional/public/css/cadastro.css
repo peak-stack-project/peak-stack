@@ -446,6 +446,15 @@ h1 {
     padding-right: 40px; 
 }
 
+
+#cargo_input{
+
+    border-radius: 15px;
+    height: 4dvh;;
+    width: 95%;
+
+}
+
 .btn-toggle-senha {
     position: absolute;
     right: 12px;

@@ -55,7 +55,7 @@
                                 <th>Razão social</th>
                                 <th>CNPJ</th>
                                 <th>CEO</th>
-                                <th>Ações</th>
+                                <th>Edição</th>
                             </tr>
                         </thead>
                         <tbody id="lista_empresas">
@@ -95,14 +95,7 @@
                 <div class="campo_edicao">
                     <input id="atualizacaoCNPJ" name="cnpj" placeholder="00.000.000/0000-00">
                 </div>
-                <label for="edicaoCeo">CEO *</label>
-                <div class="campo_edicao campo_com_icone">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="8" r="3.5"></circle>
-                        <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
-                    </svg>
-                    <input id="atualizacaoCeo" name="ceo" placeholder="Ana Marques">
-                </div>
+                
                 <div class="acoes_edicao">
                     <button class="botao_cancelar_edicao" type="button" data-fechar-modal>Cancelar</button>
                     <button class="botao_atualizar_edicao" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true">
@@ -137,11 +130,6 @@
                                             aria-label="Editar PeakStack Tecnologia Ltda."><svg viewBox="0 0 24 24">
                                                 <path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z">
                                                 </path>
-                                            </svg>
-                                        </button>
-                                        <button onclick="excluir(${json[i].id})" type="button" aria-label="Excluir PeakStack Tecnologia Ltda."><svg
-                                                viewBox="0 0 24 24">
-                                                <path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
                                             </svg>
                                         </button>
                                     </div>
