@@ -189,6 +189,12 @@ h1 {
 
 }
 
+#componente_input, #status_input{
+    border-radius: 15px;
+    height: 4dvh;
+
+}
+
 .container_pesquisa button {
 
     background-color: transparent;
