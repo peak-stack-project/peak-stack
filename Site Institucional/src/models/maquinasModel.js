@@ -23,10 +23,23 @@ function listar(email, senha) {
 }
 
 function listarMaquinas (req, res){
- var instrucaoSql = `select maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
+ var instrucaoSql = `select maquina.id as id, maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
 join config_maq on fk_maquina = maquina.id;`;
 
   return database.executar(instrucaoSql);
 }
 
-module.exports = { cadastrarMaquina, cadastrarComponente, listar, listarMaquinas };
+function buscarMaquinaPorId(id) {
+    var instrucaoSql = `select maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
+join config_maq on fk_maquina = maquina.id where maquina.id = '${id}';`;
+
+    return database.executar(instrucaoSql);
+}
+
+function atualizarMaquina(id, nome, mac, fk_so) {
+    var instrucaoSql = `UPDATE maquina SET nome = '${nome}', mac_address = '${mac}', fk_so = '${fk_so}' WHERE id = '${id}';`;
+
+    return database.executar(instrucaoSql);
+}
+
+module.exports = { cadastrarMaquina, cadastrarComponente, listar, listarMaquinas, buscarMaquinaPorId, atualizarMaquina };

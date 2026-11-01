@@ -1,6 +1,53 @@
 var maquinasModel = require("../models/maquinasModel");
 
-function listarMaquinas(res, res){
+function atualizarMaquina(req, res) {
+    var id = req.params.id;
+    var nome = req.body.nome;
+    var mac = req.body.mac;
+    var fk_so = req.body.fk_so;
+
+    maquinasModel.atualizarMaquina(id, nome, mac, fk_so)
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao atualizar a máquina: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
+function buscarMaquinaPorId(req, res) {
+    var id = req.params.id;
+
+    maquinasModel.buscarMaquinaPorId(id)
+        .then(
+            function (resultado) {
+                if (resultado.length > 0) {
+                    res.json(resultado[0]);
+                } else {
+                    res.status(404).send("Máquina não encontrada");
+                }
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao buscar a máquina: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
+function listarMaquinas(req, res){
     maquinasModel.listarMaquinas()
      .then(
             function (resultado) {
@@ -112,5 +159,7 @@ module.exports = {
   cadastrarMaquina,
   cadastrarComponente,
   listar,
-  listarMaquinas
+  listarMaquinas,
+  buscarMaquinaPorId,
+  atualizarMaquina
 };

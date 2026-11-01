@@ -76,7 +76,7 @@
                     <div class="status_usuarios">
                         <p>2 Máquinas Ativos</p>
                     </div>
-                   
+
                 </div>
 
                 <button id="botao_cadastro_funcionarios" onclick="chamarCadastro()"> + Adicionar máquina</button>
@@ -167,6 +167,52 @@
             </div>
         </div>
     </section>
+    <div id="modalEdicaoMaquina" class="modal_edicao" style="display: none;">
+        <section class="modal_edicao_cartao" aria-modal="true">
+
+            <header class="modal_edicao_cabecalho">
+                <h2>Editar máquina</h2>
+
+                <button type="button" class="modal_edicao_fechar" data-fechar-modal>
+                    &times;
+                </button>
+            </header>
+
+            <form id="formEdicaoMaquina" class="form_edicao_empresa">
+
+                <label for="edicaoNomeMaquina">Nome do servidor</label>
+                <div class="campo_edicao">
+                    <input id="edicaoNomeMaquina" name="nome" type="text">
+                </div>
+
+                <label for="edicaoMacMaquina">Endereço MAC</label>
+                <div class="campo_edicao">
+                    <input id="edicaoMacMaquina" name="mac" type="text">
+                </div>
+
+                <label for="edicaoSoMaquina">Sistema operacional</label>
+                <div class="campo_edicao">
+                    <select id="edicaoSoMaquina" name="sistema_operacional">
+                        <option value="1">Windows 11 Home Single Language</option>
+                        <option value="2">Linux Ubuntu Server</option>
+                    </select>
+                </div>
+
+                <div class="acoes_edicao">
+
+                    <button class="botao_cancelar_edicao" type="button" data-fechar-modal>
+                        Cancelar
+                    </button>
+
+                    <button class="botao_atualizar_edicao" type="submit">
+                        Atualizar máquina
+                    </button>
+
+                </div>
+
+            </form>
+        </section>
+    </div>
 </body>
 
 </html>
@@ -175,15 +221,15 @@
     var cadastro_realizado = false;
 
     function listarMaquinas() {
-    fetch("/maquinas/listarMaquinas")
-        .then(function (resposta) {
-            resposta.json().then(function (json) {
+        fetch("/maquinas/listarMaquinas")
+            .then(function (resposta) {
+                resposta.json().then(function (json) {
 
-                let htmlCodigo = "";
+                    let htmlCodigo = "";
 
-                for (let i = 0; i < json.length; i++) {
+                    for (let i = 0; i < json.length; i++) {
 
-                    htmlCodigo += `
+                        htmlCodigo += `
                         <div class="linha_tabela">
 
                             <div class="campo_usuario">
@@ -211,9 +257,12 @@
                             </div>
 
                             <div class="container_acoes">
-                                <button>
-                                    <!-- Botão de editar -->
-                                </button>
+                              <button onclick="editarMaquina(${json[i].id})" type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+        fill="currentColor" viewBox="0 0 16 16">
+        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+    </svg>
+</button>
 
                                 <button>
                                     <!-- Botão de excluir -->
@@ -222,18 +271,102 @@
 
                         </div>
                     `;
-                }
+                    }
 
-                lista_usuarios.innerHTML = htmlCodigo;
+                    lista_usuarios.innerHTML = htmlCodigo;
 
+                });
+            })
+            .catch(function (erro) {
+                console.error("Erro ao listar máquinas:", erro);
             });
-        })
-        .catch(function (erro) {
-            console.error("Erro ao listar máquinas:", erro);
-        });
-}
+    }
 
-listarMaquinas();
+    listarMaquinas();
+
+    const modalMaquina = document.getElementById("modalEdicaoMaquina");
+
+    let idMaquina;
+
+    function editarMaquina(id) {
+
+        idMaquina = id;
+
+        fetch(`/maquinas/buscar/${id}`)
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (json) {
+
+                edicaoNomeMaquina.value = json.nome;
+                edicaoMacMaquina.value = json.mac;
+                edicaoSoMaquina.value = json.sistema_operacional;
+
+                modalMaquina.style.display = "flex";
+
+            })
+            .catch(function (erro) {
+                console.error("Erro ao buscar máquina:", erro);
+            });
+    }
+
+    function fecharModalMaquina() {
+        modalMaquina.style.display = "none";
+    }
+
+    document.querySelectorAll("#modalEdicaoMaquina [data-fechar-modal]")
+        .forEach(function (botao) {
+            botao.addEventListener("click", fecharModalMaquina);
+        });
+
+    document.getElementById("formEdicaoMaquina")
+        .addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            let nome = edicaoNomeMaquina.value;
+            let mac = edicaoMacMaquina.value;
+            let so = edicaoSoMaquina.value;
+
+            if (nome.length < 3) {
+                alert("Nome da máquina inválido.");
+                return;
+            }
+
+            if (mac == "") {
+                alert("Informe o endereço MAC.");
+                return;
+            }
+
+            fetch(`/maquinas/atualizar/${idMaquina}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    mac: mac,
+                    fk_so: so
+                })
+            })
+                .then(function (resposta) {
+
+                    if (resposta.ok) {
+                        alert("Máquina atualizada com sucesso!");
+
+                        fecharModalMaquina();
+                        listarMaquinas();
+
+                    } else {
+                        alert("Erro ao atualizar máquina.");
+                    }
+
+                })
+                .catch(function (erro) {
+                    console.error("Erro ao atualizar máquina:", erro);
+                });
+
+        });
 
     function cadastrarComponente() {
         console.log("chamei a funcao cadastrar");
