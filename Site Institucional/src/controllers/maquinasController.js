@@ -1,5 +1,23 @@
 var maquinasModel = require("../models/maquinasModel");
 
+function listarMaquinas(res, res){
+    maquinasModel.listarMaquinas()
+     .then(
+            function (resultado) {
+                res.json(resultado)
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
 function cadastrarMaquina(req, res) {
     // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
     var nome = req.body.nomeServer;
@@ -93,5 +111,6 @@ function listar(req, res) {
 module.exports = {
   cadastrarMaquina,
   cadastrarComponente,
-  listar
+  listar,
+  listarMaquinas
 };

@@ -16,4 +16,8 @@ router.post("/listar", function (req, res) {
   maquinasController.listar(req, res);
 });
 
+router.get("/listarMaquinas", function (req, res) {
+    maquinasController.listarMaquinas(req, res);
+});
+
 module.exports = router;

@@ -22,4 +22,11 @@ function listar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
-module.exports = { cadastrarMaquina, cadastrarComponente, listar };
+function listarMaquinas (req, res){
+ var instrucaoSql = `select maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
+join config_maq on fk_maquina = maquina.id;`;
+
+  return database.executar(instrucaoSql);
+}
+
+module.exports = { cadastrarMaquina, cadastrarComponente, listar, listarMaquinas };
