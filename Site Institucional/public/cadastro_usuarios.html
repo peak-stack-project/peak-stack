@@ -22,9 +22,9 @@
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
             <span>PeakStack</span>
         </a>
-         <div class="menu_grupo">
+        <div class="menu_grupo">
             <span class="menu_rotulo">Menu</span>
-            <a  href="./dashboard_visao_geral.html">Visão geral</a>
+            <a href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./alertas.html">Alertas</a>
             <a href="./máquinas.html">Máquinas</a>
             <a class="ativo" href="./cadastro_usuarios.html">Usuários</a>
@@ -64,7 +64,7 @@
                     <div class="status_usuarios">
                         <p>2 Usuários Ativos</p>
                     </div>
-                   
+
                 </div>
                 <button id="botao_cadastro_funcionarios" onclick="chamarCadastro()"> + Adicionar usuarios</button>
             </div>
@@ -81,38 +81,6 @@
                         <div></div>
                     </div>
                     <div class="conteudo_tabela" id="lista_usuarios">
-
-                        <div class="linha_tabela">
-                            <div class="campo_usuario">
-                                <div>Isabella White</div>
-                            </div>
-                            <div class="texto_email">isabella@socialpulse.com</div>
-                            <div class="texto_empresa">SocialPulse</div>
-                            <div>
-                                <div class="area_usuario">Admin</div>
-                            </div>
-                            <div>
-                                <div class="status_atual_usuario">Ativo</div>
-                            </div>
-                            <div class="container_acoes">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path fill-rule="evenodd"
-                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-trash3" viewBox="0 0 16 16">
-                                        <path
-                                            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -147,13 +115,13 @@
                     <h4>Senha</h4>
                     <input type="password" id="senha_input" placeholder="   Mínimo 6 caracteres">
                 </div>
-                 <div class="senha">
+                <div class="senha">
                     <h4>Confirmar senha</h4>
                     <input type="password" id="confirmacao_senha_input" placeholder="   Mínimo 6 caracteres">
                 </div>
                 <div class="container_empresa_usuario">
-                     <h4>Data de nascimento</h4>
-                  <input type="text" id="data_input" placeholder="   YYYY-MM-DD">
+                    <h4>Data de nascimento</h4>
+                    <input type="text" id="data_input" placeholder="   YYYY-MM-DD">
                 </div>
                 <div class="container_atividade_usuario">
                     <h4>Cargo</h4>
@@ -170,10 +138,163 @@
             </div>
         </div>
     </section>
+    <div id="modalEdicaoUsuario" class="modal_edicao" style="display: none;">
+
+        <section class="modal_edicao_cartao">
+
+            <header class="modal_edicao_cabecalho">
+                <h2>Editar usuário</h2>
+
+                <button type="button" class="modal_edicao_fechar" data-fechar-modal>
+                    &times;
+                </button>
+            </header>
+
+            <form id="formEdicaoUsuario" class="form_edicao_empresa">
+
+                <label for="edicaoNomeUsuario">Nome</label>
+                <div class="campo_edicao">
+                    <input id="edicaoNomeUsuario" type="text">
+                </div>
+
+                <label for="edicaoEmailUsuario">E-mail</label>
+                <div class="campo_edicao">
+                    <input id="edicaoEmailUsuario" type="email">
+                </div>
+
+                <label for="edicaoDataUsuario">Data de nascimento</label>
+                <div class="campo_edicao">
+                    <input id="edicaoDataUsuario" type="date">
+                </div>
+
+                <label for="edicaoCargoUsuario">Cargo</label>
+                <div class="campo_edicao">
+                    <select id="edicaoCargoUsuario">
+                        <option value="1">Administrador</option>
+                        <option value="2">Visualizador</option>
+                        <option value="3">Operador</option>
+                    </select>
+                </div>
+
+                <div class="acoes_edicao">
+                    <button class="botao_cancelar_edicao" type="button" data-fechar-modal>
+                        Cancelar
+                    </button>
+
+                    <button class="botao_atualizar_edicao" type="submit">
+                        Atualizar usuário
+                    </button>
+                </div>
+
+            </form>
+        </section>
+    </div>
 </body>
 
 </html>
 <script>
+    function listarUsuarios() {
+
+        fetch("/usuarios/listarUsuarios")
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (json) {
+
+                let htmlCodigo = "";
+
+                for (let i = 0; i < json.length; i++) {
+
+                    htmlCodigo += `
+                    <div class="linha_tabela">
+
+                        <div class="campo_usuario">
+                            <div>${json[i].nome}</div>
+                        </div>
+
+                        <div class="texto_email">
+                            ${json[i].email}
+                        </div>
+
+                        <div class="texto_empresa">
+                            ${json[i].empresa}
+                        </div>
+
+                        <div>
+                            <div class="area_usuario">
+                                ${json[i].cargo}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="status_atual_usuario">
+                                —
+                            </div>
+                        </div>
+
+                        <div class="container_acoes">
+
+                            <button type="button" onclick="editarUsuario(${json[i].id})">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293z"/>
+                                    <path d="M13.752 4.396l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12z"/>
+                                </svg>
+                            </button>
+
+                        </div>
+
+                    </div>
+                `;
+                }
+
+                lista_usuarios.innerHTML = htmlCodigo;
+
+            })
+            .catch(function (erro) {
+                console.error("Erro ao listar usuários:", erro);
+            });
+    }
+
+    listarUsuarios();
+    const modalUsuario = document.getElementById("modalEdicaoUsuario");
+
+    let idUsuario;
+
+    function editarUsuario(id) {
+
+        idUsuario = id;
+
+        fetch(`/usuarios/buscar/${id}`)
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (json) {
+
+                edicaoNomeUsuario.value = json.nome;
+                edicaoEmailUsuario.value = json.email;
+
+                edicaoDataUsuario.value = json.data.substring(0, 10);
+
+                edicaoCargoUsuario.value = json.fk_cargo;
+
+                modalUsuario.style.display = "flex";
+
+            })
+            .catch(function (erro) {
+                console.error("Erro ao buscar usuário:", erro);
+            });
+    }
+
+    function fecharModalUsuario() {
+        modalUsuario.style.display = "none";
+    }
+
+    document.querySelectorAll("#modalEdicaoUsuario [data-fechar-modal]")
+        .forEach(function (botao) {
+            botao.addEventListener("click", fecharModalUsuario);
+        });
 
     function chamarCadastro() {
         const container = document.getElementById("container_cadastro");
@@ -185,81 +306,126 @@
         }
     }
 
+    document.getElementById("formEdicaoUsuario")
+        .addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            let nome = edicaoNomeUsuario.value;
+            let email = edicaoEmailUsuario.value;
+            let data = edicaoDataUsuario.value;
+            let cargo = edicaoCargoUsuario.value;
+
+            if (nome.length < 3 || email == "" || data == "" || cargo == "") {
+                alert("Preencha todos os campos corretamente.");
+                return;
+            }
+
+            fetch(`/usuarios/atualizar/${idUsuario}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    data: data,
+                    fk_cargo: cargo
+                })
+            })
+                .then(function (resposta) {
+
+                    if (resposta.ok) {
+                        alert("Usuário atualizado com sucesso!");
+
+                        fecharModalUsuario();
+                        listarUsuarios();
+
+                    } else {
+                        alert("Erro ao atualizar usuário.");
+                    }
+
+                })
+                .catch(function (erro) {
+                    console.error("Erro ao atualizar usuário:", erro);
+                });
+
+        });
 
     function cadastrarUsuario() {
-      
-    let booleano = true;
-    var nomeVar = nome_input.value;
-    var emailVar = email_input.value;
-    var senhaVar = senha_input.value;
-    var confirmacaoSenhaVar = confirmacao_senha_input.value;
-    var cargoVar = cargo_input.value
-    var idEmpresaVar = sessionStorage.getItem("FKEMPRESA_USUARIO");
-    var dataVar = data_input.value;
-    var nomeUsuarioVar = sessionStorage.getItem("NOME_USUARIO")
-    
+
+        let booleano = true;
+        var nomeVar = nome_input.value;
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+        var confirmacaoSenhaVar = confirmacao_senha_input.value;
+        var cargoVar = cargo_input.value
+        var idEmpresaVar = sessionStorage.getItem("FKEMPRESA_USUARIO");
+        var dataVar = data_input.value;
+        var nomeUsuarioVar = sessionStorage.getItem("NOME_USUARIO")
 
 
-    // Verificando se há algum campo em branco
-    if (
-      nomeVar == "" ||
-      emailVar == "" ||
-      senhaVar == "" ||
-      confirmacaoSenhaVar == "" ||
-      cargoVar == "" ||
-      idEmpresaVar == "" ||
-      dataVar == ""
-      ||
-      nomeUsuarioVar == ""
-    ) {
-      booleano = false;
-    } 
 
-    // Enviando o valor da nova input
-    if(senhaVar == confirmacaoSenhaVar && booleano == true){
-    fetch("/usuarios/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // crie um atributo que recebe o valor recuperado aqui
-        // Agora vá para o arquivo routes/usuario.js
-        nomeServer: nomeVar,
-        emailServer: emailVar,
-        senhaServer: senhaVar,
-        cargoServer: cargoVar,
-        idempresaServer: idEmpresaVar,
-        dataServer: dataVar,
-        nomeUsuarioServer: nomeUsuarioVar
-      }),
-    })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (resposta.ok) {
-          cardErro.style.display = "block";
-
-          mensagem_erro.innerHTML =
-            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-          setTimeout(() => {
-            window.location = "login.html";
-          }, "2000");
-
-          limparFormulario();
-          finalizarAguardar();
-        } else {
-          throw "Houve um erro ao tentar realizar o cadastro!";
+        // Verificando se há algum campo em branco
+        if (
+            nomeVar == "" ||
+            emailVar == "" ||
+            senhaVar == "" ||
+            confirmacaoSenhaVar == "" ||
+            cargoVar == "" ||
+            idEmpresaVar == "" ||
+            dataVar == ""
+            ||
+            nomeUsuarioVar == ""
+        ) {
+            booleano = false;
         }
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-        finalizarAguardar();
-      });
 
-    return false;
-  }
+        // Enviando o valor da nova input
+        if (senhaVar == confirmacaoSenhaVar && booleano == true) {
+            fetch("/usuarios/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    // crie um atributo que recebe o valor recuperado aqui
+                    // Agora vá para o arquivo routes/usuario.js
+                    nomeServer: nomeVar,
+                    emailServer: emailVar,
+                    senhaServer: senhaVar,
+                    cargoServer: cargoVar,
+                    idempresaServer: idEmpresaVar,
+                    dataServer: dataVar,
+                    nomeUsuarioServer: nomeUsuarioVar
+                }),
+            })
+                .then(function (resposta) {
+                    console.log("resposta: ", resposta);
+
+                    if (resposta.ok) {
+                        cardErro.style.display = "block";
+
+                        mensagem_erro.innerHTML =
+                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                        setTimeout(() => {
+                            window.location = "login.html";
+                        }, "2000");
+
+                        limparFormulario();
+                        finalizarAguardar();
+                    } else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                    finalizarAguardar();
+                });
+
+            return false;
+        }
 
     }
 </script>

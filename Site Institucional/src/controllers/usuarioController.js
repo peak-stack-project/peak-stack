@@ -1,5 +1,50 @@
 var usuarioModel = require("../models/usuarioModel");
 
+function listarUsuarios(req, res) {
+    usuarioModel.listarUsuarios()
+        .then(function (resultado) {
+            res.json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+function buscarUsuarioPorId(req, res) {
+    var id = req.params.id;
+
+    usuarioModel.buscarUsuarioPorId(id)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.json(resultado[0]);
+            } else {
+                res.status(404).send("Usuário não encontrado");
+            }
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+function atualizarUsuario(req, res) {
+    var id = req.params.id;
+    var nome = req.body.nome;
+    var email = req.body.email;
+    var data = req.body.data;
+    var cargo = req.body.fk_cargo;
+
+    usuarioModel.atualizarUsuario(id, nome, email, data, cargo)
+        .then(function (resultado) {
+            res.json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 function criptografarSenha(senha) {
     let senhaCriptografada = "";
 
@@ -109,5 +154,8 @@ function cadastrar(req, res) {
 
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    listarUsuarios,
+    buscarUsuarioPorId,
+    atualizarUsuario
 }
