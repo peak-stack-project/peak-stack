@@ -230,6 +230,11 @@ INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
 
 select * from config_maq;
 
+-- insert de limite:
+INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
+(1, 0, 100000, 7, 1),   -- upload (MB)
+(1, 0, 1000,   8, 1);   -- velocidade (Mbps)
+
 SELECT cm.id AS cm_id,
            cm.fk_componentes,
            m.fk_empresa,
@@ -267,7 +272,7 @@ INNER JOIN configuracao_comp cc
     ON cc.id = c.fk_configuracao_comp
 INNER JOIN maquina m
     ON m.id = cm.fk_maquina
-LEFT JOIN discretizada d
+LEFT JOIN discretizada d	
     ON d.fk_leitura = l.id
 ORDER BY l.dt_hr_leitura DESC;
 
