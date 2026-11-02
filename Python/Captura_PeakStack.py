@@ -30,9 +30,9 @@ LIMITES_PADRAO = {
 
 
 DB = dict(
-    user=os.getenv("DB_USER", "beatriz"),
-    password=os.getenv("DB_PASSWORD", "Bea@0841"),
-    host=os.getenv("DB_HOST", "localhost"),
+    user=os.getenv("DB_USER", "root"),
+    password=os.getenv("DB_PASSWORD", "urubu100"),
+    host=os.getenv("DB_HOST", "bd-peakstack"),
     port=int(os.getenv("DB_PORT", 3306)),
     database=os.getenv("DB_NAME", "db_peakstack"),
     use_pure=True,
