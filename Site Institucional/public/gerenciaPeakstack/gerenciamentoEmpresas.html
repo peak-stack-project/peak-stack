@@ -178,7 +178,6 @@
             let razaoSocial = atualizacaoRazaoSocial.value
             let nomeFantasia = atualizacaoNomeFantasia.value
             let cnpjNovo = atualizacaoCNPJ.value
-            let nomeCeo = atualizacaoCeo.value
 
             if (razaoSocial == '') {
                 alert("Razão social Invalida, deve ter ao menos 5 caracteres")
@@ -204,7 +203,6 @@
                     razao_social: razaoSocial,
                     nome_fantasia: nomeFantasia,
                     cnpj: cnpjNovo,
-                    nome: nomeCeo
                 })
             })
                 .then(function (resposta) {
