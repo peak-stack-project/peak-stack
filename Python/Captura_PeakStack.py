@@ -36,6 +36,7 @@ DB = dict(
     port=int(os.getenv("DB_PORT", 3306)),
     database=os.getenv("DB_NAME", "db_peakstack"),
     use_pure=True,
+    auth_plugin='mysql_native_password'
 )
 
 SQL_COMPONENTES = """
