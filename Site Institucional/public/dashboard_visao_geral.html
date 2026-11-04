@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./css/dashboard.css">
     <script src="./js/sessao.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="corpo_dashboard">
@@ -247,19 +247,15 @@
     </main>
 
     <script>
-// --- GRÁFICO: VOLUME DE REQUISIÇÕES E SAÚDE DO ECOSSISTEMA ---
 const ctxCpu = document.getElementById('graficoCpu').getContext('2d');
 
-// Gradiente de preenchimento para o volume (Azul para Roxo)
 const gradientCpu = ctxCpu.createLinearGradient(0, 0, 600, 0);
 gradientCpu.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
 gradientCpu.addColorStop(1, 'rgba(168, 85, 247, 0.4)');
 
-// Funções para simular 24 valores aleatórios realistas na escala de 0 a 10.000
 const gerarDadosCPU = () => Array.from({ length: 24 }, () => Math.floor(Math.random() * 5500) + 3500);
 const gerarDadosRAM = () => Array.from({ length: 24 }, () => Math.floor(Math.random() * 2500) + 2000);
 
-// Cria uma lista de 24 posições, todas travadas exatamente em 4000
 const gerarLinhaSLA = () => Array(24).fill(4000);
 
 new Chart(ctxCpu, {
@@ -284,22 +280,21 @@ new Chart(ctxCpu, {
             {
                 label: 'Latência Média (ms)',
                 data: gerarDadosRAM(),
-                borderColor: '#f43f5e', // Vermelho suave/rosa
+                borderColor: '#f43f5e', 
                 fill: false,
                 tension: 0.4,
                 borderWidth: 2,
                 pointRadius: 0
             },
-            // --- DATASET NOVO DA LINHA DE SLA ---
             {
                 label: 'Meta de SLA (100ms)',
-                data: gerarLinhaSLA(),  // Array contendo [4000, 4000, 4000...]
-                borderColor: '#10b981', // Verde idêntico ao modelo
+                data: gerarLinhaSLA(),  
+                borderColor: '#10b981',
                 fill: false,
-                tension: 0,             // Força a linha a ficar 100% reta, sem curvas
+                tension: 0,             
                 borderWidth: 2,
                 pointRadius: 0,
-                order: 1                // Garante que ela seja renderizada no plano correto
+                order: 1             
             }
         ]
     },
@@ -312,7 +307,7 @@ new Chart(ctxCpu, {
                 max: 10000,
                 title: {
                     display: true,
-                    text: 'Percentagem (%)',
+                    text: 'Valor',
                     font: { family: 'Inter', size: 12 }
                 },
                 ticks: { 
