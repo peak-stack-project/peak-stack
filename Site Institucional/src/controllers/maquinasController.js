@@ -1,5 +1,70 @@
 var maquinasModel = require("../models/maquinasModel");
 
+function atualizarMaquina(req, res) {
+    var id = req.params.id;
+    var nome = req.body.nome;
+    var mac = req.body.mac;
+    var fk_so = req.body.fk_so;
+
+    maquinasModel.atualizarMaquina(id, nome, mac, fk_so)
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao atualizar a máquina: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
+function buscarMaquinaPorId(req, res) {
+    var id = req.params.id;
+
+    maquinasModel.buscarMaquinaPorId(id)
+        .then(
+            function (resultado) {
+                if (resultado.length > 0) {
+                    res.json(resultado[0]);
+                } else {
+                    res.status(404).send("Máquina não encontrada");
+                }
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao buscar a máquina: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
+function listarMaquinas(req, res){
+    maquinasModel.listarMaquinas()
+     .then(
+            function (resultado) {
+                res.json(resultado)
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
 function cadastrarMaquina(req, res) {
     // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
     var nome = req.body.nomeServer;
@@ -29,12 +94,12 @@ function cadastrarMaquina(req, res) {
 
 function cadastrarComponente(req, res) {
     // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
-    var nome = req.body.nomeServer;
-    var razaoSocial = req.body.razaoSocialServer;
-    var cnpj = req.body.cnpjServer;
+    var status = req.body.statusServer;
+    var componente = req.body.commponenteServer;
+    var idMaquina = req.body.idMaquinaServer;
    
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        maquinasModel.cadastrar(nome, razaoSocial, cnpj)
+        maquinasModel.cadastrarComponente(componente, idMaquina, status)
             .then(
                 function (resultado) {
                     res.json(resultado);
@@ -63,7 +128,7 @@ function listar(req, res) {
          res.status(400).send("Sua senha está indefinida!");
      } else {
  
-         empresaModel.listar(email, senha)
+         maquinasModel.listar(email, senha)
              .then(
                  function (resultadoAutenticar) {
                      console.log(`\nResultados encontrados: ${resultadoAutenticar.length}`);
@@ -93,5 +158,8 @@ function listar(req, res) {
 module.exports = {
   cadastrarMaquina,
   cadastrarComponente,
-  listar
+  listar,
+  listarMaquinas,
+  buscarMaquinaPorId,
+  atualizarMaquina
 };

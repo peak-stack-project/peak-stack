@@ -1155,6 +1155,7 @@ h1 {
 }
 
 .menu_lateral {
+    height: 100%;
     min-height: 0;
     overflow-y: auto;
 }

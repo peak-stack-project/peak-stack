@@ -16,16 +16,27 @@ BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 
 NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red")}
 
-LIMITE_ALERTA_PADRAO = 50
-LIMITE_CRITICO_PADRAO = 80
+# Padrão usado quando a empresa não cadastrou limite para o componente.
+# "maior": pior quando o valor sobe -> (atencao_a_partir_de, critico_a_partir_de)
+# "menor": pior quando o valor desce -> (atencao_ate, critico_abaixo_de)
+# O último campo é a unidade exigida (None = qualquer), para não aplicar % em GB.
+LIMITES_PADRAO = {
+    "cpu":              ("maior", 61, 85, "%"),
+    "ram":              ("maior", 61, 85, "%"),
+    "disco":            ("maior", 60, 71, "%"),
+    "memória restante": ("menor", 40, 15, "%"),
+    "pacotes perdidos": ("maior", 50, 500, None),
+}
+
 
 DB = dict(
     user=os.getenv("DB_USER", "root"),
     password=os.getenv("DB_PASSWORD", "urubu100"),
-    host=os.getenv("DB_HOST", "100.30.212.47"),
+    host=os.getenv("DB_HOST", "localhost"),
     port=int(os.getenv("DB_PORT", 3306)),
     database=os.getenv("DB_NAME", "db_peakstack"),
     use_pure=True,
+    auth_plugin='mysql_native_password'
 )
 
 SQL_COMPONENTES = """
@@ -33,6 +44,7 @@ SQL_COMPONENTES = """
            cm.fk_componentes,
            m.fk_empresa,
            c.nome,
+           cc.tipo,
            cc.unidade_medida,
            cc.biblioteca,
            cc.codigo
@@ -45,23 +57,44 @@ SQL_COMPONENTES = """
 """
 
 
-def classificar(valor, regras):
-    if not regras:
-        if valor > LIMITE_CRITICO_PADRAO:
-            return 3
-        if valor > LIMITE_ALERTA_PADRAO:
-            return 2
-        return 1
+def identificar_tipo(tipo, nome):
+    """Usa o tipo cadastrado em configuracao_comp (CPU, RAM, Disco...); se vier vazio, tenta o nome."""
+    return (tipo or nome or "").strip().lower()
 
-    return max(
-        (
-            r["nivel"]
-            for r in regras
-            if (r["valor_min"] is None or valor >= float(r["valor_min"]))
-            and (r["valor_max"] is None or valor <= float(r["valor_max"]))
-        ),
-        default=1,
-    )
+
+def nivel_padrao(tipo, valor, unidade):
+    """Classifica usando os limites padrão do código (1=Normal, 2=Alerta, 3=Crítico)."""
+    regra = LIMITES_PADRAO.get(tipo)
+    if regra is None:
+        return None  # componente sem padrão definido
+
+    sentido, atencao, critico, unidade_exigida = regra
+    if unidade_exigida and unidade != unidade_exigida:
+        return None  # ex.: RAM em GB não usa o padrão em %
+    if sentido == "maior":
+        if valor >= critico:
+            return 3
+        if valor >= atencao:
+            return 2
+    else:  # "menor"
+        if valor < critico:
+            return 3
+        if valor <= atencao:
+            return 2
+    return 1
+
+
+def classificar(tipo, valor, unidade, faixas):
+    """Usa os limites da empresa (banco); se não houver, cai no padrão do código."""
+    if faixas:
+        niveis = [
+            f["nivel"] for f in faixas
+            if (f["valor_min"] is None or valor >= float(f["valor_min"]))
+            and (f["valor_max"] is None or valor <= float(f["valor_max"]))
+        ]
+        if niveis:
+            return max(niveis)
+    return nivel_padrao(tipo, valor, unidade)
 
 
 def capturar(mac=None):
@@ -106,21 +139,31 @@ def capturar(mac=None):
                 unidade = (c["unidade_medida"] or "").strip()
                 valor = round(float(bruto) / BYTES.get(unidade.upper(), 1), 2)
 
-                nivel = classificar(valor, limites.get(c["fk_componentes"], []))
-                situacao, cor = NIVEIS.get(nivel, (f"Nível {nivel}", "white"))
+                # limites da empresa; se não tiver, usa o padrão do código
+                tipo = identificar_tipo(c["tipo"], c["nome"])
+                nivel = classificar(tipo, valor, unidade, limites.get(c["fk_componentes"]))
+                situacao, cor = NIVEIS.get(nivel, ("Sem limite", "white"))
 
-                leituras.append((nivel, agora, c["cm_id"]))
+                leituras.append((valor, agora, c["cm_id"], nivel))
                 print(f"{c['nome']}: [bold {cor}]{valor} {unidade}[/bold {cor}] ({situacao})")
 
             except Exception as erro:
                 print(f"[red]Falha ao capturar '{c['nome']}': {erro}[/red]")
 
         if leituras:
-            cursor.executemany(
-                "INSERT INTO leitura (valor, dt_hr_leitura, fk_config_maq) "
-                "VALUES (%s, %s, %s)",
-                leituras,
-            )
+            for valor, dt_hr, cm_id, nivel in leituras:
+                cursor.execute(
+                    "INSERT INTO leitura (valor, dt_hr_leitura, fk_config_maq) "
+                    "VALUES (%s, %s, %s)",
+                    (valor, dt_hr, cm_id),
+                )
+                if nivel is not None:
+                    cursor.execute(
+                        "INSERT INTO discretizada "
+                        "(fk_leitura, situacao, consciente) "
+                        "VALUES (%s, %s, %s)",
+                        (cursor.lastrowid, NIVEIS[nivel][0], False),
+                    )
             cnx.commit()
     finally:
         cnx.close()

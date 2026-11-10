@@ -22,7 +22,37 @@ function cadastrar(nome, email, senha, cargo, idempresa, data, nomeUsuario) {
     return database.executar(instrucaoSql);
 }
 
+function listarUsuarios() {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ")
+    var instrucaoSql = `
+      select usuario.id as id, usuario.nome as nome, email, nome_fantasia as empresa, cargo.nome as cargo
+from usuario join empresa on usuario.fk_empresa = empresa.id
+join cargo on usuario.fk_cargo = cargo.id;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarUsuarioPorId(id) {
+    var instrucaoSql = `
+        select id, nome, email, dt_nasc as data, fk_cargo from usuario where id = '${id}';
+    `;
+
+    return database.executar(instrucaoSql);
+}
+
+function atualizarUsuario(id, nome, email, data, cargo) {
+    var instrucaoSql = `
+        update usuario set nome = '${nome}', email = '${email}', dt_nasc = '${data}', fk_cargo = '${cargo}' WHERE id = '${id}';
+    `;
+
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    listarUsuarios,
+    buscarUsuarioPorId,
+    atualizarUsuario
 };

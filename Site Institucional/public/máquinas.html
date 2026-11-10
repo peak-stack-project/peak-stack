@@ -71,7 +71,14 @@
                 </div>
             </div>
 
-            <div class="container_interacao_usuarios" style="display: flex; justify-content: end;">
+            <div class="container_interacao_usuarios">
+                <div class="container_status_usuarios">
+                    <div class="status_usuarios">
+                        <p>2 Máquinas Ativos</p>
+                    </div>
+
+                </div>
+
                 <button id="botao_cadastro_funcionarios" onclick="chamarCadastro()"> + Adicionar máquina</button>
             </div>
             <div class="container_usuario_ativos">
@@ -86,43 +93,12 @@
                         <div></div>
                     </div>
                     <div class="conteudo_tabela" id="lista_usuarios">
-
-                        <div class="linha_tabela">
-                            <div class="campo_usuario">
-                                <div>89P13</div>
-                            </div>
-                            <div class="texto_email">193.214.23.123</div>
-                            <div class="texto_empresa">Linux</div>
-                            <div>
-                                <div class="area_usuario">PeakStack</div>
-                            </div>
-                            <div>
-                                <div class="status_atual_usuario">Ativa</div>
-                            </div>
-                            <div class="container_acoes">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path fill-rule="evenodd"
-                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-trash3" viewBox="0 0 16 16">
-                                        <path
-                                            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
     </section>
     <section>
-        <div id="container_cadastro">
+
+        <div id="container_cadastro" style="display: none;">
             <div class="sessao_cadastro">
                 <div class="container_tema">
                     <h3>Cadastrar Máquinas</h3>
@@ -155,41 +131,91 @@
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
+                    <button class="botao_cancelar_cadastro_usuario" onclick="fechar()">Cancelar</button>
                     <button class="botao_cadastrar_usuario" onclick="cadastrar()">Adicionar</button>
                 </div>
             </div>
         </div>
     </section>
+
     <section>
         <div id="container_cadastro2" style="display: none;">
-            <div class="sessao_cadastro">
+            <div class="sessao_cadastro2">
                 <div class="container_empresa_usuario">
                     <h4>Componentes monitoradas</h4>
-                    <select name="" id="atividades_usuario">
+                    <select name="" id="componente_input">
                         <option value="7">CPU (%)</option>
                         <option value="8">CPU (MH)</option>
                         <option value="9">RAM (%)</option>
                         <option value="10">RAM (GB)</option>
                         <option value="11">DISCO (%)</option>
                         <option value="12">REDE (MB)</option>
+                        <option value="13">REDE (MB - total)</option>
+                        <option value="14">REDE (Mbps)</option>
+
                     </select>
                 </div>
                 <div class="container_atividade_usuario">
                     <h4>Status</h4>
-                    <select name="" id="atividades_usuario">
+                    <select name="" id="status_input">
                         <option value="Ativo">Ativo</option>
                         <option value="Não Ativo">Não Ativo</option>
                         <option value="Pendente">Pendente</option>
                     </select>
                 </div>
                 <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="cadastrarMaquina()">Cadastrar</button>
+                    <button class="botao_cancelar_cadastro_usuario" onclick="fechar()">Cancelar</button>
+                    <button class="botao_cadastrar_usuario" onclick="cadastrarComponente()">Cadastrar</button>
                 </div>
             </div>
         </div>
     </section>
+    <div id="modalEdicaoMaquina" class="modal_edicao" style="display: none;">
+        <section class="modal_edicao_cartao" aria-modal="true">
+
+            <header class="modal_edicao_cabecalho">
+                <h2>Editar máquina</h2>
+
+                <button type="button" class="modal_edicao_fechar" data-fechar-modal>
+                    &times;
+                </button>
+            </header>
+
+            <form id="formEdicaoMaquina" class="form_edicao_empresa">
+
+                <label for="edicaoNomeMaquina">Nome do servidor</label>
+                <div class="campo_edicao">
+                    <input id="edicaoNomeMaquina" name="nome" type="text">
+                </div>
+
+                <label for="edicaoMacMaquina">Endereço MAC</label>
+                <div class="campo_edicao">
+                    <input id="edicaoMacMaquina" name="mac" type="text">
+                </div>
+
+                <label for="edicaoSoMaquina">Sistema operacional</label>
+                <div class="campo_edicao">
+                    <select id="edicaoSoMaquina" name="sistema_operacional">
+                        <option value="1">Windows 11 Home Single Language</option>
+                        <option value="2">Linux Ubuntu Server</option>
+                    </select>
+                </div>
+
+                <div class="acoes_edicao">
+
+                    <button class="botao_cancelar_edicao" type="button" data-fechar-modal>
+                        Cancelar
+                    </button>
+
+                    <button class="botao_atualizar_edicao" type="submit">
+                        Atualizar máquina
+                    </button>
+
+                </div>
+
+            </form>
+        </section>
+    </div>
 </body>
 
 </html>
@@ -197,67 +223,206 @@
 
     var cadastro_realizado = false;
 
-    function cadastrarUsuario() {
+    function listarMaquinas() {
+        fetch("/maquinas/listarMaquinas")
+            .then(function (resposta) {
+                resposta.json().then(function (json) {
 
+                    let htmlCodigo = "";
+
+                    for (let i = 0; i < json.length; i++) {
+
+                        htmlCodigo += `
+                        <div class="linha_tabela">
+
+                            <div class="campo_usuario">
+                                <div>${json[i].nome}</div>
+                            </div>
+
+                            <div class="texto_email">
+                                ${json[i].mac}
+                            </div>
+
+                            <div class="texto_empresa">
+                                ${json[i].sistema_operacional}
+                            </div>
+
+                            <div>
+                                <div class="area_usuario">
+                                    ${json[i].nome_fantasia}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="status_atual_usuario">
+                                    ${json[i].status}
+                                </div>
+                            </div>
+
+                            <div class="container_acoes">
+                              <button onclick="editarMaquina(${json[i].id})" type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+        fill="currentColor" viewBox="0 0 16 16">
+        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+    </svg>
+</button>
+
+                                <button>
+                                    <!-- Botão de excluir -->
+                                </button>
+                            </div>
+
+                        </div>
+                    `;
+                    }
+
+                    lista_usuarios.innerHTML = htmlCodigo;
+
+                });
+            })
+            .catch(function (erro) {
+                console.error("Erro ao listar máquinas:", erro);
+            });
+    }
+
+    listarMaquinas();
+
+    const modalMaquina = document.getElementById("modalEdicaoMaquina");
+
+    let idMaquina;
+
+    function editarMaquina(id) {
+
+        idMaquina = id;
+
+        fetch(`/maquinas/buscar/${id}`)
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (json) {
+
+                edicaoNomeMaquina.value = json.nome;
+                edicaoMacMaquina.value = json.mac;
+                edicaoSoMaquina.value = json.sistema_operacional;
+
+                modalMaquina.style.display = "flex";
+
+            })
+            .catch(function (erro) {
+                console.error("Erro ao buscar máquina:", erro);
+            });
+    }
+
+    function fecharModalMaquina() {
+        modalMaquina.style.display = "none";
+    }
+
+    document.querySelectorAll("#modalEdicaoMaquina [data-fechar-modal]")
+        .forEach(function (botao) {
+            botao.addEventListener("click", fecharModalMaquina);
+        });
+
+    document.getElementById("formEdicaoMaquina")
+        .addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            let nome = edicaoNomeMaquina.value;
+            let mac = edicaoMacMaquina.value;
+            let so = edicaoSoMaquina.value;
+
+            if (nome.length < 3) {
+                alert("Nome da máquina inválido.");
+                return;
+            }
+
+            if (mac == "") {
+                alert("Informe o endereço MAC.");
+                return;
+            }
+
+            fetch(`/maquinas/atualizar/${idMaquina}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    mac: mac,
+                    fk_so: so
+                })
+            })
+                .then(function (resposta) {
+
+                    if (resposta.ok) {
+                        alert("Máquina atualizada com sucesso!");
+
+                        fecharModalMaquina();
+                        listarMaquinas();
+
+                    } else {
+                        alert("Erro ao atualizar máquina.");
+                    }
+
+                })
+                .catch(function (erro) {
+                    console.error("Erro ao atualizar máquina:", erro);
+                });
+
+        });
+
+    function cadastrarComponente() {
+        console.log("chamei a funcao cadastrar");
         let booleano = true;
-        var nomeVar = nome_input.value;
-        var macVar = mac_input.value;
-        var soVar = so_input.value;
-        var emailVar = "opa";
-        var senhaVar = "opa";
+        var componenteVar = componente_input.value;
+        var statusVar = status_input.value;
+        var idMaquinaVar = sessionStorage.getItem("ID_MAQUINA");
+        console.log(componenteVar)
+        console.log(statusVar)
+        console.log(idMaquinaVar)
 
+        // aguardar();
 
-
-
-        // Verificando se há algum campo em branco
         if (
-            nomeVar == "" ||
-            emailVar == "" ||
-            senhaVar == "" ||
-            confirmacaoSenhaVar == "" ||
-            cargoVar == "" ||
-            idEmpresaVar == "" ||
-            dataVar == ""
-            ||
-            nomeUsuarioVar == ""
+            componenteVar == "" ||
+            statusVar == ""
         ) {
             booleano = false;
         }
 
-        // Enviando o valor da nova input
-        if (senhaVar == confirmacaoSenhaVar && booleano == true) {
-            fetch("/usuarios/cadastrar", {
+        console.log(componenteVar)
+        console.log(statusVar)
+        console.log(idMaquinaVar)
+        console.log(booleano)
+
+        if (booleano == true) {
+            fetch("/maquinas/cadastrarComponente", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+
                     // crie um atributo que recebe o valor recuperado aqui
                     // Agora vá para o arquivo routes/usuario.js
-                    nomeServer: nomeVar,
-                    emailServer: emailVar,
-                    senhaServer: senhaVar,
-                    cargoServer: cargoVar,
-                    idempresaServer: idEmpresaVar,
-                    dataServer: dataVar,
-                    nomeUsuarioServer: nomeUsuarioVar
+                    commponenteServer: componenteVar,
+                    statusServer: statusVar,
+                    idMaquinaServer: idMaquinaVar
+
                 }),
+
             })
                 .then(function (resposta) {
+                    console.log("chamei as variavel");
                     console.log("resposta: ", resposta);
 
                     if (resposta.ok) {
-                        cardErro.style.display = "block";
-
-                        mensagem_erro.innerHTML =
-                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-                        setTimeout(() => {
-                            window.location = "../gerenciaPeakstack/gerenciamentoEmpresas.html";
-                        }, "2000");
-
+                        console.log("resposta ok");
+                        container_cadastro.style.display = 'none';
+                        container_cadastro2.style.display = 'flex';
                         limparFormulario();
                         finalizarAguardar();
+
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
@@ -269,7 +434,6 @@
 
             return false;
         }
-
     }
 
     function mudarTela() {
@@ -339,7 +503,7 @@
                     if (resposta.ok) {
                         console.log("resposta ok");
                         container_cadastro.style.display = 'none';
-                        container_cadastro2.style.display = 'block';
+                        container_cadastro2.style.display = 'flex';
                         limparFormulario();
                         finalizarAguardar();
 
@@ -359,7 +523,7 @@
             }).then(function (resposta) {
                 if (resposta.ok) {
                     resposta.json().then(function (json) {
-                        sessionStorage.ID_MAQUINA = json.id + 1;
+                        sessionStorage.ID_MAQUINA = json.id;
                         fez_login = true;
                     });
                 } else {
@@ -386,14 +550,19 @@
         const container2 = document.getElementById("container_cadastro2");
 
         if (container.style.display === "none") {
-            container.style.display = "block";
+            container.style.display = "flex";
             container2.style.display = "none";
         } else {
             container.style.display = "none";
-            container2.style.display = "block";
+            container2.style.display = "flex";
 
         }
 
+    }
+
+    function fechar() {
+        document.getElementById("container_cadastro").style.display = "none";
+        document.getElementById("container_cadastro2").style.display = "none";
     }
 
 </script>

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="./css/dashboard.css">
     <script src="./js/sessao.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="corpo_dashboard">
@@ -108,7 +109,7 @@
 
                 <div class="grafico_monitoramento">
 
-                    <h2>Uso de Componentes — últimas 24h</h2>
+                    <h2>Saúde do sistema</h2>
 
                     <div class="grafico_container">
                         <canvas id="graficoCpu"></canvas>
@@ -246,125 +247,94 @@
     </main>
 
     <script>
-        const ctx = document.getElementById('graficoCpu');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [
-                    '00:00h', '01:00h', '02:00h', '03:00h', '04:00h', '05:00h', '06:00h', '07:00h',
-                    '08:00h', '09:00h', '10:00h', '11:00h', '12:00h', '13:00h', '14:00h', '15:00h',
-                    '16:00h', '17:00h', '18:00h', '19:00h', '20:00h', '21:00h', '22:00h', '23:00h'
-                ],
-                datasets: [
-                    {
-                        label: 'Uso de CPU (%)',
-                        data: [29, 18, 50, 46, 43, 32, 28, 84, 26, 90, 69, 19, 18, 26, 42, 44, 79, 18, 86, 40, 84, 68, 43, 72],
-                        borderColor: '#ff6384',
-                        backgroundColor: '#ff6384',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: false
-                    },
-                    {
-                        label: 'Uso de RAM (%)',
-                        data: [77, 57, 40, 50, 84, 67, 61, 57, 49, 53, 61, 46, 45, 64, 46, 62, 62, 78, 56, 42, 69, 74, 47, 64],
-                        borderColor: '#36a2eb',
-                        backgroundColor: '#36a2eb',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: false
-                    },
-                    {
-                        label: 'Uso de Disco (%)',
-                        data: [25, 55, 38, 60, 59, 43, 56, 32, 24, 22, 34, 38, 25, 34, 26, 44, 37, 49, 60, 43, 30, 43, 42, 33],
-                        borderColor: '#cc65fe',
-                        backgroundColor: '#cc65fe',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: false
-                    },
-                    {
-                        label: 'Uso de Rede (%)',
-                        data: [90, 39, 94, 92, 87, 14, 82, 86, 26, 73, 36, 25, 64, 53, 39, 86, 93, 76, 33, 92, 46, 12, 34, 9],
-                        borderColor: '#ffce56',
-                        backgroundColor: '#ffce56',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: false
-                    }
-                ]
+const ctxCpu = document.getElementById('graficoCpu').getContext('2d');
 
+const gradientCpu = ctxCpu.createLinearGradient(0, 0, 600, 0);
+gradientCpu.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+gradientCpu.addColorStop(1, 'rgba(168, 85, 247, 0.4)');
+
+const gerarDadosCPU = () => Array.from({ length: 24 }, () => Math.floor(Math.random() * 5500) + 3500);
+const gerarDadosRAM = () => Array.from({ length: 24 }, () => Math.floor(Math.random() * 2500) + 2000);
+
+const gerarLinhaSLA = () => Array(24).fill(4000);
+
+new Chart(ctxCpu, {
+    type: 'line',
+    data: {
+        labels: [
+            '00:00h', '01:00h', '02:00h', '03:00h', '04:00h', '05:00h', '06:00h', '07:00h',
+            '08:00h', '09:00h', '10:00h', '11:00h', '12:00h', '13:00h', '14:00h', '15:00h',
+            '16:00h', '17:00h', '18:00h', '19:00h', '20:00h', '21:00h', '22:00h', '23:00h'
+        ],
+        datasets: [
+            {
+                label: 'Volume de Requisições (RPS)',
+                data: gerarDadosCPU(),
+                borderColor: '#3b82f6',
+                backgroundColor: gradientCpu,
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 0
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            stepSize: 25
-                        },
-                        grid: {
-                            drawOnChartArea: true
-                        },
-                        title: {
-                            display: true,
-                            text: 'Porcentagem (%)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            drawOnChartArea: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Horário'
-                        }
+            {
+                label: 'Latência Média (ms)',
+                data: gerarDadosRAM(),
+                borderColor: '#f43f5e', 
+                fill: false,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 0
+            },
+            {
+                label: 'Meta de SLA (100ms)',
+                data: gerarLinhaSLA(),  
+                borderColor: '#10b981',
+                fill: false,
+                tension: 0,             
+                borderWidth: 2,
+                pointRadius: 0,
+                order: 1             
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                min: 0,
+                max: 10000,
+                title: {
+                    display: true,
+                    text: 'Valor',
+                    font: { family: 'Inter', size: 12 }
+                },
+                ticks: { 
+                    stepSize: 2000,
+                    font: { family: 'Inter', size: 11 },
+                    callback: function(value) {
+                        if (value === 0) return '0';
+                        return (value / 1000) + 'k';
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                }
-            }
-        });
-
-
-
-        const status = document.getElementById('graficoStatus');
-
-        new Chart(status, {
-            type: 'doughnut',
-
-            data: {
-                labels: [
-                    'Normal',
-                    'Crítico',
-                    'Atenção'
-                ],
-
-                datasets: [{
-                    data: [2, 1, 1],
-                    borderWidth: 0
-                }]
+                grid: { color: '#f3f4f6' }
             },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-
-                cutout: '65%'
+            x: {
+                grid: { display: false },
+                ticks: { font: { family: 'Inter', size: 11 } }
             }
-        });
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: { font: { family: 'Inter', size: 12 }, boxWidth: 12 }
+            }
+        }
+    }
+});
+
 
 
         const disco = document.getElementById('graficoDisco');
@@ -473,9 +443,34 @@
             }
         });
 
+const ctxStatus = document.getElementById('graficoStatus').getContext('2d');
 
-
-
+new Chart(ctxStatus, {
+    type: 'doughnut',
+    data: {
+        labels: ['Normal', 'Atenção', 'Crítico'],
+        datasets: [{
+            data: [2, 1, 1],
+            backgroundColor: [
+                '#3b82f6',
+                '#f59e0b',
+                '#ef4444'
+            ],
+            borderWidth: 0,
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
     </script>
 
 </body>

@@ -11,10 +11,10 @@ function validarSessao() {
     }
 }
 
-function limparSessao() {
+function limparSessao(urlDestino = "/login.html") {
     registrar_checkpoint("logout_peakstack", sessionStorage.ID_USUARIO);
     sessionStorage.clear();
-    window.location = "/login.html";
+    window.location = urlDestino;
 }
 
 // function ajustarNavbarSessao() {

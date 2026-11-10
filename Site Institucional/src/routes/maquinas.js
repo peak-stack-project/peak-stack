@@ -9,11 +9,23 @@ router.post("/cadastrarMaquina", function (req, res) {
 })
 
 router.post("/cadastrarComponente", function (req, res) {
-    maquinasController.buscarPorCnpj(req, res);
+    maquinasController.cadastrarComponente(req, res);
 });
 
 router.post("/listar", function (req, res) {
   maquinasController.listar(req, res);
+});
+
+router.get("/listarMaquinas", function (req, res) {
+    maquinasController.listarMaquinas(req, res);
+});
+
+router.get("/buscar/:id", function (req, res) {
+    maquinasController.buscarMaquinaPorId(req, res);
+});
+
+router.put("/atualizar/:id", function (req, res) {
+    maquinasController.atualizarMaquina(req, res);
 });
 
 module.exports = router;
