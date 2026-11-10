@@ -8,13 +8,16 @@ from datetime import datetime
 import importlib
 import os
 
-INTERVALO = 5  
+INTERVALO = 5
 
 BIBLIOTECAS_PERMITIDAS = {"psutil"}
 
 BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 
 NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red")}
+
+LIMITE_ALERTA_PADRAO = 50
+LIMITE_CRITICO_PADRAO = 80
 
 DB = dict(
     user=os.getenv("DB_USER", "root"),
@@ -41,6 +44,26 @@ SQL_COMPONENTES = """
       AND cm.status_config = 'Ativo'
 """
 
+
+def classificar(valor, regras):
+    if not regras:
+        if valor > LIMITE_CRITICO_PADRAO:
+            return 3
+        if valor > LIMITE_ALERTA_PADRAO:
+            return 2
+        return 1
+
+    return max(
+        (
+            r["nivel"]
+            for r in regras
+            if (r["valor_min"] is None or valor >= float(r["valor_min"]))
+            and (r["valor_max"] is None or valor <= float(r["valor_max"]))
+        ),
+        default=1,
+    )
+
+
 def capturar(mac=None):
     mac = (mac or get_mac_address() or "").upper().replace(":", "").replace("-", "")
     if not mac:
@@ -50,26 +73,23 @@ def capturar(mac=None):
     try:
         cursor = cnx.cursor(dictionary=True)
 
-        # isso aqui pergunta quais componentes ativos esta máquina deve monitorar
         cursor.execute(SQL_COMPONENTES, (mac,))
         componentes = cursor.fetchall()
         if not componentes:
             print(f"[yellow]Nenhum componente ativo para a máquina {mac}[/yellow]")
             return
 
-        # isso aq mostra os limites de cada componente
         fk_empresa = componentes[0]["fk_empresa"]
         ids = list({c["fk_componentes"] for c in componentes})
         cursor.execute(
-        "SELECT fk_componentes, nivel, valor_min, valor_max FROM limites "
-        f"WHERE fk_empresa = %s AND fk_componentes IN ({','.join(['%s'] * len(ids))})",
-        [fk_empresa, *ids],
+            "SELECT fk_componentes, nivel, valor_min, valor_max FROM limites "
+            f"WHERE fk_empresa = %s AND fk_componentes IN ({','.join(['%s'] * len(ids))})",
+            [fk_empresa, *ids],
         )
         limites = {}
         for l in cursor.fetchall():
             limites.setdefault(l["fk_componentes"], []).append(l)
 
-        # e essa faz a captura genérica, guiada pela biblioteca e codigo que vieram do BD
         agora = datetime.now()
         leituras = []
         print(f"\n[blue]{agora:%H:%M:%S}[/blue]  máquina [bold]{mac}[/bold]")
@@ -86,28 +106,15 @@ def capturar(mac=None):
                 unidade = (c["unidade_medida"] or "").strip()
                 valor = round(float(bruto) / BYTES.get(unidade.upper(), 1), 2)
 
-                nivel = max(
-                    (
-                        l["nivel"]
-                        for l in limites.get(c["fk_componentes"], [])
-                        if (l["valor_min"] is None or valor >= float(l["valor_min"]))
-                        and (l["valor_max"] is None or valor <= float(l["valor_max"]))
-                    ),
-                    default=None,
-                )
-                situacao, cor = (
-                    NIVEIS.get(nivel, (f"Nível {nivel}", "white"))
-                    if nivel is not None
-                    else ("Sem limite", "white")
-                )
+                nivel = classificar(valor, limites.get(c["fk_componentes"], []))
+                situacao, cor = NIVEIS.get(nivel, (f"Nível {nivel}", "white"))
 
-                leituras.append((valor, agora, c["cm_id"]))
+                leituras.append((nivel, agora, c["cm_id"]))
                 print(f"{c['nome']}: [bold {cor}]{valor} {unidade}[/bold {cor}] ({situacao})")
 
-            except Exception as erro:  # um componente com problema não derruba os demais
+            except Exception as erro:
                 print(f"[red]Falha ao capturar '{c['nome']}': {erro}[/red]")
 
-        # aqui os dados capturados são inseridos na leitura
         if leituras:
             cursor.executemany(
                 "INSERT INTO leitura (valor, dt_hr_leitura, fk_config_maq) "

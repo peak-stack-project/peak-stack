@@ -35,7 +35,6 @@ html {
 }
 
 body {
-    min-width: 1040px;
     color: var(--cor-texto);
     background: var(--cor-fundo);
     font-family: "Inter", Arial, sans-serif;
@@ -89,7 +88,7 @@ h1 {
     align-items: center !important;
     justify-content: space-between !important;
     
-    height: 10%;
+    height: auto;
     width: 95% !important;
     max-width: 1180px !important;
     
@@ -207,7 +206,7 @@ h1 {
 
 .formulario_contexto {
     width: 100%;
-    height: 15dvh;
+    min-height: 15dvh;
     display: flex;
     justify-content: center;
     align-items: center ;
@@ -220,7 +219,9 @@ h1 {
     width: 100%;
     display: flex;
     justify-content: center;
-    font-size: 40px;
+    font-size: clamp(26px, 6vw, 40px);
+    text-align: center;
+    padding: 0 16px;
     color: #18181c;
 }
 
@@ -329,3 +330,169 @@ h1 {
     width: 30px;
 }
 
+
+@media (max-width: 1024px) {
+    .hero h1 {
+        font-size: 44px;
+    }
+
+    .passos_grade {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .passos_grade::before {
+        display: none;
+    }
+
+    .grade_cards,
+    .equipe_grade {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sinais_conteudo {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sinais_texto {
+        grid-column: 1 / -1;
+    }
+
+    .sinais_texto h2 {
+        max-width: none;
+    }
+
+    .formulario_cartao {
+        width: 60%;
+    }
+}
+
+@media (max-width: 768px) {
+    .cabecalho {
+        height: auto;
+        padding: 12px 20px !important;
+    }
+
+    .marca_icone {
+        width: 32px;
+        height: 32px;
+    }
+
+    .marca {
+        height: 40px;
+    }
+
+    .navegacao {
+        gap: 4px;
+    }
+
+    .navegacao>a:not(.botao),
+    .botao_link {
+        text-align: center;
+        padding: 12px 14px;
+        font-size: 15px;
+        color: #424152;
+    }
+
+    .pagina_formulario {
+        padding-top: 90px;
+    }
+
+    .formulario_cartao {
+        width: 90%;
+        max-width: 480px;
+        padding: 22px;
+        margin: 24px auto;
+    }
+
+    .container,
+    .containerproblematizacao {
+        padding: 0 24px;
+    }
+
+    .hero {
+        padding-top: 120px;
+        padding-bottom: 40px;
+    }
+
+    .hero_conteudo,
+    .secao_grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+        letter-spacing: -1px;
+    }
+
+    .hero_texto>p {
+        font-size: 16px;
+    }
+
+    .secao {
+        padding: 60px 0;
+    }
+
+    .titulo_secao h2,
+    .sinais_texto h2,
+    .valores_titulo,
+    .equipe_titulo {
+        font-size: 28px;
+    }
+
+    .passos_grade,
+    .grade_cards,
+    .valores_grid,
+    .equipe_grade,
+    .sinais_conteudo,
+    .rodape_grade {
+        grid-template-columns: 1fr;
+    }
+
+    .valores_grid,
+    .equipe_grade {
+        padding: 0;
+    }
+
+    .sinais_conteudo {
+        gap: 32px;
+    }
+
+    .rodape_grade {
+        gap: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .sinal_item strong {
+        font-size: 44px;
+    }
+
+    .card_info {
+        min-height: auto;
+    }
+
+    .marca h3 {
+        font-size: 16px;
+    }
+
+    .navegacao {
+        gap: 0;
+        font-size: 13px;
+    }
+
+    .navegacao>a:not(.botao),
+    .botao_link {
+        padding: 8px 8px;
+        font-size: 13px;
+    }
+
+    .formulario_cartao {
+        width: 94%;
+        padding: 18px;
+    }
+}
