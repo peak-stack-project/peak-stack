@@ -66,17 +66,17 @@ def nivel_padrao(tipo, valor, unidade):
     """Classifica usando os limites padrão do código (1=Normal, 2=Alerta, 3=Crítico)."""
     regra = LIMITES_PADRAO.get(tipo)
     if regra is None:
-        return None  # componente sem padrão definido
+        return None 
 
     sentido, atencao, critico, unidade_exigida = regra
     if unidade_exigida and unidade != unidade_exigida:
-        return None  # ex.: RAM em GB não usa o padrão em %
+        return None  
     if sentido == "maior":
         if valor >= critico:
             return 3
         if valor >= atencao:
             return 2
-    else:  # "menor"
+    else: 
         if valor < critico:
             return 3
         if valor <= atencao:

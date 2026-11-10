@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS empresa (
   razao_social VARCHAR(200) NOT NULL,
   nome_fantasia VARCHAR(200) NOT NULL,
   cnpj CHAR(14) NOT NULL,
+  situacao VARCHAR(100),
   dt_hr_criacao DATETIME default current_timestamp
   );
 
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS config_maq (
 
 CREATE TABLE IF NOT EXISTS leitura (
   id INT AUTO_INCREMENT UNIQUE,
-  valor DECIMAL(5,2) NOT NULL,
+  valor DECIMAL(10,2) NOT NULL,
   dt_hr_leitura DATETIME DEFAULT current_timestamp,
   fk_config_maq INT NOT NULL,
   PRIMARY KEY (id, fk_config_maq),
@@ -221,14 +222,10 @@ INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by, dt_na
 SELECT * FROM usuario;
 -- insert da configuração da maquina --
 INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
-(7, 1, 'Ativo'),
-(8, 1, 'Pendente'),
-(9, 1, 'Ativo'),
-(10, 1, 'Ativo'),
-(11, 1, 'Não Ativo'),
-(12, 1, 'Ativo');
-
-select * from config_maq;
+(12, 15, 'Ativo'),
+(13, 15, 'Ativo'),
+(14, 15, 'Ativo'),
+(15, 15, 'Ativo');
 
 -- insert de limite:
 INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
@@ -246,7 +243,7 @@ SELECT cm.id AS cm_id,
     JOIN config_maq cm    ON cm.fk_maquina = m.id
     JOIN componentes c          ON c.id = cm.fk_componentes
     JOIN configuracao_comp cc   ON cc.id = c.fk_configuracao_comp
-    WHERE UPPER(m.mac_address) = '2AF2A12F1D90'
+    WHERE UPPER(m.mac_address) = 'F2A4064C0040'
       AND cm.status_config = 'Ativo';
 
 

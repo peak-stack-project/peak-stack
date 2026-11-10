@@ -89,12 +89,15 @@
                         <div class="email">ENDEREÇO IP</div>
                         <div class="empresa">SISTEMA OPERACIONAL</div>
                         <div class="perfil">EMPRESA</div>
+                        <div class="perfil">COMPONENTE</div>
                         <div class="perfil">STATUS</div>
                         <div></div>
                     </div>
                     <div class="conteudo_tabela" id="lista_usuarios">
                     </div>
                 </div>
+            </div>
+        </div>
     </section>
     <section>
 
@@ -236,7 +239,7 @@
                         <div class="linha_tabela">
 
                             <div class="campo_usuario">
-                                <div>${json[i].nome}</div>
+                                <div>${json[i].nome}/</div>
                             </div>
 
                             <div class="texto_email">
@@ -252,7 +255,11 @@
                                     ${json[i].nome_fantasia}
                                 </div>
                             </div>
-
+                            <div>
+                                <div class="area_usuario">
+                                    ${json[i].componente}
+                                </div>
+                            </div>
                             <div>
                                 <div class="status_atual_usuario">
                                     ${json[i].status}
