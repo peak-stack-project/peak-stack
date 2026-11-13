@@ -188,6 +188,37 @@
             </form>
         </section>
     </div>
+     <div id="modalDeletarUsuario" class="modal_edicao" style="display: none;">
+
+        <section class="modal_edicao_cartao">
+
+            <header class="modal_edicao_cabecalho">
+                <h2>Deletar usuário</h2>
+
+                <button type="button" class="modal_edicao_fechar" onclick="fecharModalUsuario()">
+                    &times;
+                </button>
+            </header>
+
+            <form id="formEdicaoUsuario" class="form_edicao_empresa">
+                <label for="edicaoCargoUsuario">Tem certeza que deseja deletar esse usuario?</label>
+                <div class="campo_edicao">
+                    <select id="deletar_input">
+                        <option value="0">Selecione uma opção</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+
+                <div class="acoes_edicao">
+                    <button class="botao_atualizar_edicao" type="button" onclick="deletarUsuario()">
+                        Confirmar
+                    </button>
+                </div>
+
+            </form>
+        </section>
+    </div>
 </body>
 
 </html>
@@ -236,7 +267,7 @@
                                 </svg>
                             </button>
 
-                             <button type="button" onclick="deletarUsuario(${json[i].id})">
+                             <button type="button" onclick="confirmarUsuario(${json[i].id})">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     width="16" height="16" fill="currentColor"
                                     viewBox="0 0 16 16">
@@ -261,8 +292,14 @@
 
     listarUsuarios();
     const modalUsuario = document.getElementById("modalEdicaoUsuario");
+    const delUsuario = document.getElementById("modalDeletarUsuario");
 
     let idUsuario;
+
+    function confirmarUsuario(id) {
+        idUsuario = id;
+        delUsuario.style.display = "flex";
+    }
 
     function editarUsuario(id) {
 
@@ -291,7 +328,10 @@
 
     function deletarUsuario(id) {
 
-        idUsuarioVar = id;
+        id = idUsuario
+
+        let deletarInput = deletar_input.value
+        if(deletarInput == "sim"){
 
         fetch("/usuarios/deletar", {
                 method: "POST",
@@ -301,7 +341,7 @@
                 body: JSON.stringify({
                     // crie um atributo que recebe o valor recuperado aqui
                     // Agora vá para o arquivo routes/usuario.js
-                    idUsuarioServer: idUsuarioVar
+                    idUsuarioServer: id
                 }),
             })
                 .then(function (resposta) {
@@ -309,6 +349,7 @@
 
                     if (resposta.ok) {
                         listarUsuarios();
+                        fecharModalUsuario();
                         cardErro.style.display = "block";
 
                         mensagem_erro.innerHTML =
@@ -322,12 +363,16 @@
                 });
 
             return false;
+        } else {
+            fecharModalUsuario();
+        }
+        }
 
-    }
 
 
     function fecharModalUsuario() {
         modalUsuario.style.display = "none";
+        delUsuario.style.display = "none";
     }
 
     document.querySelectorAll("#modalEdicaoUsuario [data-fechar-modal]")
