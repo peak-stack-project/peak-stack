@@ -76,7 +76,6 @@
                         <div class="email">E-MAIL</div>
                         <div class="empresa">EMPRESA</div>
                         <div class="perfil">PERFIL</div>
-                        <div class="estado">STATUS</div>
                         <div class="acoes">AÇÕES</div>
                         <div></div>
                     </div>
@@ -189,6 +188,37 @@
             </form>
         </section>
     </div>
+     <div id="modalDeletarUsuario" class="modal_edicao" style="display: none;">
+
+        <section class="modal_edicao_cartao">
+
+            <header class="modal_edicao_cabecalho">
+                <h2>Deletar usuário</h2>
+
+                <button type="button" class="modal_edicao_fechar" onclick="fecharModalUsuario()">
+                    &times;
+                </button>
+            </header>
+
+            <form id="formEdicaoUsuario" class="form_edicao_empresa">
+                <label for="edicaoCargoUsuario">Tem certeza que deseja deletar esse usuario?</label>
+                <div class="campo_edicao">
+                    <select id="deletar_input">
+                        <option value="0">Selecione uma opção</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+
+                <div class="acoes_edicao">
+                    <button class="botao_atualizar_edicao" type="button" onclick="deletarUsuario()">
+                        Confirmar
+                    </button>
+                </div>
+
+            </form>
+        </section>
+    </div>
 </body>
 
 </html>
@@ -226,15 +256,18 @@
                             </div>
                         </div>
 
-                        <div>
-                            <div class="status_atual_usuario">
-                                —
-                            </div>
-                        </div>
-
                         <div class="container_acoes">
 
                             <button type="button" onclick="editarUsuario(${json[i].id})">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293z"/>
+                                    <path d="M13.752 4.396l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12z"/>
+                                </svg>
+                            </button>
+
+                             <button type="button" onclick="confirmarUsuario(${json[i].id})">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     width="16" height="16" fill="currentColor"
                                     viewBox="0 0 16 16">
@@ -259,8 +292,14 @@
 
     listarUsuarios();
     const modalUsuario = document.getElementById("modalEdicaoUsuario");
+    const delUsuario = document.getElementById("modalDeletarUsuario");
 
     let idUsuario;
+
+    function confirmarUsuario(id) {
+        idUsuario = id;
+        delUsuario.style.display = "flex";
+    }
 
     function editarUsuario(id) {
 
@@ -287,8 +326,53 @@
             });
     }
 
+    function deletarUsuario(id) {
+
+        id = idUsuario
+
+        let deletarInput = deletar_input.value
+        if(deletarInput == "sim"){
+
+        fetch("/usuarios/deletar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    // crie um atributo que recebe o valor recuperado aqui
+                    // Agora vá para o arquivo routes/usuario.js
+                    idUsuarioServer: id
+                }),
+            })
+                .then(function (resposta) {
+                    console.log("resposta: ", resposta);
+
+                    if (resposta.ok) {
+                        listarUsuarios();
+                        fecharModalUsuario();
+                        cardErro.style.display = "block";
+
+                        mensagem_erro.innerHTML =
+                            "Usuário deletado com sucesso!";
+                    } else {
+                        throw "Houve um erro ao tentar deletar o usuário!";
+                    }
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                });
+
+            return false;
+        } else {
+            fecharModalUsuario();
+        }
+        }
+
+
+
     function fecharModalUsuario() {
         modalUsuario.style.display = "none";
+        delUsuario.style.display = "none";
     }
 
     document.querySelectorAll("#modalEdicaoUsuario [data-fechar-modal]")

@@ -29,35 +29,51 @@ function cadastrar(nome, razaoSocial, cnpj) {
 
 }
 
-function listarEmpresas(req, res) {
+function listarEmpresas() {
   var instrucaoSql = `
-  SELECT 
-    e.*,
-    u.*
-FROM empresa e
-LEFT JOIN usuario u
-    ON u.id = (
+    SELECT
+      e.id AS id_empresa,
+      e.razao_social,
+      e.nome_fantasia,
+      e.cnpj,
+      u.nome AS nome_ceo
+    FROM empresa e
+    LEFT JOIN usuario u
+      ON u.id = (
         SELECT u2.id
         FROM usuario u2
         WHERE u2.fk_empresa = e.id
         ORDER BY u2.created_at ASC, u2.id ASC
         LIMIT 1
-    );`
+      );`;
 
   return database.executar(instrucaoSql);
-
 }
 
 
-function atualizar(nomeFantasia, razaoSocial, cnpj, id) {
-  var instrucaoSql = `UPDATE empresa 
-                      SET nome_fantasia = '${nomeFantasia}', 
-                      razao_social = '${razaoSocial}', 
-                      cnpj = '${cnpj}' 
-                      WHERE id = '${id}'`
+function atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo) {
+  var sqlEmpresa = `UPDATE empresa
+                    SET nome_fantasia = '${nomeFantasia}',
+                    razao_social = '${razaoSocial}',
+                    cnpj = '${cnpj}'
+                    WHERE id = '${id}'`;
 
-  return database.executar(instrucaoSql);
+  var sqlCeo = `UPDATE usuario
+                SET nome = '${ceo}'
+                WHERE id = (
+                SELECT id FROM (
+                  SELECT id FROM usuario
+                  WHERE fk_empresa = '${id}'
+                  ORDER BY created_at ASC, id ASC
+                  LIMIT 1
+                ) AS primeiro
+                )`;
 
+  return database.executar(sqlEmpresa).then(function (resultado) {
+    return database.executar(sqlCeo).then(function () {
+      return resultado;
+    });
+  });
 }
 
 

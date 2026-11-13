@@ -1,5 +1,31 @@
 var usuarioModel = require("../models/usuarioModel");
 
+function deletar(req, res) {
+    // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
+    var idUsuario = req.body.idUsuarioServer;
+   
+    // não coloquei o tipo pois ele é definido pela senha e usuário no login: 'admin'
+
+    // Faça as validações dos valores
+    
+        // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
+        usuarioModel.deletar(idUsuario)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao realizar o delete! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
 function listarUsuarios(req, res) {
     usuarioModel.listarUsuarios()
         .then(function (resultado) {
@@ -27,6 +53,7 @@ function buscarUsuarioPorId(req, res) {
             res.status(500).json(erro.sqlMessage);
         });
 }
+
 
 function atualizarUsuario(req, res) {
     var id = req.params.id;
@@ -157,5 +184,6 @@ module.exports = {
     cadastrar,
     listarUsuarios,
     buscarUsuarioPorId,
-    atualizarUsuario
+    atualizarUsuario,
+    deletar
 }
