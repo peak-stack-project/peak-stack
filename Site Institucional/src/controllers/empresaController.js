@@ -101,13 +101,14 @@ function listarEmpresas(res, res) {
 }
 
 function atualizar(req, res) {
-
+    console.log("BODY: ", req.body);
     const id = req.params.id;
     const razaoSocial = req.body.razao_social;
     const nomeFantasia = req.body.nome_fantasia;
     const cnpj = req.body.cnpj;
+    const ceo = req.body.ceo;
 
-    empresaModel.atualizar(nomeFantasia, razaoSocial, cnpj, id)
+    empresaModel.atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo)
         .then(
             function (resultado) {
                 res.json(resultado)

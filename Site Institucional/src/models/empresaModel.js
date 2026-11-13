@@ -51,15 +51,29 @@ function listarEmpresas() {
 }
 
 
-function atualizar(nomeFantasia, razaoSocial, cnpj, id) {
-  var instrucaoSql = `UPDATE empresa 
-                      SET nome_fantasia = '${nomeFantasia}', 
-                      razao_social = '${razaoSocial}', 
-                      cnpj = '${cnpj}' 
-                      WHERE id = '${id}'`
+function atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo) {
+  var sqlEmpresa = `UPDATE empresa
+                    SET nome_fantasia = '${nomeFantasia}',
+                    razao_social = '${razaoSocial}',
+                    cnpj = '${cnpj}'
+                    WHERE id = '${id}'`;
 
-  return database.executar(instrucaoSql);
+  var sqlCeo = `UPDATE usuario
+                SET nome = '${ceo}'
+                WHERE id = (
+                SELECT id FROM (
+                  SELECT id FROM usuario
+                  WHERE fk_empresa = '${id}'
+                  ORDER BY created_at ASC, id ASC
+                  LIMIT 1
+                ) AS primeiro
+                )`;
 
+  return database.executar(sqlEmpresa).then(function (resultado) {
+    return database.executar(sqlCeo).then(function () {
+      return resultado;
+    });
+  });
 }
 
 
