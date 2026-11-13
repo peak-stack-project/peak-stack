@@ -252,85 +252,59 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
                     nomeServer: nomeVar,
                     cnpjServer: cnpjVar,
                     razaoSocialServer: razaoSocialVar,
-
                 }),
-
             })
                 .then(function (resposta) {
-                    console.log("chamei as variavel");
                     console.log("resposta: ", resposta);
 
                     if (resposta.ok) {
-                        console.log("resposta ok");
-                        cadastroEmpresa.style.display = 'none';
-                        cadastroADM.style.display = 'block';
-                        limparFormulario();
-                        finalizarAguardar();
-
+                        return resposta.json();
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
+                })
+                .then(function (json) {
+                    console.log("empresa cadastrada: ", json);
+
+                    // id da empresa que acabou de ser criada
+                    sessionStorage.ID_EMPRESA = json.insertId;
+
+                    cadastroEmpresa.style.display = 'none';
+                    cadastroADM.style.display = 'block';
+                    limparFormulario();
+                    finalizarAguardar();
                 })
                 .catch(function (resposta) {
                     console.log(`#ERRO: ${resposta}`);
                     finalizarAguardar();
                 });
 
-            fetch("/empresas/listar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
-            }).then(function (resposta) {
-                if (resposta.ok) {
-                    resposta.json().then(function (json) {
-                        sessionStorage.ID_EMPRESA = json.id;
-                        fez_login = true;
-                    });
-                } else {
-                    resposta.text().then(function (texto) {
-                        cardErro.style.display = "block";
-                        mensagem_erro.innerHTML = texto + ". Tente novamente.";
-                        finalizarAguardar();
-                        registrar_checkpoint("erro_login_peakstack");
-                    });
-                }
-            }).catch(function () {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
-                finalizarAguardar();
-                registrar_checkpoint("falha_conexao_login_peakstack");
-            });
-
             return false;
         }
-    }
 
 
-    function exibirErroCadastro(mensagem) {
-        cardErro.style.display = "block";
-        mensagem_erro.innerHTML = mensagem;
-        return false;
-    }
+        function exibirErroCadastro(mensagem) {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = mensagem;
+            return false;
+        }
 
 
-    function toggleSenha(inputId, botao) {
-        const input = document.getElementById(inputId);
+        function toggleSenha(inputId, botao) {
+            const input = document.getElementById(inputId);
 
-        if (input.type === "password") {
-            input.type = "text";
-            botao.textContent = "🔒";
-        } else {
-            input.type = "password";
-            botao.textContent = "👁️";
+            if (input.type === "password") {
+                input.type = "text";
+                botao.textContent = "🔒";
+            } else {
+                input.type = "password";
+                botao.textContent = "👁️";
+            }
         }
     }
-
 
 
 </script>

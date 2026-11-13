@@ -79,27 +79,30 @@ function cadastrar(req, res) {
 
 }
 
-function listarEmpresas(res, res){
+function listarEmpresas(res, res) {
     empresaModel.listarEmpresas()
-     .then(
+        .then(
             function (resultado) {
-                res.json(resultado)
+                if (resultado.affectedRows == 0) {
+                    return res.status(404).send("Empresa não encontrada");
+                }
+                res.json(resultado);
             }
-        ).catch(
+        ).catch (
             function (erro) {
-                console.log(erro);
-                console.log(
-                    "\nHouve um erro ",
-                    erro.sqlMessage
-                );
-                res.status(500).json(erro.sqlMessage);
-            }
+        console.log(erro);
+        console.log(
+            "\nHouve um erro ",
+            erro.sqlMessage
+        );
+        res.status(500).json(erro.sqlMessage);
+    }
         );
 }
 
 function atualizar(req, res) {
 
-   const id = req.params.id;
+    const id = req.params.id;
     const razaoSocial = req.body.razao_social;
     const nomeFantasia = req.body.nome_fantasia;
     const cnpj = req.body.cnpj;

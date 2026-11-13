@@ -29,23 +29,25 @@ function cadastrar(nome, razaoSocial, cnpj) {
 
 }
 
-function listarEmpresas(req, res) {
+function listarEmpresas() {
   var instrucaoSql = `
-  SELECT 
-    e.*,
-    u.*
-FROM empresa e
-LEFT JOIN usuario u
-    ON u.id = (
+    SELECT
+      e.id AS id_empresa,
+      e.razao_social,
+      e.nome_fantasia,
+      e.cnpj,
+      u.nome AS nome_ceo
+    FROM empresa e
+    LEFT JOIN usuario u
+      ON u.id = (
         SELECT u2.id
         FROM usuario u2
         WHERE u2.fk_empresa = e.id
         ORDER BY u2.created_at ASC, u2.id ASC
         LIMIT 1
-    );`
+      );`;
 
   return database.executar(instrucaoSql);
-
 }
 
 
