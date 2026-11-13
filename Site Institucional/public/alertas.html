@@ -16,7 +16,7 @@
 
 <body class="corpo_dashboard">
 
-   <aside class="menu_lateral">
+    <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
             <span>PeakStack</span>
@@ -83,11 +83,12 @@
                         <div>PENDENTES · 6</div>
                     </div>
 
-                    <div class="lista_alertas">
+                    <div id="lista_alertas">
 
                         <!-- Alerta 1 -->
-                        <div class="alerta critico">
-                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <!-- <div class="alerta critico">
+                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path d="m12 3 9 17H3L12 3Z" />
                                 <path d="M12 9v5M12 17h.01" />
                             </svg>
@@ -102,11 +103,12 @@
                                 <span class="horario">há 5 min</span>
                                 <button class="botao_ciente">✓ Ciente</button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Alerta 2 -->
-                        <div class="alerta critico">
-                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <!-- <div class="alerta critico">
+                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path d="m12 3 9 17H3L12 3Z" />
                                 <path d="M12 9v5M12 17h.01" />
                             </svg>
@@ -121,11 +123,12 @@
                                 <span class="horario">há 12 min</span>
                                 <button class="botao_ciente">✓ Ciente</button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Alerta 3 -->
-                        <div class="alerta atencao">
-                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <!-- <div class="alerta atencao">
+                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path d="m12 3 9 17H3L12 3Z" />
                                 <path d="M12 9v5M12 17h.01" />
                             </svg>
@@ -140,11 +143,12 @@
                                 <span class="horario">há 30 min</span>
                                 <button class="botao_ciente">✓ Ciente</button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Alerta 4 -->
-                        <div class="alerta atencao">
-                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <!-- <div class="alerta atencao">
+                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path d="m12 3 9 17H3L12 3Z" />
                                 <path d="M12 9v5M12 17h.01" />
                             </svg>
@@ -159,11 +163,12 @@
                                 <span class="horario">há 1h</span>
                                 <button class="botao_ciente">✓ Ciente</button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Alerta 5 -->
-                        <div class="alerta info">
-                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <!-- <div class="alerta info">
+                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path d="M18 9a6 6 0 0 0-12 0v5l-2 2h16l-2-2V9Z" />
                                 <path d="M10 20h4" />
                             </svg>
@@ -178,11 +183,12 @@
                                 <span class="horario">há 2h</span>
                                 <button class="botao_ciente">✓ Ciente</button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Alerta 6 -->
-                        <div class="alerta info">
-                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <!-- <div class="alerta info">
+                            <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8">
                                 <path d="M18 9a6 6 0 0 0-12 0v5l-2 2h16l-2-2V9Z" />
                                 <path d="M10 20h4" />
                             </svg>
@@ -197,7 +203,7 @@
                                 <span class="horario">há 3h</span>
                                 <button class="botao_ciente">✓ Ciente</button>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>
@@ -206,6 +212,123 @@
         </div>
     </section>
 
+
+
 </body>
 
 </html>
+
+<script>
+    function listarAlerta() {
+        const idEmpresa = sessionStorage.FKEMPRESA_USUARIO;
+        
+        if (!idEmpresa) {
+            console.error("ID da empresa não encontrado no sessionStorage. Redirecionando para o login...");
+            return;
+        }
+
+        fetch(`/alerta/listarAlerta/${idEmpresa}`)
+            .then(function (resposta) {
+                if (resposta.status == 204) {
+                    lista_alertas.innerHTML = "<p>Nenhum alerta encontrado.</p>";
+                    return;
+                }
+
+                if (resposta.ok) {
+                    resposta.json().then(function (json) {
+                        let htmlCodigo = "";
+
+                        for (let i = 0; i < json.length; i++) {
+                            let alertaAtual = json[i];
+                            let dataFormatada = new Date(alertaAtual.dt_hr_leitura).toLocaleString('pt-BR');
+
+                            if (alertaAtual.situacao == "Crítico") {
+                                htmlCodigo += `
+                                    <div class="alerta critico">
+                                        <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                            <path d="m12 3 9 17H3L12 3Z" />
+                                            <path d="M12 9v5M12 17h.01" />
+                                        </svg>
+                                        <div class="alerta_texto">
+                                            <div class="alerta_info">
+                                                <span class="gravidade">${alertaAtual.situacao}</span>
+                                                <span class="servidor">${alertaAtual.nome_maquina}</span>
+                                            </div>
+                                            <div>${alertaAtual.descricao}</div>
+                                        </div>
+                                        <div class="alerta_lado">
+                                            <span class="horario">${dataFormatada}</span>
+                                            <button class="botao_ciente">✓ Ciente</button>
+                                        </div>
+                                    </div>
+                                `;
+                            } else if (alertaAtual.situacao == "Atenção") {
+                                htmlCodigo += `
+                                    <div class="alerta atencao">
+                                        <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                            <path d="m12 3 9 17H3L12 3Z" />
+                                            <path d="M12 9v5M12 17h.01" />
+                                        </svg>
+                                        <div class="alerta_texto">
+                                            <div class="alerta_info">
+                                                <span class="gravidade">${alertaAtual.situacao}</span>
+                                                <span class="servidor">${alertaAtual.nome_maquina}</span>
+                                            </div>
+                                            <div>${alertaAtual.descricao}</div>
+                                        </div>
+                                        <div class="alerta_lado">
+                                            <span class="horario">${dataFormatada}</span>
+                                            <button class="botao_ciente">✓ Ciente</button>
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                htmlCodigo += `
+                                    <div class="alerta info">
+                                        <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                            <path d="M18 9a6 6 0 0 0-12 0v5l-2 2h16l-2-2V9Z" />
+                                            <path d="M10 20h4" />
+                                        </svg>
+                                        <div class="alerta_texto">
+                                            <div class="alerta_info">
+                                                <span class="gravidade">${alertaAtual.situacao}</span>
+                                                <span class="servidor">${alertaAtual.nome_maquina}</span>
+                                            </div>
+                                            <div>${alertaAtual.descricao}</div>
+                                        </div>
+                                        <div class="alerta_lado">
+                                            <span class="horario">${dataFormatada}</span>
+                                            <button class="botao_ciente">✓ Ciente</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }
+
+                        console.log(json);
+                        lista_alertas.innerHTML = htmlCodigo;
+                    });
+                }
+            })
+            .catch(erro => console.error('Erro ao listar alertas:', erro));
+    }
+
+    function marcarCiente(idDiscretizada) {
+        fetch(`/alerta/marcarCiente/${idDiscretizada}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(function (resposta) {
+            if (resposta.ok) {
+                // Recarrega a lista automaticamente para o alerta sumir da tela
+                listarAlerta();
+            } else {
+                console.error("Erro ao marcar alerta como ciente.");
+            }
+        })
+        .catch(erro => console.error("Erro na requisição:", erro));
+    }
+listarAlerta();
+</script>
