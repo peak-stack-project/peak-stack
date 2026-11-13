@@ -20,6 +20,10 @@ router.get("/buscar/:id", function (req, res) {
     usuarioController.buscarUsuarioPorId(req, res);
 });
 
+router.post("/deletar", function (req, res) {
+    usuarioController.deletar(req, res);
+});
+
 router.put("/atualizar/:id", function (req, res) {
     usuarioController.atualizarUsuario(req, res);
 });

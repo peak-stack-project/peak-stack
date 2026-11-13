@@ -41,6 +41,14 @@ function buscarUsuarioPorId(id) {
     return database.executar(instrucaoSql);
 }
 
+function deletar(idUsuario) {
+    var instrucaoSql = `
+        delete from usuario where id = '${idUsuario}';
+    `;
+
+    return database.executar(instrucaoSql);
+}
+
 function atualizarUsuario(id, nome, email, data, cargo) {
     var instrucaoSql = `
         update usuario set nome = '${nome}', email = '${email}', dt_nasc = '${data}', fk_cargo = '${cargo}' WHERE id = '${id}';
@@ -54,5 +62,6 @@ module.exports = {
     cadastrar,
     listarUsuarios,
     buscarUsuarioPorId,
-    atualizarUsuario
+    atualizarUsuario,
+    deletar
 };
