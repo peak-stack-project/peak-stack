@@ -22,8 +22,24 @@ function listarAlerta(req, res) {
         });
 }
 
+function marcarCiente(req, res) {
+    var idDiscretizada = req.params.idDiscretizada;
 
+    if (idDiscretizada == undefined) {
+        res.status(400).send("O idDiscretizada está indefinido!");
+        return;
+    }
+
+    alertaModel.marcarCiente(idDiscretizada)
+        .then(function (resultado) {
+            res.status(200).json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
 
 module.exports = {
-    listarAlerta
+    listarAlerta, marcarCiente
 };
