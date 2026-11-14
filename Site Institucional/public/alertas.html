@@ -242,7 +242,7 @@
                             let alertaAtual = json[i];
                             let dataFormatada = new Date(alertaAtual.dt_hr_leitura).toLocaleString('pt-BR');
 
-                            if (alertaAtual.situacao == "Crítico") {
+                            if (alertaAtual.situacao == "critico") {
                                 htmlCodigo += `
                                     <div class="alerta critico">
                                         <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -258,11 +258,11 @@
                                         </div>
                                         <div class="alerta_lado">
                                             <span class="horario">${dataFormatada}</span>
-                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].idDiscretizada})">✓ Ciente</button>
+                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].id_discretizada})">✓ Ciente</button>
                                         </div>
                                     </div>
                                 `;
-                            } else if (alertaAtual.situacao == "Atenção") {
+                            } else if (alertaAtual.situacao == "atencao") {
                                 htmlCodigo += `
                                     <div class="alerta atencao">
                                         <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -278,7 +278,7 @@
                                         </div>
                                         <div class="alerta_lado">
                                             <span class="horario">${dataFormatada}</span>
-                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].idDiscretizada})">✓ Ciente</button>
+                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].id_discretizada})">✓ Ciente</button>
                                         </div>
                                     </div>
                                 `;
