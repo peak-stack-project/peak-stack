@@ -24,20 +24,22 @@ function listarAlerta(req, res) {
 
 function marcarCiente(req, res) {
     var idDiscretizada = req.params.idDiscretizada;
+    var idEmpresa = req.body.idEmpresa;
 
     if (idDiscretizada == undefined) {
-        res.status(400).send("O idDiscretizada está indefinido!");
-        return;
+        res.status(400).send("O idDiscretizada está undefined!");
+    } else if (idEmpresa == undefined) {
+        res.status(400).send("O idEmpresa está undefined!");
+    } else {
+        alertaModel.marcarCiente(idDiscretizada, idEmpresa)
+            .then(function (resultado) {
+                res.json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
     }
-
-    alertaModel.marcarCiente(idDiscretizada)
-        .then(function (resultado) {
-            res.status(200).json(resultado);
-        })
-        .catch(function (erro) {
-            console.log(erro);
-            res.status(500).json(erro.sqlMessage);
-        });
 }
 
 module.exports = {

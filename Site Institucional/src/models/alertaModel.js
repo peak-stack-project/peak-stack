@@ -26,15 +26,16 @@ function listarAlerta(idEmpresa) {
 }
 
 
-function marcarCiente(idEmpresa) {
+function marcarCiente(idDiscretizada, id_Empresa) {
     var instrucaoSql = `
         UPDATE discretizada d
-        INNER JOIN leitura l ON d.fk_leitura = l.id
-        INNER JOIN config_maq cm ON l.fk_config_maq = cm.id
-        INNER JOIN maquina m ON cm.fk_maquina = m.id
-        SET d.consciente = 1
-        WHERE m.fk_empresa = ${idEmpresa}
-          AND (d.consciente = 0 OR d.consciente IS NULL);
+    INNER JOIN leitura l ON d.fk_leitura = l.id
+    INNER JOIN config_maq cm ON l.fk_config_maq = cm.id
+    INNER JOIN maquina m ON cm.fk_maquina = m.id
+SET d.consciente = 1
+WHERE d.id = ${idDiscretizada}
+  AND m.fk_empresa = ${id_Empresa}
+  AND (d.consciente = 0 OR d.consciente IS NULL);
     `;
 
     return database.executar(instrucaoSql);
