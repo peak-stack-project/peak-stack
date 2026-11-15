@@ -1,0 +1,36 @@
+services:
+  mysql:
+    container_name: meubd_container
+    image: mickaelarodrigues/meu_bd:v3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_peakstack
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  site:
+    container_name: meusite_container
+    build:
+      context: ./Site Institucional
+    restart: always
+    env_file:
+      - ./Site Institucional/.env
+    environment:
+      AMBIENTE_PROCESSO: desenvolvimento
+      APP_PORT: 3333
+      APP_HOST: localhost
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: db_peakstack
+      DB_PORT: 3306
+    ports:
+      - "3333:3333"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

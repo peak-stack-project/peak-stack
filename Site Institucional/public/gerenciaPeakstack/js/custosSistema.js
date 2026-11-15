@@ -18,11 +18,11 @@
     const graficoComponentes = new Chart(document.getElementById("graficoComponentes"), {
         type: "bar",
         data: {
-            labels: ["CPU", "RAM", "Disco", "Rede"],
+            labels: ["Máquina", "Armazenamento", "Rede"],
             datasets: [{
                 label: "Gasto mensal",
                 data: [720, 295, 680, 145],
-                backgroundColor: ["#3977d4", "#f2ad19", "#df4b5c", "#3da987"],
+                backgroundColor: ["#3977d4", "#f2ad19", "#df4b5c"],
                 borderRadius: 2,
                 maxBarThickness: 54
             }]
