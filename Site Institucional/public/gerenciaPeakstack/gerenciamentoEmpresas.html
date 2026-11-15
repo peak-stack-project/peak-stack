@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./gerenciamentoEmpresas.css">
+    <link rel="stylesheet" href="css/gerenciamentoEmpresas.css">
+    <link rel="stylesheet" href="css/menuGerencia.css">
     <link rel="shortcut icon" href="../assets/logo para fundo escuro - sem fundo.png" type="image/x-icon">
     <script src="../js/sessao.js" defer></script>
 </head>
@@ -21,15 +22,16 @@
         </video>
     </div>
     <div class="layout">
-        <aside class="menu_lateral">
-            <a class="marca marca_lateral" href="../cadastro_empresas.html">
+        <aside class="menu_lateral gerencia_menu">
+            <a class="marca marca_lateral" href="./cadastro_empresas.html">
                 <img class="marca_icone" src="../assets/Design%20sem%20nome.png" alt="">
                 <h4>PeakStack</h4>
             </a>
             <nav class="menu_grupo" aria-label="Menu principal">
                 <span class="menu_rotulo">Menu</span>
-                <a href="../cadastro_empresas.html">Cadastro</a>
-                <a class="ativo" href="./gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
+                <a href="./cadastro_empresas.html">Cadastro</a>
+                <a class="ativo" href="./gerenciamentoEmpresas.html" aria-current="page">Gerenciamento de Empresas</a>
+                <a href="./custosSistema.html">Custos e Previsões</a>
             </nav>
             <div class="menu_lateral_rodape">
                 <button id="btn_logout" class="botao botao_lateral"

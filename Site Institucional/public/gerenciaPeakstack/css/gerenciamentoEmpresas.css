@@ -83,7 +83,7 @@ a {
 
 .marca_lateral {
 
-   display: inline-flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     height: 13%;
@@ -92,19 +92,19 @@ a {
 
 }
 
-.marca_lateral h4{
+.marca_lateral h4 {
     color: #f6f6f8;
     font-size: 14px;
 }
 
-.marca_lateral img{
+.marca_lateral img {
 
     height: 8dvh;
 }
 
 
 .marca span {
-    color:var(--cor-primaria-quasepreto);
+    color: var(--cor-primaria-quasepreto);
 }
 
 .marca_icone {
@@ -125,7 +125,7 @@ a {
     height: 11dvh;
 }
 
-.menu_grupo a{
+.menu_grupo a {
     display: grid;
     gap: 8px;
     align-items: center;
@@ -142,7 +142,7 @@ a {
 }
 
 .menu_grupo a,
-.menu_lateral_rodape  a {
+.menu_lateral_rodape a {
     padding: 12px 14px;
     border-radius: 8px;
     font-weight: 600;
@@ -445,7 +445,7 @@ td {
     padding: 18px 23px 19px;
 }
 
-.form_edicao_empresa > label {
+.form_edicao_empresa>label {
     margin-top: 3px;
     color: #7184a3;
     font-size: 9px;
@@ -536,7 +536,7 @@ td {
     border-radius: 8px;
     color: #fff;
     background: transparent;
-    font-weight: 600;
+    font-weight: bold;
     text-align: left;
 }
 

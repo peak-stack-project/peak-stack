@@ -1,0 +1,155 @@
+.gerencia_menu {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: 0 0 15%;
+    flex-direction: column;
+    gap: 15px;
+    width: 15%;
+    height: 99dvh;
+    margin: 2px 0 0 2px;
+    padding: 10px 20px;
+    border-radius: 15px;
+    color: #fff;
+    background: #0f1f3d;
+}
+
+.gerencia_menu .marca_lateral {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 13%;
+    margin-top: 2dvh;
+    color: #fff;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.gerencia_menu .marca_lateral img,
+.gerencia_menu .marca_lateral .marca_icone {
+    width: 50%;
+    height: 8dvh;
+    object-fit: contain;
+    background: transparent;
+}
+
+.gerencia_menu .marca_lateral h4 {
+    color: #f6f6f8;
+    font-size: 14px;
+}
+
+.gerencia_menu .menu_grupo {
+    display: grid;
+    gap: 8px;
+    height: 11dvh;
+}
+
+.gerencia_menu .menu_grupo a {
+    display: grid;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color .2s ease;
+}
+
+.gerencia_menu .menu_rotulo {
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, .68);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.gerencia_menu .menu_grupo a:hover,
+.gerencia_menu .menu_grupo a.ativo {
+    background: #488399;
+}
+
+.gerencia_menu .menu_lateral_rodape {
+    display: grid;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.gerencia_menu .botao_lateral {
+    display: flex;
+    width: 100%;
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+}
+
+.gerencia_menu .botao_lateral:hover {
+    background: #488399;
+}
+
+@media (max-width: 760px) {
+    .gerencia_menu {
+        width: 17%;
+    }
+}
+
+@media (max-width: 720px) {
+    .gerencia_menu {
+        position: relative;
+        display: flex;
+        width: auto;
+        height: auto;
+        min-height: 0;
+        margin: 5px;
+        padding: 8px 12px;
+        flex-basis: auto;
+    }
+
+    .gerencia_menu .marca_lateral {
+        min-height: 48px;
+        height: auto;
+        margin-top: 0;
+    }
+
+    .gerencia_menu .marca_lateral img,
+    .gerencia_menu .marca_lateral .marca_icone {
+        width: 38px;
+        height: 38px;
+    }
+
+    .gerencia_menu .menu_grupo {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        height: auto;
+    }
+
+    .gerencia_menu .menu_rotulo {
+        grid-column: 1 / -1;
+    }
+
+    .gerencia_menu .menu_grupo a {
+        min-height: 35px;
+        padding: 7px;
+        font-size: 10px;
+    }
+
+    .gerencia_menu .menu_lateral_rodape {
+        position: absolute;
+        top: 11px;
+        right: 12px;
+        width: 70px;
+    }
+
+    .gerencia_menu .botao_lateral {
+        min-height: 34px;
+        padding: 7px;
+        text-align: center;
+    }
+}
