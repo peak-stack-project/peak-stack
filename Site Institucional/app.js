@@ -23,6 +23,7 @@ var medidasRouter = require("./src/routes/medidas");
 var vitrineRouter = require("./src/routes/vitrine");
 var recuperacaoRoutes = require("./src/routes/recuperacaoRoutes");
 var maquinasRoutes = require("./src/routes/maquinas");
+var alertaRoutes = require("./src/routes/alerta");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,6 +39,7 @@ app.use("/medidas", medidasRouter);
 app.use("/vitrine", vitrineRouter);
 app.use("/recuperacao", recuperacaoRoutes);
 app.use("/maquinas", maquinasRoutes);
+app.use("/alerta", alertaRoutes);
 
 app.listen(PORTA_APP, function () {
     console.log(`

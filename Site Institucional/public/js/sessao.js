@@ -49,4 +49,4 @@ function finalizarAguardar(texto) {
 }
 
 
-document.addEventListener("DOMContentLoaded", ajustarNavbarSessao);
+

@@ -1,12 +1,24 @@
 import mysql.connector
 from rich import print
-from getmac import get_mac_address
 import getpass
 import psutil as p
 import time as t
 from datetime import datetime
 import importlib
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+
+load_dotenv(Path(__file__).with_name(".env"), override=True)
+
+
+def variavel_obrigatoria(nome):
+    valor = os.getenv(nome)
+    if not valor:
+        raise RuntimeError(f"A variável {nome} não foi definida no arquivo .env")
+    return valor
 
 INTERVALO = 5
 
@@ -16,28 +28,32 @@ BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 
 NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red")}
 
-# Padrão usado quando a empresa não cadastrou limite para o componente.
-# "maior": pior quando o valor sobe -> (atencao_a_partir_de, critico_a_partir_de)
-# "menor": pior quando o valor desce -> (atencao_ate, critico_abaixo_de)
-# O último campo é a unidade exigida (None = qualquer), para não aplicar % em GB.
 LIMITES_PADRAO = {
-    "cpu":              ("maior", 61, 85, "%"),
-    "ram":              ("maior", 61, 85, "%"),
+    "cpu":              ("maior", 6, 8, "%"),
+    "ram":              ("maior", 6, 8, "%"),
     "disco":            ("maior", 60, 71, "%"),
     "memória restante": ("menor", 40, 15, "%"),
     "pacotes perdidos": ("maior", 50, 500, None),
 }
 
-
 DB = dict(
-    user=os.getenv("DB_USER", "root"),
-    password=os.getenv("DB_PASSWORD", "urubu100"),
-    host=os.getenv("DB_HOST", "localhost"),
-    port=int(os.getenv("DB_PORT", 3306)),
-    database=os.getenv("DB_NAME", "db_peakstack"),
+    user=variavel_obrigatoria("DB_USER"),
+    password=variavel_obrigatoria("DB_PASSWORD"),
+    host=variavel_obrigatoria("DB_HOST"),
+    port=int(variavel_obrigatoria("DB_PORT")),
+    database=variavel_obrigatoria("DB_NAME"),
     use_pure=True,
     auth_plugin='mysql_native_password'
 )
+
+
+SLACK_TOKEN = variavel_obrigatoria("SLACK_BOT_TOKEN")
+slack_client = WebClient(token=SLACK_TOKEN)
+
+INTERVALO_ALERTAS_SEGUNDOS = 10 
+ultimo_alerta = {}
+
+
 
 SQL_COMPONENTES = """
     SELECT cm.id AS cm_id,
@@ -97,8 +113,51 @@ def classificar(tipo, valor, unidade, faixas):
     return nivel_padrao(tipo, valor, unidade)
 
 
-def capturar(mac=None):
-    mac = (mac or get_mac_address() or "").upper().replace(":", "").replace("-", "")
+def notificar_slack(cursor, fk_empresa, mac, cm_id, nome_comp, valor, unidade, nivel):
+    """Busca o canal cadastrado na tabela slack pela fk_empresa, envia via SDK e grava o log."""
+    agora_ts = t.time()
+    chave = (cm_id, nivel)
+
+    if agora_ts - ultimo_alerta.get(chave, 0) < INTERVALO_ALERTAS_SEGUNDOS:
+        return
+
+    cursor.execute(
+        "SELECT canal FROM slack WHERE fk_empresa = %s AND canal IS NOT NULL LIMIT 1",
+        (fk_empresa,),
+    )
+    config_slack = cursor.fetchone()
+    if not config_slack or not config_slack.get("canal"):
+        print(f"[yellow]Aviso: Empresa {fk_empresa} sem canal cadastrado na tabela slack.[/yellow]")
+        return
+
+    canal_id = config_slack["canal"]
+    situacao = NIVEIS[nivel][0]
+    emoji = "⚠️" if nivel == 2 else "🚨"
+
+    titulo = f"{emoji} {situacao}: {nome_comp}"
+    descricao = f"Máquina {mac} atingiu {valor} {unidade} ({situacao})."
+
+    try:
+
+        slack_client.chat_postMessage(
+            channel=canal_id,
+            text=f"*{titulo}*\n{descricao}"
+        )
+
+        cursor.execute(
+            "INSERT INTO slack (titulo, descricao, canal, fk_empresa) VALUES (%s, %s, %s, %s)",
+            (titulo[:45], descricao[:200], canal_id, fk_empresa),
+        )
+
+        ultimo_alerta[chave] = agora_ts
+        print(f"[cyan]Notificação enviada ao Slack ({canal_id})[/cyan]")
+
+    except SlackApiError as e:
+        print(f"[red]Erro na API do Slack: {e.response['error']}[/red]")
+
+
+def capturar():
+    mac = variavel_obrigatoria("MAC_ADDRESS").upper().replace(":", "").replace("-", "")
     if not mac:
         raise RuntimeError("Não foi possível obter o MAC desta máquina")
 
@@ -139,19 +198,18 @@ def capturar(mac=None):
                 unidade = (c["unidade_medida"] or "").strip()
                 valor = round(float(bruto) / BYTES.get(unidade.upper(), 1), 2)
 
-                # limites da empresa; se não tiver, usa o padrão do código
                 tipo = identificar_tipo(c["tipo"], c["nome"])
                 nivel = classificar(tipo, valor, unidade, limites.get(c["fk_componentes"]))
                 situacao, cor = NIVEIS.get(nivel, ("Sem limite", "white"))
 
-                leituras.append((valor, agora, c["cm_id"], nivel))
+                leituras.append((valor, agora, c["cm_id"], nivel, c["nome"], unidade))
                 print(f"{c['nome']}: [bold {cor}]{valor} {unidade}[/bold {cor}] ({situacao})")
 
             except Exception as erro:
                 print(f"[red]Falha ao capturar '{c['nome']}': {erro}[/red]")
 
         if leituras:
-            for valor, dt_hr, cm_id, nivel in leituras:
+            for valor, dt_hr, cm_id, nivel, nome_comp, unidade in leituras:
                 cursor.execute(
                     "INSERT INTO leitura (valor, dt_hr_leitura, fk_config_maq) "
                     "VALUES (%s, %s, %s)",
@@ -164,6 +222,11 @@ def capturar(mac=None):
                         "VALUES (%s, %s, %s)",
                         (cursor.lastrowid, NIVEIS[nivel][0], False),
                     )
+
+                    if nivel in (2, 3):
+                        notificar_slack(
+                            cursor, fk_empresa, mac, cm_id, nome_comp, valor, unidade, nivel
+                        )
             cnx.commit()
     finally:
         cnx.close()
