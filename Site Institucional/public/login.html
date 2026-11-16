@@ -89,23 +89,41 @@
                     sessionStorage.FKCARGO_USUARIO = json.fk_cargo;
 
                     fez_login = true;
-                   
+
 
                     if (json.fk_cargo == 4) {
                         setTimeout(function () {
                             window.location = "./gerenciaPeakstack/configAdmPeakstack.html";
                         }, 1200);
-                    } else if(json.fk_cargo == 2){
-                         setTimeout(function () {
+                    } else if (json.fk_cargo == 2) {
+                        setTimeout(function () {
                             window.location = "./dashboard_visao_geral.html";
                         }, 1200);
-                    } else{
-                         setTimeout(function () {
+                    } else {
+                        setTimeout(function () {
                             window.location = "./máquinas.html";
                         }, 1200);
                     }
 
                 });
+            } else {
+
+                if (resposta.status == 403) {
+                    cardErro.style.display = "block";
+                    cardErro.style.color = "#FC1600";
+                    mensagem_erro.innerHTML = "E-mail ou senha incorretos";
+                } else if (resposta.status == 500) {
+                    cardErro.style.display = "block";
+                    cardErro.style.color = "#FC1600";
+                    mensagem_erro.innerHTML = "Erro no servidor. Tente novamente mais tarde.";
+                } else {
+                    cardErro.style.display = "block";
+                    cardErro.style.color = "#FC1600";
+                    mensagem_erro.innerHTML = "Não foi possível fazer o login. Tente novamente.";
+                }
+
+                senha_input.value = "";
+                finalizarAguardar();
             }
         }).catch(function () {
             cardErro.style.display = "block";
