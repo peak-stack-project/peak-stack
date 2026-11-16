@@ -7,6 +7,7 @@ RUN npm install --omit=dev
 
 COPY app.js ./
 COPY testeAWS.js ./
+COPY testeInfrastructure.js ./
 COPY src ./src
 COPY public ./public
 
