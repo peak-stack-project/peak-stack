@@ -84,59 +84,64 @@
                 </div>
             </div>
     </section>
-    <section>
-        <div id="container_cadastro" style="display: none;">
-            <div class="sessao_cadastro">
-                <div class="container_tema">
-                    <h3>Cadastrar Usuários</h3>
-                    <a href="./cadastro_usuarios.html">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-x-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                            <path
-                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                        </svg>
-                    </a>
-
+    <!-- EDITADO (inicio): cadastro de usuario com o mesmo container do modal de empresas -->
+    <div id="container_cadastro" class="modal_edicao" style="display: none;">
+        <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroUsuario">
+            <header class="modal_edicao_cabecalho">
+                <h2 id="tituloCadastroUsuario">Cadastrar usuários</h2>
+                <button class="modal_edicao_fechar" type="button" aria-label="Fechar cadastro" onclick="chamarCadastro()">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </header>
+            <div class="form_edicao_empresa">
+                <label for="nome_input">Nome</label>
+                <div class="campo_edicao">
+                    <input type="text" id="nome_input" placeholder="Nome e Sobrenome">
                 </div>
 
-                <div class="nome_usuario">
-                    <h4>Nome</h4>
-                    <input type="text" id="nome_input" placeholder="   Nome e Sobrenome">
+                <label for="email_input">Email</label>
+                <div class="campo_edicao">
+                    <input type="text" id="email_input" placeholder="usuario@empresa.com">
                 </div>
-                <div class="email_usuario">
-                    <div class="email">
-                        <H4>Email</H4>
-                        <input type="text" id="email_input" placeholder="   usuario@empresa.com">
-                    </div>
+
+                <label for="senha_input">Senha</label>
+                <div class="campo_edicao">
+                    <input type="password" id="senha_input" placeholder="Mínimo 6 caracteres">
                 </div>
-                <div class="senha">
-                    <h4>Senha</h4>
-                    <input type="password" id="senha_input" placeholder="   Mínimo 6 caracteres">
+
+                <label for="confirmacao_senha_input">Confirmar senha</label>
+                <div class="campo_edicao">
+                    <input type="password" id="confirmacao_senha_input" placeholder="Mínimo 6 caracteres">
                 </div>
-                <div class="senha">
-                    <h4>Confirmar senha</h4>
-                    <input type="password" id="confirmacao_senha_input" placeholder="   Mínimo 6 caracteres">
+
+                <label for="data_input">Data de nascimento</label>
+                <div class="campo_edicao">
+                    <input type="text" id="data_input" placeholder="YYYY-MM-DD">
                 </div>
-                <div class="container_empresa_usuario">
-                    <h4>Data de nascimento</h4>
-                    <input type="text" id="data_input" placeholder="   YYYY-MM-DD">
-                </div>
-                <div class="container_atividade_usuario">
-                    <h4>Cargo</h4>
+
+                <label for="cargo_input">Cargo</label>
+                <div class="campo_edicao">
                     <select id="cargo_input">
                         <option value="1">Administrador</option>
                         <option value="2">Visualizador</option>
                         <option value="3">Operador</option>
                     </select>
                 </div>
-                <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="chamarCadastro()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="cadastrarUsuario()">Cadastrar</button>
+
+                <div class="acoes_edicao">
+                    <button class="botao_cancelar_edicao" type="button" onclick="chamarCadastro()">Cancelar</button>
+                    <button class="botao_atualizar_edicao" type="button" onclick="cadastrarUsuario()">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>Cadastrar
+                    </button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
+    <!-- EDITADO (fim) -->
     <div id="modalEdicaoUsuario" class="modal_edicao" style="display: none;">
 
         <section class="modal_edicao_cartao">
