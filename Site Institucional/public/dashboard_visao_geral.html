@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="./css/dashboard.css">
     <script src="./js/sessao.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="corpo_dashboard">
@@ -55,8 +54,8 @@
 
                 <div>
                     <span>Disponibilidade de Sistema</span>
-                    <strong>99.95%</strong>
-                    <small>Uptime médio nas últimas 24h</small>
+                    <strong id="kpi_disp">--</strong>
+                    <small>Máquinas respondendo agora</small>
                 </div>
 
             </div>
@@ -68,8 +67,8 @@
 
                 <div>
                     <span>Máquina Crítica</span>
-                    <strong>SRV-PROD-02</strong>
-                    <small>Consumo de CPU elevado</small>
+                    <strong id="kpi_critica">--</strong>
+                    <small id="kpi_critica_motivo"></small>
                 </div>
 
             </div>
@@ -81,8 +80,8 @@
 
                 <div>
                     <span>Alertas Ativos</span>
-                    <strong>2 Ativos</strong>
-                    <small>1 Crítico • 1 Atenção</small>
+                    <strong id="kpi_alertas">--</strong>
+                    <small id="kpi_alertas_detalhe"></small>
                 </div>
 
             </div>
@@ -94,7 +93,7 @@
 
                 <div>
                     <span>Previsão de Esgotamento</span>
-                    <strong>12 dias</strong>
+                    <strong id="kpi_previsao">--</strong>
                     <small>Tempo estimado para disco lotar (SRV-DB-01)</small>
                 </div>
 
@@ -173,7 +172,7 @@
                     <span class="tempo_real">Ultima Leitura</span>
                 </div>
 
-                <div class="tabela_monitoramento">
+                <div class="tabela_monitoramento" id="tabela_ranking">
 
                     <div class="linha_tabela cabecalho">
                         <span>#</span>
@@ -184,48 +183,6 @@
                         <span>Disco</span>
                         <span>Status</span>
                     </div>
-
-                    <div class="linha_tabela" >
-                        <span class="posicao vermelho">1</span>
-                        <span>SRV-PROD-02</span>
-                        <span>Sympla</span>
-                        <span class="valor vermelho_texto">91%</span>
-                        <span>58%</span>
-                        <span class="valor vermelho_texto">93%</span>
-                        <span class="status offline">Crítico</span>
-                    </div>
-
-                    <div class="linha_tabela">
-                        <span class="posicao laranja">2</span>
-                        <span>SRV-DB-01</span>
-                        <span>Ingressso.com</span>
-                        <span>29%</span>
-                        <span>40%</span>
-                        <span class="valor amarelo_texto">87%</span>
-                        <span class="status alerta">Atenção</span>
-                    </div>
-
-                    <div class="linha_tabela" >
-                        <span class="posicao cinza">3</span>
-                        <span><a href="./visao_especifica.html">SRV-PROD-01</a></span>
-                        <span>Sympla</span>
-                        <span>32%</span>
-                        <span>67%</span>
-                        <span>45%</span>
-                        <span class="status online">Normal</span>
-                    </div>
-
-                    <div class="linha_tabela">
-                        <span class="posicao cinza">4</span>
-                        <span>SRV-API-01</span>
-                        <span>Ingressso.com</span>
-                        <span>28%</span>
-                        <span>55%</span>
-                        <span>62%</span>
-                        <span class="status online">Normal</span>
-                    </div>
-
-    
                 </div>
             </section>
 
@@ -246,232 +203,7 @@
 
     </main>
 
-    <script>
-const ctxCpu = document.getElementById('graficoCpu').getContext('2d');
-
-const gradientCpu = ctxCpu.createLinearGradient(0, 0, 600, 0);
-gradientCpu.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
-gradientCpu.addColorStop(1, 'rgba(168, 85, 247, 0.4)');
-
-const gerarDadosCPU = () => Array.from({ length: 24 }, () => Math.floor(Math.random() * 5500) + 3500);
-const gerarDadosRAM = () => Array.from({ length: 24 }, () => Math.floor(Math.random() * 2500) + 2000);
-
-const gerarLinhaSLA = () => Array(24).fill(4000);
-
-new Chart(ctxCpu, {
-    type: 'line',
-    data: {
-        labels: [
-            '00:00h', '01:00h', '02:00h', '03:00h', '04:00h', '05:00h', '06:00h', '07:00h',
-            '08:00h', '09:00h', '10:00h', '11:00h', '12:00h', '13:00h', '14:00h', '15:00h',
-            '16:00h', '17:00h', '18:00h', '19:00h', '20:00h', '21:00h', '22:00h', '23:00h'
-        ],
-        datasets: [
-            {
-                label: 'Volume de Requisições (RPS)',
-                data: gerarDadosCPU(),
-                borderColor: '#3b82f6',
-                backgroundColor: gradientCpu,
-                fill: true,
-                tension: 0.4,
-                borderWidth: 2,
-                pointRadius: 0
-            },
-            {
-                label: 'Latência Média (ms)',
-                data: gerarDadosRAM(),
-                borderColor: '#f43f5e', 
-                fill: false,
-                tension: 0.4,
-                borderWidth: 2,
-                pointRadius: 0
-            },
-            {
-                label: 'Meta de SLA (100ms)',
-                data: gerarLinhaSLA(),  
-                borderColor: '#10b981',
-                fill: false,
-                tension: 0,             
-                borderWidth: 2,
-                pointRadius: 0,
-                order: 1             
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                min: 0,
-                max: 10000,
-                title: {
-                    display: true,
-                    text: 'Valor',
-                    font: { family: 'Inter', size: 12 }
-                },
-                ticks: { 
-                    stepSize: 2000,
-                    font: { family: 'Inter', size: 11 },
-                    callback: function(value) {
-                        if (value === 0) return '0';
-                        return (value / 1000) + 'k';
-                    }
-                },
-                grid: { color: '#f3f4f6' }
-            },
-            x: {
-                grid: { display: false },
-                ticks: { font: { family: 'Inter', size: 11 } }
-            }
-        },
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                labels: { font: { family: 'Inter', size: 12 }, boxWidth: 12 }
-            }
-        }
-    }
-});
-
-
-
-        const disco = document.getElementById('graficoDisco');
-
-        new Chart(disco, {
-            type: 'bar',
-
-            data: {
-                labels: [
-                    'SRV-PROD-01',
-                    'SRV-DB-01',
-                    'SRV-API-01',
-                    'SRV-PROD-02'
-                ],
-
-                datasets: [{
-                    label: 'Uso de disco (%)',
-                    data: [45, 87, 62, 93],
-
-                    backgroundColor: [
-                        '#3f6df6',
-                        '#f59e0b',
-                        '#3f6df6',
-                        '#ef4444'
-                    ],
-
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    barThickness: 13
-                }]
-            },
-
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 20
-                    }
-                },
-
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 100,
-                        beginAtZero: true,
-                        max: 100,
-
-                        ticks: {
-                            stepSize: 25,
-                            callback: valor => valor + '%',
-                            font: {
-                                family: 'Inter',
-                                size: 10
-                            },
-                            color: '#91a0bb'
-                        },
-
-                        grid: {
-                            color: '#f0f2f7',
-                            drawBorder: false
-                        },
-
-                        border: {
-                            display: false
-                        }
-                    },
-
-                    y: {
-                        afterFit: (scale) => {
-                            scale.width = 105;
-                        },
-                        ticks: {
-                            padding: 8,
-                            font: {
-                                family: 'Inter',
-                                size: 10
-                            },
-                            color: '#52617d'
-                        },
-
-                        grid: {
-                            display: false
-                        },
-
-                        border: {
-                            display: false
-                        }
-                    }
-                },
-
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-
-                    tooltip: {
-                        callbacks: {
-                            label: contexto => ` ${contexto.raw}% utilizado`
-                        }
-                    }
-                }
-            }
-        });
-
-const ctxStatus = document.getElementById('graficoStatus').getContext('2d');
-
-new Chart(ctxStatus, {
-    type: 'doughnut',
-    data: {
-        labels: ['Normal', 'Atenção', 'Crítico'],
-        datasets: [{
-            data: [2, 1, 1],
-            backgroundColor: [
-                '#3b82f6',
-                '#f59e0b',
-                '#ef4444'
-            ],
-            borderWidth: 0,
-            hoverOffset: 4
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: {
-            legend: {
-                display: false
-            }
-        }
-    }
-});
-    </script>
+    <script src="./js/dashboard_geral.js"></script>
 
 </body>
 

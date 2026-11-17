@@ -29,8 +29,8 @@ BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red")}
 
 LIMITES_PADRAO = {
-    "cpu":              ("maior", 6, 8, "%"),
-    "ram":              ("maior", 6, 8, "%"),
+    "cpu":              ("maior",60, 60, "%"),
+    "ram":              ("maior", 60, 80, "%"),
     "disco":            ("maior", 60, 71, "%"),
     "memória restante": ("menor", 40, 15, "%"),
     "pacotes perdidos": ("maior", 50, 500, None),

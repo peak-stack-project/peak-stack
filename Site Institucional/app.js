@@ -24,7 +24,11 @@ var vitrineRouter = require("./src/routes/vitrine");
 var recuperacaoRoutes = require("./src/routes/recuperacaoRoutes");
 var maquinasRoutes = require("./src/routes/maquinas");
 var alertaRoutes = require("./src/routes/alerta");
+<<<<<<< Updated upstream
 var ramRouter = require("./src/routes/ram");
+=======
+var dashboardRoutes = require("./src/routes/dashboard");
+>>>>>>> Stashed changes
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +45,11 @@ app.use("/vitrine", vitrineRouter);
 app.use("/recuperacao", recuperacaoRoutes);
 app.use("/maquinas", maquinasRoutes);
 app.use("/alerta", alertaRoutes);
+<<<<<<< Updated upstream
 app.use("/ram", ramRouter);
+=======
+app.use("/dashboard", dashboardRoutes);
+>>>>>>> Stashed changes
 
 app.listen(PORTA_APP, function () {
     console.log(`
