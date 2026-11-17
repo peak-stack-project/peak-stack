@@ -24,6 +24,7 @@ var vitrineRouter = require("./src/routes/vitrine");
 var recuperacaoRoutes = require("./src/routes/recuperacaoRoutes");
 var maquinasRoutes = require("./src/routes/maquinas");
 var alertaRoutes = require("./src/routes/alerta");
+var ramRouter = require("./src/routes/ram");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,6 +41,7 @@ app.use("/vitrine", vitrineRouter);
 app.use("/recuperacao", recuperacaoRoutes);
 app.use("/maquinas", maquinasRoutes);
 app.use("/alerta", alertaRoutes);
+app.use("/ram", ramRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
