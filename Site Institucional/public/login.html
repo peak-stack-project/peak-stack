@@ -99,9 +99,14 @@
                         setTimeout(function () {
                             window.location = "./dashboard_visao_geral.html";
                         }, 1200);
-                    } else {
+                    } else if (json.fk_cargo == 3){
                         setTimeout(function () {
                             window.location = "./máquinas.html";
+                        }, 1200);
+                    }
+                    else if (json.fk_cargo == 1){
+                        setTimeout(function () {
+                            window.location = "./cadastro_usuarios.html";
                         }, 1200);
                     }
 

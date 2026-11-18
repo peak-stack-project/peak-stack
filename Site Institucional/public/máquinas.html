@@ -15,7 +15,7 @@
     <script src="./js/maquinas_comum.js"></script>
 </head>
 
-<body class="corpo_dashboard">
+<body class="corpo_dashboard" onload="carregando()">
 
     <aside class="menu_lateral">
         <a class="marca marca_lateral">
@@ -26,8 +26,8 @@
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./alertas.html">Alertas</a>
-            <a class="ativo" href="./máquinas.html">Máquinas</a>
-            <a href="./cadastro_usuarios.html">Usuários</a>
+            <a class="ativo" href="./máquinas.html" >Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
         </div>
         <div class="menu_lateral_rodape">
             <span class="menu_grupo">
@@ -223,6 +223,18 @@
 
 </html>
 <script>
+
+const telaUsuarios = document.getElementById("tela_usuarios");
+
+    function carregando(){
+        if(sessionStorage.FKCARGO_USUARIO == 3){
+            telaUsuarios.style.display = "none";
+        }
+    }
+
+
+
+    
 
     var cadastro_realizado = false;
 

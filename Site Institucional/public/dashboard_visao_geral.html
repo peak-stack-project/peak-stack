@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body class="corpo_dashboard">
+<body class="corpo_dashboard" onload="carregando()">
     <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
@@ -23,8 +23,8 @@
             <span class="menu_rotulo">Menu</span>
             <a class="ativo" href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./alertas.html">Alertas</a>
-            <a href="./máquinas.html">Máquinas</a>
-            <a href="./cadastro_usuarios.html">Usuários</a>
+            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
         </div>
         <div class="menu_lateral_rodape">
             <span class="menu_grupo">
@@ -208,3 +208,16 @@
 </body>
 
 </html>
+<script>
+    const telaMaquina = document.getElementById("tela_maquinas");
+const telaUsuarios = document.getElementById("tela_usuarios");
+
+    function carregando(){
+        if(sessionStorage.FKCARGO_USUARIO == 2){
+            telaMaquina.style.display = "none";
+            telaUsuarios.style.display = "none";
+        } else if(sessionStorage.FKCARGO_USUARIO == 3){
+            telaUsuarios.style.display = "none";
+        }
+    }
+</script>
