@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeakStack | Dashboard Individual — RAM</title>
     <link rel="icon" href="./assets/Design sem nome.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js" defer></script>
@@ -30,9 +28,7 @@
                 <a href="./cadastro_usuarios.html">Usuários</a>
             </div>
             <div class="menu_lateral_rodape">
-                <span class="menu_grupo">
-                    <a href="./index.html">Sair</a>
-                </span>
+                <span class="menu_grupo"><a href="./index.html">Sair</a></span>
             </div>
         </aside>
 
@@ -84,13 +80,13 @@
                         <div class="ram_legenda_faixas">
                             <span><i class="faixa_dot normal"></i>Normal (≤ 60%)</span>
                             <span><i class="faixa_dot atencao"></i>Atenção (60% – 85%)</span>
-                            <span><i class="faixa_dot critico"></i>Crítico (&gt; 85%)</span>
+                            <span><i class="faixa_dot critico"></i>Crítico (> 85%)</span>
                         </div>
                     </div>
                     <div class="maq_filtros" id="seletorPeriodo">
-                        <button class="maq_filtro" type="button" aria-pressed="false" onclick="mudarPeriodo('1h', this)">1h</button>
-                        <button class="maq_filtro" type="button" aria-pressed="true" onclick="mudarPeriodo('24h', this)">24h</button>
-                        <button class="maq_filtro" type="button" aria-pressed="false" onclick="mudarPeriodo('7d', this)">7 dias</button>
+                        <button class="maq_filtro" aria-pressed="false" onclick="mudarPeriodo('1h', this)">1h</button>
+                        <button class="maq_filtro" aria-pressed="true" onclick="mudarPeriodo('24h', this)">24h</button>
+                        <button class="maq_filtro" aria-pressed="false" onclick="mudarPeriodo('7d', this)">7 dias</button>
                     </div>
                 </div>
                 <div class="ram_canvas_wrapper"><canvas id="graficoLinhaRam"></canvas></div>
@@ -123,153 +119,129 @@
     </div>
 
     <script>
-        const ID_EMPRESA = sessionStorage.getItem("ID_EMPRESA") || 1;
-        let idMaquinaAtual = null;
-        let periodoAtual = "24h";
+        const $ = id => document.getElementById(id);
+        const ID_EMPRESA = sessionStorage.FK_EMPRESA || sessionStorage.ID_EMPRESA || 1;
+        let idMaquinaAtual = null, periodoAtual = "24h";
 
-        const faixasRamPlugin = {
-            id: "faixasRam",
+        const mockKpis = {
+            1: { ramAtualPct: 88.2, ramAtualGb: 14.1, ramTotalGb: 16, pico24hPct: 91.0, pico24hHorario: "14:32", tempoForaNormalPct: 34.5 },
+            2: { ramAtualPct: 45.0, ramAtualGb: 7.2, ramTotalGb: 16, pico24hPct: 58.0, pico24hHorario: "11:15", tempoForaNormalPct: 0.0 }
+        };
+
+        const faixasPlugin = {
+            id: "faixas",
             beforeDraw({ ctx, chartArea: { left, right }, scales: { y } }) {
                 if (!y) return;
-                const [y100, y85, y60, y0] = [100, 85, 60, 0].map(v => y.getPixelForValue(v));
-                ctx.save();
-                ctx.fillStyle = "rgba(239, 68, 68, 0.09)";  ctx.fillRect(left, y100, right - left, y85 - y100);
-                ctx.fillStyle = "rgba(245, 158, 11, 0.10)"; ctx.fillRect(left, y85, right - left, y60 - y85);
-                ctx.fillStyle = "rgba(21, 128, 61, 0.07)";  ctx.fillRect(left, y60, right - left, y0 - y60);
-                ctx.restore();
+                [[100, 85, "239,68,68,.09"], [85, 60, "245,158,11,.10"], [60, 0, "21,128,61,.07"]].forEach(([max, min, cor]) => {
+                    ctx.fillStyle = `rgba(${cor})`;
+                    ctx.fillRect(left, y.getPixelForValue(max), right - left, y.getPixelForValue(min) - y.getPixelForValue(max));
+                });
             }
         };
 
-        const opcoesComuns = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: { y: { min: 0, max: 100, ticks: { stepSize: 25, callback: v => v + "%" } } }
-        };
+        const baseOpt = { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100, ticks: { stepSize: 25, callback: v => v + "%" } } } };
+        const novoGrafico = (id, type, datasets, extra = {}, plugins = []) =>
+            new Chart($(id), { type, data: { labels: [], datasets }, options: { ...baseOpt, ...extra }, plugins });
 
-        const graficoLinha = new Chart(document.getElementById("graficoLinhaRam"), {
-            type: "line",
-            data: { labels: [], datasets: [{ data: [], borderColor: "#2b65ca", borderWidth: 2, pointRadius: 3, tension: 0.25 }] },
-            options: { ...opcoesComuns, plugins: { legend: { display: false } } },
-            plugins: [faixasRamPlugin]
-        });
+        const graficoLinha = novoGrafico("graficoLinhaRam", "line",
+            [{ data: [], borderColor: "#2b65ca", borderWidth: 2, pointRadius: 3, tension: 0.25 }],
+            { plugins: { legend: { display: false } } }, [faixasPlugin]
+        );
 
-        const graficoLeak = new Chart(document.getElementById("graficoMemoryLeak"), {
-            type: "line",
-            data: {
-                labels: [],
-                datasets: [
-                    { label: "Uso Real (%)", data: [], borderColor: "#2b65ca", borderWidth: 2, pointRadius: 2.5 },
-                    { label: "Projeção 85%", data: [], borderColor: "#ef4444", borderDash: [5, 5], borderWidth: 2, pointRadius: 2.5 }
-                ]
-            },
-            options: { ...opcoesComuns, plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 10 } } } } }
-        });
+        const graficoLeak = novoGrafico("graficoMemoryLeak", "line", [
+            { label: "Uso Real (%)", data: [], borderColor: "#2b65ca", borderWidth: 2, pointRadius: 2.5 },
+            { label: "Projeção 85%", data: [], borderColor: "#ef4444", borderDash: [5, 5], borderWidth: 2, pointRadius: 2.5 }
+        ], { plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 10 } } } } });
 
-        const graficoScatter = new Chart(document.getElementById("graficoScatterRede"), {
-            type: "scatter",
-            data: { datasets: [{ data: [], backgroundColor: "#2b65ca", pointRadius: 4 }] },
-            options: {
-                ...opcoesComuns,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { title: { display: true, text: "Rede (Mbps)", font: { size: 10 } } },
-                    y: { ...opcoesComuns.scales.y, title: { display: true, text: "RAM (%)", font: { size: 10 } } }
-                }
-            }
-        });
+        const graficoScatter = novoGrafico("graficoScatterRede", "scatter",
+            [{ data: [], backgroundColor: "#2b65ca", pointRadius: 4 }],
+            { plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: "Rede (Mbps)", font: { size: 10 } } }, y: { ...baseOpt.scales.y, title: { display: true, text: "RAM (%)", font: { size: 10 } } } } }
+        );
 
-        async function buscarApi(url, fallback) {
-            try {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error();
-                return await res.json();
-            } catch {
-                return fallback;
-            }
-        }
+        const api = (url, fb) => fetch(url).then(r => r.ok ? r.json() : fb).catch(() => fb);
+
+        const nivel = pct => pct <= 60
+            ? { srv: "srv_normal", txt: "ram_texto_normal", badge: "online", nome: "Normal", icone: "verde" }
+            : pct <= 85
+                ? { srv: "srv_atencao", txt: "ram_texto_atencao", badge: "atencao", nome: "Atenção", icone: "amarelo" }
+                : { srv: "srv_critico", txt: "ram_texto_critico", badge: "offline", nome: "Crítico", icone: "vermelho" };
 
         async function carregarServidores() {
-            const servidores = await buscarApi(`/ram/servidores/${ID_EMPRESA}`, [
-                { idMaquina: 1, nome: "Servidor-Bilheteira-01", macAddress: "0EFFE89A6BF1" },
-                { idMaquina: 2, nome: "Servidor-Pagamentos-02", macAddress: "A085271564DB" }
+            const lista = await api(`/ram/servidores/${ID_EMPRESA}`, [
+                { idMaquina: 1, nome: "Servidor-Bilheteira-01", macAddress: "0EFFE89A6BF1", ramAtualPct: 88.2 },
+                { idMaquina: 2, nome: "Servidor-Pagamentos-02", macAddress: "A085271564DB", ramAtualPct: 45.0 }
             ]);
+            lista.sort((a, b) => (b.ramAtualPct || 0) - (a.ramAtualPct || 0));
 
-            const box = document.getElementById("listaServidores");
-            box.innerHTML = servidores.map((s, i) => `
-                <button class="maq_filtro" type="button" aria-pressed="${i === 0}"
-                    onclick="selecionarServidor(${s.idMaquina}, '${s.nome}', '${s.macAddress}', this)">
-                    ${s.nome}
-                </button>
-            `).join("");
+            $("listaServidores").innerHTML = lista.map((s, i) => {
+                const pct = Number(s.ramAtualPct || 0);
+                return `<button class="maq_filtro ${nivel(pct).srv}" aria-pressed="${i === 0}" data-nome="${s.nome}"
+                    onclick="selecionarServidor(${s.idMaquina}, '${s.nome}', '${s.macAddress}', this)">${s.nome} (${pct.toFixed(0)}%)</button>`;
+            }).join("");
 
-            if (servidores.length) selecionarServidor(servidores[0].idMaquina, servidores[0].nome, servidores[0].macAddress, box.firstElementChild);
+            if (lista[0]) selecionarServidor(lista[0].idMaquina, lista[0].nome, lista[0].macAddress, $("listaServidores").firstElementChild);
         }
 
         function selecionarServidor(id, nome, mac, btn) {
             idMaquinaAtual = id;
-            document.querySelectorAll("#listaServidores .maq_filtro").forEach(b => b.setAttribute("aria-pressed", "false"));
-            if (btn) btn.setAttribute("aria-pressed", "true");
-            document.getElementById("subtituloServidor").innerText = `Instância ativa: ${nome} (MAC: ${mac})`;
-            document.getElementById("tituloGraficoPrincipal").innerText = `Consumo de RAM — ${nome}`;
+            document.querySelectorAll("#listaServidores .maq_filtro").forEach(b => b.setAttribute("aria-pressed", b === btn));
+            $("subtituloServidor").innerText = `Instância ativa: ${nome} (MAC: ${mac})`;
+            $("tituloGraficoPrincipal").innerText = `Consumo de RAM — ${nome}`;
             atualizarDados();
         }
 
         function mudarPeriodo(periodo, btn) {
             periodoAtual = periodo;
-            document.querySelectorAll("#seletorPeriodo .maq_filtro").forEach(b => b.setAttribute("aria-pressed", "false"));
-            btn.setAttribute("aria-pressed", "true");
+            document.querySelectorAll("#seletorPeriodo .maq_filtro").forEach(b => b.setAttribute("aria-pressed", b === btn));
             atualizarDados();
         }
 
         async function atualizarDados() {
             if (!idMaquinaAtual) return;
-
-            const [kpis, historico, vazamento, dispersao] = await Promise.all([
-                buscarApi(`/ram/kpis/${idMaquinaAtual}`, { ramAtualPct: 74.5, ramAtualGb: 11.9, ramTotalGb: 16, pico24hPct: 88.2, pico24hHorario: "14:32", tempoForaNormalPct: 18.5 }),
-                buscarApi(`/ram/historico/${idMaquinaAtual}?periodo=${periodoAtual}`, [{ horario: "12:00", ramPct: 62 }, { horario: "14:32", ramPct: 88.2 }, { horario: "Agora", ramPct: 74.5 }]),
-                buscarApi(`/ram/vazamento/${idMaquinaAtual}`, [{ horario: "-3h", ramPct: 68 }, { horario: "-2h", ramPct: 70 }, { horario: "-1h", ramPct: 72.5 }, { horario: "Agora", ramPct: 74.5 }]),
-                buscarApi(`/ram/dispersao/${idMaquinaAtual}`, [{ trafegoRede: 180, ramPct: 45 }, { trafegoRede: 890, ramPct: 88.2 }])
+            const [kpi, hist, leak, disp] = await Promise.all([
+                api(`/ram/kpis/${idMaquinaAtual}`, mockKpis[idMaquinaAtual] || mockKpis[1]),
+                api(`/ram/historico/${idMaquinaAtual}?periodo=${periodoAtual}`, [{ horario: "12:00", ramPct: 62 }, { horario: "14:32", ramPct: 88.2 }, { horario: "Agora", ramPct: 74.5 }]),
+                api(`/ram/vazamento/${idMaquinaAtual}`, [{ horario: "-3h", ramPct: 68 }, { horario: "-2h", ramPct: 70 }, { horario: "-1h", ramPct: 72.5 }, { horario: "Agora", ramPct: 74.5 }]),
+                api(`/ram/dispersao/${idMaquinaAtual}`, [{ trafegoRede: 180, ramPct: 45 }, { trafegoRede: 890, ramPct: 88.2 }])
             ]);
 
-            const pct = Number(kpis.ramAtualPct);
-            const [corTxt, corBadge, textoStatus, corIcone] = pct <= 60
-                ? ["ram_texto_normal", "online", "Normal", "verde"]
-                : pct <= 85
-                    ? ["ram_texto_atencao", "atencao", "Atenção", "amarelo"]
-                    : ["ram_texto_critico", "offline", "Crítico", "vermelho"];
+            const pct = Number(kpi.ramAtualPct), st = nivel(pct);
+            $("kpiRamAgora").className = st.txt;
+            $("kpiRamAgora").innerText = `${pct.toFixed(1)}%`;
+            $("badgeStatusRam").className = `maq_status ${st.badge}`;
+            $("badgeStatusRam").innerText = st.nome;
+            $("iconeRamAgora").className = `kpi_icone ${st.icone}`;
+            $("kpiRamGb").innerText = `${kpi.ramAtualGb} GB / ${kpi.ramTotalGb} GB em uso`;
+            $("kpiPico").innerText = `${Number(kpi.pico24hPct).toFixed(1)}%`;
+            $("kpiHorarioPico").innerText = `Ocorrido às ${kpi.pico24hHorario}`;
+            $("kpiTempoFora").innerText = `${Number(kpi.tempoForaNormalPct).toFixed(1)}%`;
 
-            document.getElementById("kpiRamAgora").className = corTxt;
-            document.getElementById("kpiRamAgora").innerText = `${pct.toFixed(1)}%`;
-            document.getElementById("badgeStatusRam").className = `maq_status ${corBadge}`;
-            document.getElementById("badgeStatusRam").innerText = textoStatus;
-            document.getElementById("iconeRamAgora").className = `kpi_icone ${corIcone}`;
-            document.getElementById("kpiRamGb").innerText = `${kpis.ramAtualGb} GB / ${kpis.ramTotalGb} GB em uso`;
-            document.getElementById("kpiPico").innerText = `${Number(kpis.pico24hPct).toFixed(1)}%`;
-            document.getElementById("kpiHorarioPico").innerText = `Ocorrido às ${kpis.pico24hHorario}`;
-            document.getElementById("kpiTempoFora").innerText = `${Number(kpis.tempoForaNormalPct).toFixed(1)}%`;
+            const btnAtivo = document.querySelector('#listaServidores .maq_filtro[aria-pressed="true"]');
+            if (btnAtivo) {
+                btnAtivo.className = `maq_filtro ${st.srv}`;
+                btnAtivo.innerText = `${btnAtivo.dataset.nome} (${pct.toFixed(0)}%)`;
+            }
 
-            graficoLinha.data.labels = historico.map(h => h.horario);
-            graficoLinha.data.datasets[0].data = historico.map(h => h.ramPct);
+            graficoLinha.data.labels = hist.map(h => h.horario);
+            graficoLinha.data.datasets[0].data = hist.map(h => h.ramPct);
             graficoLinha.update("none");
 
-            if (vazamento.length >= 2) {
-                const vals = vazamento.map(v => Number(v.ramPct));
-                const n = vals.length, xm = (n - 1) / 2, ym = vals.reduce((a, b) => a + b, 0) / n;
+            if (leak.length >= 2) {
+                const vals = leak.map(v => Number(v.ramPct)), n = vals.length, xm = (n - 1) / 2, ym = vals.reduce((a, b) => a + b, 0) / n;
                 const taxa = vals.reduce((s, y, x) => s + (x - xm) * (y - ym), 0) / vals.reduce((s, _, x) => s + (x - xm) ** 2, 0);
-                const atual = vals[n - 1];
-                const horas = taxa > 0.1 && atual < 85 ? Math.round((85 - atual) / taxa) : null;
+                const atual = vals[n - 1], horas = taxa > 0.1 && atual < 85 ? Math.round((85 - atual) / taxa) : null;
 
-                graficoLeak.data.labels = [...vazamento.map(v => v.horario), "+3h", "Alvo 85%"];
+                graficoLeak.data.labels = [...leak.map(v => v.horario), "+3h", "Alvo 85%"];
                 graficoLeak.data.datasets[0].data = [...vals, null, null];
                 graficoLeak.data.datasets[1].data = [...Array(n - 1).fill(null), atual, Math.min(100, +(atual + taxa * 3).toFixed(1)), horas ? 85 : atual];
                 graficoLeak.update("none");
 
-                document.getElementById("textoMemoryLeak").innerHTML = horas
+                $("textoMemoryLeak").innerHTML = horas
                     ? `<strong>Diagnóstico:</strong> sobe ${taxa.toFixed(1)}%/h; chega a 85% em ~${horas}h.`
                     : `<strong>Status:</strong> taxa de ${taxa.toFixed(1)}%/h (${atual >= 85 ? "acima de 85%" : "estável"}).`;
             }
 
-            graficoScatter.data.datasets[0].data = dispersao.map(d => ({ x: d.trafegoRede, y: d.ramPct }));
+            graficoScatter.data.datasets[0].data = disp.map(d => ({ x: d.trafegoRede, y: d.ramPct }));
             graficoScatter.update("none");
         }
 
