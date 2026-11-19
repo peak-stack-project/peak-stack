@@ -36,7 +36,7 @@ function listarEmpresas() {
       e.razao_social,
       e.nome_fantasia,
       e.cnpj,
-      u.nome AS nome_ceo, situacao as status
+      u.nome AS nome_ceo, e.situacao as status
     FROM empresa e
     LEFT JOIN usuario u
       ON u.id = (
