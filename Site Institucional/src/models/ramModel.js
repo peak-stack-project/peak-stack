@@ -9,10 +9,18 @@ const JOIN_LEITURA = `
 
 function listarServidores(idEmpresa) {
     return database.executar(`
-        SELECT id AS idMaquina, nome, mac_address AS macAddress
-        FROM maquina
-        WHERE fk_empresa = ${idEmpresa}
-        ORDER BY nome ASC;
+        SELECT
+            m.id AS idMaquina,
+            m.nome,
+            m.mac_address AS macAddress,
+            COALESCE((
+                SELECT l.valor ${JOIN_LEITURA}
+                WHERE cm.fk_maquina = m.id AND cc.tipo = 'RAM' AND cc.unidade_medida = '%'
+                ORDER BY l.dt_hr_leitura DESC LIMIT 1
+            ), 0) AS ramAtualPct
+        FROM maquina m
+        WHERE m.fk_empresa = ${idEmpresa}
+        ORDER BY ramAtualPct DESC, m.nome ASC;
     `);
 }
 
