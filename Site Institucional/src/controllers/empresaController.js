@@ -107,8 +107,9 @@ function atualizar(req, res) {
     const nomeFantasia = req.body.nome_fantasia;
     const cnpj = req.body.cnpj;
     const ceo = req.body.ceo;
+    const status = req.body.status;
 
-    empresaModel.atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo)
+    empresaModel.atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo, status)
         .then(
             function (resultado) {
                 res.json(resultado)
