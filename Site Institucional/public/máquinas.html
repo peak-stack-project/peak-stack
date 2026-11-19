@@ -15,7 +15,7 @@
     <script src="./js/maquinas_comum.js"></script>
 </head>
 
-<body class="corpo_dashboard">
+<body class="corpo_dashboard" onload="carregando()">
 
     <aside class="menu_lateral">
         <a class="marca marca_lateral">
@@ -26,8 +26,8 @@
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./alertas.html">Alertas</a>
-            <a class="ativo" href="./máquinas.html">Máquinas</a>
-            <a href="./cadastro_usuarios.html">Usuários</a>
+            <a class="ativo" href="./máquinas.html" >Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
         </div>
         <div class="menu_lateral_rodape">
             <span class="menu_grupo">
@@ -223,6 +223,18 @@
 
 </html>
 <script>
+
+const telaUsuarios = document.getElementById("tela_usuarios");
+
+    function carregando(){
+        if(sessionStorage.FKCARGO_USUARIO == 3){
+            telaUsuarios.style.display = "none";
+        }
+    }
+
+
+
+    
 
     var cadastro_realizado = false;
 
@@ -479,76 +491,92 @@
             booleano = false;
         }
 
-        console.log(nomeVar)
-        console.log(soVar)
-        console.log(macVar)
-        console.log(booleano)
+        if (macVar.length != 12) {
+            cardErro.style.display == "block";
+            cardErro.style.color = "#FC1600";
+            mensagem_erro.innerHTML = "Não foi possível fazer o login. Tente novamente.";
 
-        if (booleano == true) {
-            fetch("/maquinas/cadastrarMaquina", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
+        } else {
 
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
-                    nomeServer: nomeVar,
-                    macServer: macVar,
-                    soServer: soVar,
-                    idEmpresaServer: idEmpresaVar,
-                    nomeUsuarioServer: nomeUsuarioVar
+            console.log(nomeVar)
+            console.log(soVar)
+            console.log(macVar)
+            console.log(booleano)
 
-                }),
+            if (booleano == true) {
+                fetch("/maquinas/cadastrarMaquina", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
 
-            })
-                .then(function (resposta) {
-                    console.log("chamei as variavel");
-                    console.log("resposta: ", resposta);
+                        // crie um atributo que recebe o valor recuperado aqui
+                        // Agora vá para o arquivo routes/usuario.js
+                        nomeServer: nomeVar,
+                        macServer: macVar,
+                        soServer: soVar,
+                        idEmpresaServer: idEmpresaVar,
+                        nomeUsuarioServer: nomeUsuarioVar
 
-                    if (resposta.ok) {
-                        console.log("resposta ok");
-                        container_cadastro.style.display = 'none';
-                        container_cadastro2.style.display = 'flex';
-                        limparFormulario();
-                        finalizarAguardar();
+                    }),
 
-                    } else {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
-                    }
                 })
-                .catch(function (resposta) {
-                    console.log(`#ERRO: ${resposta}`);
+                    .then(function (resposta) {
+                        console.log("chamei as variavel");
+                        console.log("resposta: ", resposta);
+
+                        if (resposta.ok) {
+                            console.log("resposta ok");
+                            container_cadastro.style.display = 'none';
+                            container_cadastro2.style.display = 'flex';
+                            limparFormulario();
+                            finalizarAguardar();
+
+                        } else {
+                            throw "Houve um erro ao tentar realizar o cadastro!";
+                        }
+                    })
+                    .catch(function (resposta) {
+                        console.log(`#ERRO: ${resposta}`);
+                        finalizarAguardar();
+                    });
+
+                fetch("/maquinas/listar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
+                }).then(function (resposta) {
+                    if (resposta.ok) {
+                        resposta.json().then(function (json) {
+                            sessionStorage.ID_MAQUINA = json.id;
+                            fez_login = true;
+                        });
+                    } else {
+
+                        if (resposta.status == 403) {
+                            cardErro.style.display = "block";
+                            cardErro.style.color = "#FC1600";
+                            mensagem_erro.innerHTML = "E-mail ou senha incorretos";
+                        } else if (resposta.status == 500) {
+                            cardErro.style.display = "block";
+                            cardErro.style.color = "#FC1600";
+                            mensagem_erro.innerHTML = "Erro no servidor. Tente novamente mais tarde.";
+                        } else {
+                            cardErro.style.display = "block";
+                            cardErro.style.color = "#FC1600";
+                            mensagem_erro.innerHTML = "Não foi possível fazer o login. Tente novamente.";
+                        }
+                    }
+                }).catch(function () {
+                    // cardErro.style.display = "block";
+                    // mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
                     finalizarAguardar();
+                    // registrar_checkpoint("falha_conexao_login_peakstack");
                 });
 
-            fetch("/maquinas/listar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ emailServer: emailVar, senhaServer: senhaVar })
-            }).then(function (resposta) {
-                if (resposta.ok) {
-                    resposta.json().then(function (json) {
-                        sessionStorage.ID_MAQUINA = json.id;
-                        fez_login = true;
-                    });
-                } else {
-                    resposta.text().then(function (texto) {
-                        // cardErro.style.display = "block";
-                        // mensagem_erro.innerHTML = texto + ". Tente novamente.";
-                        finalizarAguardar();
-                        // registrar_checkpoint("erro_login_peakstack");
-                    });
-                }
-            }).catch(function () {
-                // cardErro.style.display = "block";
-                // mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
-                finalizarAguardar();
-                // registrar_checkpoint("falha_conexao_login_peakstack");
-            });
-
-            return false;
+                return false;
+            }
         }
     }
 

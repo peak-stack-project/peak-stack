@@ -29,8 +29,8 @@ BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 NIVEIS = {1: ("Normal", "green"), 2: ("Alerta", "yellow"), 3: ("Crítico", "red")}
 
 LIMITES_PADRAO = {
-    "cpu":              ("maior", 6, 8, "%"),
-    "ram":              ("maior", 6, 8, "%"),
+    "cpu":              ("maior",60, 60, "%"),
+    "ram":              ("maior", 60, 80, "%"),
     "disco":            ("maior", 60, 71, "%"),
     "memória restante": ("menor", 40, 15, "%"),
     "pacotes perdidos": ("maior", 50, 500, None),
@@ -134,19 +134,19 @@ def notificar_slack(cursor, fk_empresa, mac, cm_id, nome_comp, valor, unidade, n
     situacao = NIVEIS[nivel][0]
     emoji = "⚠️" if nivel == 2 else "🚨"
 
-    titulo = f"{emoji} {situacao}: {nome_comp}"
+    titulo = f"{situacao}: {nome_comp}"
     descricao = f"Máquina {mac} atingiu {valor} {unidade} ({situacao})."
 
     try:
 
         slack_client.chat_postMessage(
-            channel=canal_id,
-            text=f"*{titulo}*\n{descricao}"
-        )
-
+                    channel=canal_id,
+                    text=f"*{emoji} {titulo}*\n{descricao}"
+                )
+        
         cursor.execute(
-            "INSERT INTO slack (titulo, descricao, canal, fk_empresa) VALUES (%s, %s, %s, %s)",
-            (titulo[:45], descricao[:200], canal_id, fk_empresa),
+                    "INSERT INTO slack (titulo, descricao, canal, fk_empresa) VALUES (%s, %s, %s, %s)",
+                    (titulo[:45], descricao[:200], canal_id, fk_empresa),
         )
 
         ultimo_alerta[chave] = agora_ts
