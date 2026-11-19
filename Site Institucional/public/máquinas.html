@@ -26,7 +26,7 @@
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./alertas.html">Alertas</a>
-            <a class="ativo" href="./máquinas.html" >Máquinas</a>
+            <a class="ativo" href="./máquinas.html">Máquinas</a>
             <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
         </div>
         <div class="menu_lateral_rodape">
@@ -204,6 +204,15 @@
                     </select>
                 </div>
 
+                <label for="edicaoSoMaquina">Status</label>
+                <div class="campo_edicao">
+                    <select id="edicaoStatusMaquina" name="status_maquina">
+                        <option value="Ativo">Ativo</option>
+                        <option value="Não Ativo">Não Ativo</option>
+                        <option value="Pendente">Pendente</option>
+                    </select>
+                </div>
+
                 <div class="acoes_edicao">
 
                     <button class="botao_cancelar_edicao" type="button" data-fechar-modal>
@@ -224,17 +233,17 @@
 </html>
 <script>
 
-const telaUsuarios = document.getElementById("tela_usuarios");
+    const telaUsuarios = document.getElementById("tela_usuarios");
 
-    function carregando(){
-        if(sessionStorage.FKCARGO_USUARIO == 3){
+    function carregando() {
+        if (sessionStorage.FKCARGO_USUARIO == 3) {
             telaUsuarios.style.display = "none";
         }
     }
 
 
 
-    
+
 
     var cadastro_realizado = false;
 
@@ -279,7 +288,7 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                             </div>
 
                             <div class="container_acoes">
-                              <button onclick="editarMaquina(${json[i].id})" type="button">
+                              <button onclick="editarMaquina(${json[i].id}, ${json[i].idConfigMaq})" type="button">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
         fill="currentColor" viewBox="0 0 16 16">
         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -309,12 +318,14 @@ const telaUsuarios = document.getElementById("tela_usuarios");
     const modalMaquina = document.getElementById("modalEdicaoMaquina");
 
     let idMaquina;
+    let idConfigMaq;
 
-    function editarMaquina(id) {
+    function editarMaquina(id, idConfig) {
 
         idMaquina = id;
+        idConfigMaq = idConfig;
 
-        fetch(`/maquinas/buscar/${id}`)
+        fetch(`/maquinas/buscar/${idConfig}`)
             .then(function (resposta) {
                 return resposta.json();
             })
@@ -322,7 +333,8 @@ const telaUsuarios = document.getElementById("tela_usuarios");
 
                 edicaoNomeMaquina.value = json.nome;
                 edicaoMacMaquina.value = json.mac;
-                edicaoSoMaquina.value = json.sistema_operacional;
+                edicaoSoMaquina.value = json.fk_so;
+                edicaoStatusMaquina.value = json.status;
 
                 modalMaquina.style.display = "flex";
 
@@ -349,6 +361,7 @@ const telaUsuarios = document.getElementById("tela_usuarios");
             let nome = edicaoNomeMaquina.value;
             let mac = edicaoMacMaquina.value;
             let so = edicaoSoMaquina.value;
+            let status = edicaoStatusMaquina.value;
 
             if (nome.length < 3) {
                 alert("Nome da máquina inválido.");
@@ -360,7 +373,7 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                 return;
             }
 
-            fetch(`/maquinas/atualizar/${idMaquina}`, {
+            fetch(`/maquinas/atualizar/${idMaquina}/${idConfigMaq}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -368,7 +381,8 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                 body: JSON.stringify({
                     nome: nome,
                     mac: mac,
-                    fk_so: so
+                    fk_so: so,
+                    status: status,
                 })
             })
                 .then(function (resposta) {
