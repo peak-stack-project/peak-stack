@@ -118,8 +118,8 @@ CREATE TABLE IF NOT EXISTS leitura (
 CREATE TABLE IF NOT EXISTS limites (
   id INT auto_increment,
   nivel INT NOT NULL,
-  valor_min  DECIMAL(5,2) NOT NULL,
-  valor_max  DECIMAL(5,2) NOT NULL,
+  valor_min  DECIMAL(10,2) NOT NULL,
+  valor_max  DECIMAL(10,2) NOT NULL,
   fk_componentes INT NOT NULL,
   fk_empresa INT NOT NULL,
   PRIMARY KEY (id),
@@ -210,7 +210,9 @@ INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
 ('DDR4', 3),
 ('DDR4', 4),
 ('Amazon Elastic Block Store', 5),
-('Amazon.com, Inc. Elastic Network Adapter (ENA)', 6);
+('Amazon.com, Inc. Elastic Network Adapter (ENA)', 6),
+('Amazon.com, Inc. Elastic Network Adapter (ENA)', 7),
+('Amazon.com, Inc. Elastic Network Adapter (ENA)', 8);
 
 SELECT * FROM componentes;
 
@@ -222,15 +224,22 @@ INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by, dt_na
 SELECT * FROM usuario;
 -- insert da configuração da maquina --
 INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
-(12, 15, 'Ativo'),
-(13, 15, 'Ativo'),
-(14, 15, 'Ativo'),
-(15, 15, 'Ativo');
+(7, 1, 'Ativo'),
+(8, 1, 'Pendente'),
+(9, 1, 'Ativo'),
+(10, 1, 'Ativo'),
+(11, 1, 'Não Ativo'),
+(12, 1, 'Ativo'),
+(13, 1, 'Ativo'),
+(14, 1, 'Ativo');
 
 -- insert de limite:
 INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
-(1, 0, 100000, 7, 1),   -- upload (MB)
-(1, 0, 1000,   8, 1);   -- velocidade (Mbps)
+(1, 0, 100000, 13, 1),   -- upload (MB)
+(1, 0, 1000,   14, 1);   -- velocidade (Mbps)
+
+INSERT INTO slack (titulo, descricao, canal, fk_empresa)
+VALUES ('Configuração Inicial', 'Canal de alertas da empresa', 'C0CHGP71RPX', 1);
 
 SELECT cm.id AS cm_id,
            cm.fk_componentes,
@@ -243,7 +252,7 @@ SELECT cm.id AS cm_id,
     JOIN config_maq cm    ON cm.fk_maquina = m.id
     JOIN componentes c          ON c.id = cm.fk_componentes
     JOIN configuracao_comp cc   ON cc.id = c.fk_configuracao_comp
-    WHERE UPPER(m.mac_address) = 'F2A4064C0040'
+    WHERE UPPER(m.mac_address) = '0EFFE89A6BF1'
       AND cm.status_config = 'Ativo';
 
 
@@ -272,5 +281,3 @@ INNER JOIN maquina m
 LEFT JOIN discretizada d	
     ON d.fk_leitura = l.id
 ORDER BY l.dt_hr_leitura DESC;
-
-
