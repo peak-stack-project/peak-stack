@@ -5,12 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeakStack | Cadastro</title>
-    <link rel="icon" href="./assets/react.png" />
+    <link rel="icon" href="../assets/react.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/cadastro.css">
-    <link rel="stylesheet" href="">
-    <script src="./js/sessao.js" defer></script>
+    <link rel="stylesheet" href="./css/cadastro_empresas.css">
+    <script src="../js/sessao.js" defer></script>
 </head>
 
 <body class="corpo_autenticacao">
@@ -18,7 +17,7 @@
 
     <div id="gradient-waves-background" aria-hidden="true">
         <video autoplay muted loop playsinline>
-            <source src="./assets/onda-fundo.webm" type="video/webm">
+            <source src="../assets/onda-fundo.webm" type="video/webm">
         </video>
     </div>
 
@@ -28,13 +27,14 @@
 
         <aside class="menu_lateral">
             <a class="marca marca_lateral">
-                <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+                <img class="marca_icone" src="../assets/Design sem nome.png" alt="" />
                 <h4>PeakStack</h4>
             </a>
             <div class="menu_grupo">
                 <span class="menu_rotulo">Menu</span>
                 <a class="ativo" href="./cadastro_empresas.html">Cadastro</a>
-                <a href="./gerenciaPeakstack/gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
+                <a href="./gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
+                <a href="./custosSistema.html">Custos e Previsões</a>
 
             </div>
             <div class="menu_lateral_rodape">
@@ -68,7 +68,7 @@
                     </div>
                 </div>
 
-                <div id="cadastroADM" style="display: none;">
+                <div id="cadastroADM">
                     <h2>Cadastro Administrador</h2>
                     <div class="alerta_erro" id="cardErro"><span id="mensagem_erro"></span></div>
 
@@ -117,7 +117,7 @@
                     <button class="botao botao_primario botao_largo" onclick="cadastrarUsuario()">Criar conta</button>
 
                     <div id="div_aguardar" class="loading-div">
-                        <img src="./assets/circle-loading.gif" alt="Carregando">
+                        <img src="../assets/circle-loading.gif" alt="Carregando">
                     </div>
                     <div id="div_erros_login"></div>
                 </div>
@@ -190,7 +190,7 @@
                             "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
 
                         setTimeout(() => {
-                            window.location = "../gerenciaPeakstack/gerenciamentoEmpresas.html";
+                            window.location = "./gerenciamentoEmpresas.html";
                         }, "2000");
 
                         limparFormulario();

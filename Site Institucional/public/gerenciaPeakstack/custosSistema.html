@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#eef3f8">
+    <title>PeakStack | Custos e Previsões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/menuGerencia.css">
+    <link rel="stylesheet" href="./css/custosSistema.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    <script src="js/custosSistema.js" defer></script>
+</head>
+
+<body>
+    <div id="gradient-waves-background" aria-hidden="true">
+        <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="../assets/onda-fundo.webm" type="video/webm">
+        </video>
+    </div>
+
+    <div class="layout">
+        <aside class="menu_lateral gerencia_menu">
+            <a class="marca marca_lateral" href="./cadastro_empresas.html">
+                <img class="marca_icone" src="../assets/Design%20sem%20nome.png" alt="">
+                <h4>PeakStack</h4>
+            </a>
+            <nav class="menu_grupo" aria-label="Menu principal">
+                <span class="menu_rotulo">Menu</span>
+                <a href="./cadastro_empresas.html">Cadastro</a>
+                <a href="./gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
+                <a class="ativo" href="./custosSistema.html" aria-current="page">Custos e Previsões</a>
+            </nav>
+            <div class="menu_lateral_rodape">
+                <button id="btn_logout" class="botao botao_lateral" type="button"
+                    onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='../index.html';">
+                    Sair
+                </button>
+            </div>
+        </aside>
+
+        <main class="conteudo">
+            <header class="cabecalho_dashboard">
+                <div>
+                    <h1>Custos e Previsões do Sistema</h1>
+                </div>
+                <div class="acoes_cabecalho">
+                    <label class="seletor_periodo" for="periodo">
+                        <span class="sr_only">Período</span>
+                        <select id="periodo" aria-label="Período">
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                        </select>
+                    </label>
+                   
+                    <div class="painel_filtro" id="painelFiltro" hidden>
+                        <label for="filtroComponente">Componente</label>
+                        <select id="filtroComponente">
+                            <option value="todos">Todos os componentes</option>
+                            <option value="CPU">CPU</option>
+                            <option value="RAM">RAM</option>
+                            <option value="Disco">Disco</option>
+                            <option value="Rede">Rede</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <section class="resumo_cards" aria-label="Resumo dos custos">
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_azul" aria-hidden="true">▤</span>
+                    <div class="resumo_texto"><p>Previsão para o Mês Atual</p><strong>R$ 1.745,00</strong><span class="indicador indicador_positivo">Dentro do planejado (-3,1%)</span></div>
+                </article>
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_amarelo" aria-hidden="true">↗</span>
+                    <div class="resumo_texto"><p>Estimativa para Próximo Mês</p><strong>R$ 1.890,50</strong><span class="indicador indicador_alerta">Tendência de Alta (+8,3%)</span></div>
+                </article>
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_verde" aria-hidden="true">◷</span>
+                    <div class="resumo_texto"><p>Média de Gasto Diário</p><strong>R$ 51,34</strong></div>
+                </article>
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_azul" aria-hidden="true">*</span>
+                    <div class="resumo_texto"><p>Potêncial Economia</p><strong>R$ 51,34</strong></div>
+                </article>
+            </section>
+
+            <section class="graficos_duplos" aria-label="Análise de custos e usuários">
+                <article class="painel_grafico">
+                    <h2>Gasto por Categoria (Mensal)</h2>
+                    <div class="canvas_wrap"><canvas id="graficoComponentes" role="img" aria-label="Gráfico de gastos mensais por componente"></canvas></div>
+                </article>
+                <article class="painel_grafico">
+                    <h2>Oportunidades de Otimização</h2>
+                    <div class="canvas_wrap"><canvas id="graficoUsuarios" role="img" aria-label="Gráfico de dispersão com volume de usuários no eixo horizontal e custo diário no eixo vertical"></canvas></div>
+                </article>
+            </section>
+
+            <section class="painel_grafico painel_projecao">
+                <div class="titulo_com_legenda">
+                    <div><h2>Tendência e Projeção de Custos</h2></div>
+                    <span class="selo_projecao">Projeção</span>
+                </div>
+                <div class="canvas_wrap"><canvas id="graficoProjecao" role="img" aria-label="Gráfico histórico e projeção dos custos até abril de 2027"></canvas></div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
