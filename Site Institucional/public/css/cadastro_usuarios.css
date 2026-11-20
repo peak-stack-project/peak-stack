@@ -77,6 +77,7 @@ h1 {
     border-radius: 9px;
     font-weight: 700;
     transition: 0.2s ease;
+    
 }
 
 .botao:hover {
@@ -247,6 +248,12 @@ h1 {
     min-height: 0;
     width: 100%;
     overflow: hidden;
+}
+
+.acoes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container_tabela {

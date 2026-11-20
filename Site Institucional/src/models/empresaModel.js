@@ -36,7 +36,7 @@ function listarEmpresas() {
       e.razao_social,
       e.nome_fantasia,
       e.cnpj,
-      u.nome AS nome_ceo
+      u.nome AS nome_ceo, e.situacao as status
     FROM empresa e
     LEFT JOIN usuario u
       ON u.id = (
@@ -51,11 +51,12 @@ function listarEmpresas() {
 }
 
 
-function atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo) {
+function atualizar(nomeFantasia, razaoSocial, cnpj, id, ceo, status) {
   var sqlEmpresa = `UPDATE empresa
                     SET nome_fantasia = '${nomeFantasia}',
                     razao_social = '${razaoSocial}',
-                    cnpj = '${cnpj}'
+                    cnpj = '${cnpj}',
+                    situacao = '${status}'
                     WHERE id = '${id}'`;
 
   var sqlCeo = `UPDATE usuario

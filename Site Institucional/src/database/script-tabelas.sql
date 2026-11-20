@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS empresa (
   razao_social VARCHAR(200) NOT NULL,
   nome_fantasia VARCHAR(200) NOT NULL,
   cnpj CHAR(14) NOT NULL,
+  situacao VARCHAR(100),
   dt_hr_criacao DATETIME default current_timestamp
   );
 
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS config_maq (
 
 CREATE TABLE IF NOT EXISTS leitura (
   id INT AUTO_INCREMENT UNIQUE,
-  valor DECIMAL NOT NULL,
+  valor DECIMAL(10,2) NOT NULL,
   dt_hr_leitura DATETIME DEFAULT current_timestamp,
   fk_config_maq INT NOT NULL,
   PRIMARY KEY (id, fk_config_maq),
@@ -117,8 +118,8 @@ CREATE TABLE IF NOT EXISTS leitura (
 CREATE TABLE IF NOT EXISTS limites (
   id INT auto_increment,
   nivel INT NOT NULL,
-  valor_min DECIMAL NOT NULL,
-  valor_max DECIMAL NOT NULL,
+  valor_min  DECIMAL(10,2) NOT NULL,
+  valor_max  DECIMAL(10,2) NOT NULL,
   fk_componentes INT NOT NULL,
   fk_empresa INT NOT NULL,
   PRIMARY KEY (id),
@@ -129,7 +130,7 @@ CREATE TABLE IF NOT EXISTS limites (
     FOREIGN KEY (fk_empresa)
     REFERENCES empresa (id)
 );
-    
+
 CREATE TABLE IF NOT EXISTS discretizada (
     id INT PRIMARY KEY AUTO_INCREMENT,
     fk_leitura INT,
@@ -188,6 +189,10 @@ INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, co
 ('Disco', '%', 'psutil', 'disk_usage("C:/").percent'),
 ('Rede', 'MB', 'psutil', 'net_io_counters().bytes_recv');
 
+INSERT INTO configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
+('Rede', 'MB',   'psutil', 'net_io_counters().bytes_sent'),   -- upload total
+('Rede', 'Mbps', 'psutil', 'delta bytes_recv (Mbps)');   	     -- velocidade de download
+
 SELECT * FROM configuracao_comp;
 
 -- insert dos componentes -- 
@@ -205,14 +210,16 @@ INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
 ('DDR4', 3),
 ('DDR4', 4),
 ('Amazon Elastic Block Store', 5),
-('Amazon.com, Inc. Elastic Network Adapter (ENA)', 6);
+('Amazon.com, Inc. Elastic Network Adapter (ENA)', 6),
+('Amazon.com, Inc. Elastic Network Adapter (ENA)', 7),
+('Amazon.com, Inc. Elastic Network Adapter (ENA)', 8);
 
 SELECT * FROM componentes;
 
 -- Insert de Usuário:
-INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by) VALUES
-(1, 1, 'Mickaela', 'mickaela@sptech.com', 'Peakstack@123456', 'Beatriz'),
-(1, 4, 'Felipe Dias', 'felipe@peakstack.com', 'Peakstack@123456', 'Beatriz');
+INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by, dt_nasc) VALUES
+(1, 1, 'Beatriz', 'beatriz@peakstack.com', 'Peakstack@123456', 'Beatriz', '2007-08-14'),
+(1, 4, 'Felipe Dias', 'felipe@peakstack.com', 'Peakstack@123456', 'Beatriz', '2008-07-07');
 
 SELECT * FROM usuario;
 -- insert da configuração da maquina --
@@ -222,10 +229,18 @@ INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
 (9, 1, 'Ativo'),
 (10, 1, 'Ativo'),
 (11, 1, 'Não Ativo'),
-(12, 1, 'Ativo');
+(12, 1, 'Ativo'),
+(13, 1, 'Ativo'),
+(14, 1, 'Ativo');
 
-select * from config_maq;
-   
+-- insert de limite:
+INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
+(1, 0, 100000, 13, 1),   -- upload (MB)
+(1, 0, 1000,   14, 1);   -- velocidade (Mbps)
+
+INSERT INTO slack (titulo, descricao, canal, fk_empresa)
+VALUES ('Configuração Inicial', 'Canal de alertas da empresa', 'C0CHGP71RPX', 1);
+
 SELECT cm.id AS cm_id,
            cm.fk_componentes,
            m.fk_empresa,
@@ -237,7 +252,7 @@ SELECT cm.id AS cm_id,
     JOIN config_maq cm    ON cm.fk_maquina = m.id
     JOIN componentes c          ON c.id = cm.fk_componentes
     JOIN configuracao_comp cc   ON cc.id = c.fk_configuracao_comp
-    WHERE UPPER(m.mac_address) = 'DC215CF245A9'
+    WHERE UPPER(m.mac_address) = '0EFFE89A6BF1'
       AND cm.status_config = 'Ativo';
 
 
@@ -263,8 +278,6 @@ INNER JOIN configuracao_comp cc
     ON cc.id = c.fk_configuracao_comp
 INNER JOIN maquina m
     ON m.id = cm.fk_maquina
-LEFT JOIN discretizada d
+LEFT JOIN discretizada d	
     ON d.fk_leitura = l.id
 ORDER BY l.dt_hr_leitura DESC;
-
-
