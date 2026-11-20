@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeakStack | Dashboard Individual — RAM</title>
-    <link rel="icon" href="./assets/Design sem nome.png">
+    <link rel="icon" href="./assets/react.png" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js" defer></script>
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <div class="ram_canvas_wrapper"><canvas id="graficoScatterRede"></canvas></div>
-                    <p class="ram_diagnostico"><strong>Correlação:</strong> picos de tráfego elevam o uso de RAM.</p>
+                    <p class="ram_diagnostico" id="textoDispersao"><strong>Correlação:</strong> picos de tráfego elevam o uso de RAM.</p>
                 </article>
             </section>
         </main>
@@ -155,7 +155,7 @@
 
         const graficoScatter = novoGrafico("graficoScatterRede", "scatter",
             [{ data: [], backgroundColor: "#2b65ca", pointRadius: 4 }],
-            { plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: "Rede (Mbps)", font: { size: 10 } } }, y: { ...baseOpt.scales.y, title: { display: true, text: "RAM (%)", font: { size: 10 } } } } }
+            { plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: "Rede (Mbps / MB)", font: { size: 10 } } }, y: { ...baseOpt.scales.y, title: { display: true, text: "RAM (%)", font: { size: 10 } } } } }
         );
 
         const api = (url, fb) => fetch(url).then(r => r.ok ? r.json() : fb).catch(() => fb);
@@ -231,18 +231,31 @@
                 const taxa = vals.reduce((s, y, x) => s + (x - xm) * (y - ym), 0) / vals.reduce((s, _, x) => s + (x - xm) ** 2, 0);
                 const atual = vals[n - 1], horas = taxa > 0.1 && atual < 85 ? Math.round((85 - atual) / taxa) : null;
 
-                graficoLeak.data.labels = [...leak.map(v => v.horario), "+3h", "Alvo 85%"];
+                graficoLeak.data.labels = [...leak.map(v => v.horario), "+3 intervalos", "Alvo 85%"];
                 graficoLeak.data.datasets[0].data = [...vals, null, null];
                 graficoLeak.data.datasets[1].data = [...Array(n - 1).fill(null), atual, Math.min(100, +(atual + taxa * 3).toFixed(1)), horas ? 85 : atual];
                 graficoLeak.update("none");
 
                 $("textoMemoryLeak").innerHTML = horas
-                    ? `<strong>Diagnóstico:</strong> sobe ${taxa.toFixed(1)}%/h; chega a 85% em ~${horas}h.`
-                    : `<strong>Status:</strong> taxa de ${taxa.toFixed(1)}%/h (${atual >= 85 ? "acima de 85%" : "estável"}).`;
+                    ? `<strong>Diagnóstico:</strong> sobe ${taxa.toFixed(1)}%/ciclo; chega a 85% em ~${horas} ciclos.`
+                    : `<strong>Status:</strong> variação de ${taxa.toFixed(1)}%/ciclo (${atual >= 85 ? "acima de 85%" : "estável"}).`;
+            } else {
+                graficoLeak.data.labels = [];
+                graficoLeak.data.datasets[0].data = [];
+                graficoLeak.data.datasets[1].data = [];
+                graficoLeak.update("none");
+                $("textoMemoryLeak").innerHTML = "<strong>Aguardando:</strong> coletando pelo menos 2 janelas de 5 min para traçar tendência.";
             }
 
-            graficoScatter.data.datasets[0].data = disp.map(d => ({ x: d.trafegoRede, y: d.ramPct }));
-            graficoScatter.update("none");
+            if (disp.length > 0) {
+                graficoScatter.data.datasets[0].data = disp.map(d => ({ x: d.trafegoRede, y: d.ramPct }));
+                graficoScatter.update("none");
+                $("textoDispersao").innerHTML = `<strong>Correlação (${disp.length} pts):</strong> picos de tráfego elevam o uso de RAM.`;
+            } else {
+                graficoScatter.data.datasets[0].data = [];
+                graficoScatter.update("none");
+                $("textoDispersao").innerHTML = "<strong>Sem dados de rede:</strong> esta máquina não possui componente de Rede ativo.";
+            }
         }
 
         setInterval(atualizarDados, 2000);
