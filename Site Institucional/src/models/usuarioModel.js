@@ -22,12 +22,12 @@ function cadastrar(nome, email, senha, cargo, idempresa, data, nomeUsuario) {
     return database.executar(instrucaoSql);
 }
 
-function listarUsuarios() {
+function listarUsuarios(fk) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ")
     var instrucaoSql = `
       select usuario.id as id, usuario.nome as nome, email, nome_fantasia as empresa, cargo.nome as cargo
 from usuario join empresa on usuario.fk_empresa = empresa.id
-join cargo on usuario.fk_cargo = cargo.id;
+join cargo on usuario.fk_cargo = cargo.id where usuario.fk_empresa = '${fk}';
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

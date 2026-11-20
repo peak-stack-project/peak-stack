@@ -229,9 +229,14 @@
 
 </html>
 <script>
-    function listarUsuarios() {
 
-        fetch("/usuarios/listarUsuarios")
+     let fkEmpresa = sessionStorage.getItem("FKEMPRESA_USUARIO");
+
+    
+    function listarUsuarios(fk) {
+            fk = fkEmpresa;
+        fetch(`/usuarios/listarUsuarios/${fk}`)
+           
             .then(function (resposta) {
                 return resposta.json();
             })
