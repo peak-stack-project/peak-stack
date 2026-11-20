@@ -263,12 +263,13 @@
 
 
 
-
+ let fkEmpresa = sessionStorage.getItem("FKEMPRESA_USUARIO");
 
     var cadastro_realizado = false;
 
-    function listarMaquinas() {
-        fetch("/maquinas/listarMaquinas")
+    function listarMaquinas(fk) {
+        fk = fkEmpresa;
+        fetch(`/maquinas/listarMaquinas/${fk}`)
             .then(function (resposta) {
                 resposta.json().then(function (json) {
 

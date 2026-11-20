@@ -22,10 +22,10 @@ function listar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
-function listarMaquinas (req, res){
+function listarMaquinas (fk){
  var instrucaoSql = `
 select maquina.id as id, config_maq.id AS idConfigMaq, maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, concat(tipo, ' ', unidade_medida) as componente ,  status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
-join config_maq on fk_maquina = maquina.id join componentes on componentes.id = fk_componentes join configuracao_comp on configuracao_comp.id = fk_configuracao_comp order by id desc;`;
+join config_maq on fk_maquina = maquina.id join componentes on componentes.id = fk_componentes join configuracao_comp on configuracao_comp.id = fk_configuracao_comp where empresa.id = '${fk}' order by id desc;`;
 
   return database.executar(instrucaoSql);
 }

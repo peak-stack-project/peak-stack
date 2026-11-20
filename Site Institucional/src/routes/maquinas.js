@@ -16,7 +16,7 @@ router.post("/listar", function (req, res) {
   maquinasController.listar(req, res);
 });
 
-router.get("/listarMaquinas", function (req, res) {
+router.get("/listarMaquinas/:fk", function (req, res) {
     maquinasController.listarMaquinas(req, res);
 });
 
