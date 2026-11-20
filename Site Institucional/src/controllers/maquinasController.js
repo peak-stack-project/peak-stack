@@ -52,7 +52,8 @@ function buscarMaquinaPorId(req, res) {
 }
 
 function listarMaquinas(req, res){
-    maquinasModel.listarMaquinas()
+    var fk = req.params.fk;
+    maquinasModel.listarMaquinas(fk)
      .then(
             function (resultado) {
                 res.json(resultado)
