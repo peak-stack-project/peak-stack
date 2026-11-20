@@ -305,7 +305,7 @@ h1 {
     display: none;
     margin: 18px 0;
     padding: 12px;
-    color: var(--cor-primaria-escura);
+    color: #FF4624;
     background: var(--cor-primaria-clara);
     border: 1px solid var(--cor-primaria);
     border-radius: 8px;

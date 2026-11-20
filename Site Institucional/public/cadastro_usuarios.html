@@ -89,7 +89,8 @@
         <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroUsuario">
             <header class="modal_edicao_cabecalho">
                 <h2 id="tituloCadastroUsuario">Cadastrar usuários</h2>
-                <button class="modal_edicao_fechar" type="button" aria-label="Fechar cadastro" onclick="chamarCadastro()">
+                <button class="modal_edicao_fechar" type="button" aria-label="Fechar cadastro"
+                    onclick="chamarCadastro()">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="m6 6 12 12M18 6 6 18"></path>
                     </svg>
@@ -193,7 +194,7 @@
             </form>
         </section>
     </div>
-     <div id="modalDeletarUsuario" class="modal_edicao" style="display: none;">
+    <div id="modalDeletarUsuario" class="modal_edicao" style="display: none;">
 
         <section class="modal_edicao_cartao">
 
@@ -336,9 +337,9 @@
         id = idUsuario
 
         let deletarInput = deletar_input.value
-        if(deletarInput == "sim"){
+        if (deletarInput == "sim") {
 
-        fetch("/usuarios/deletar", {
+            fetch("/usuarios/deletar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -371,7 +372,7 @@
         } else {
             fecharModalUsuario();
         }
-        }
+    }
 
 
 
