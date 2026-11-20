@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Dashboard</title>
+    <link rel="icon" href="./assets/react.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <script src="./js/sessao.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="corpo_dashboard">
+    <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+            <span>PeakStack</span>
+        </a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <a class="ativo" href="./dashboard_visao_geral.html">Visão geral</a>
+            <a href="./alertas.html">Alertas</a>
+            <a href="./máquinas.html">Máquinas</a>
+            <a href="./cadastro_usuarios.html">Usuários</a>
+        </div>
+        <div class="menu_lateral_rodape">
+            <span class="menu_grupo">
+                <a href="./index.html">Sair</a>
+            </span>
+            <!-- <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                Sair
+            </button> -->
+        </div>
+    </aside>
+    <main class="conteudo_dashboard">
+
+        <header class="topo_dashboard">
+
+            <div>
+                <span class="etiqueta">PeakStack</span>
+                <h1>Segurança de Rede</h1>
+            </div>
+
+        </header>
+
+        <section class="kpis_monitoramento">
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone"></div>
+
+                <div>
+                    <span>Conexões Ativas</span>
+                    <strong id="kpi_conexoes">--</strong>
+                    <small id="kpi_conexoes_detalhe"></small>
+                </div>
+
+            </div>
+
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone verde"></div>
+
+                <div>
+                    <span>Conexões por minuto</span>
+                    <strong id="kpi_critica">--</strong>
+                    <small id="kpi_critica_motivo"></small>
+                </div>
+
+            </div>
+
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone amarelo"></div>
+
+                <div>
+                    <span>Conexões suspeitas</span>
+                    <strong id="kpi_alertas">--</strong>
+                    <small id="kpi_alertas_detalhe"></small>
+                </div>
+
+            </div>
+
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone"></div>
+
+                <div>
+                    <span>Portas abertas</span>
+                    <strong id="kpi_portas">--</strong>
+                    <small id="kpi_portas_detalhe"></small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="graficos_dashboard">
+
+            <section class="area_monitoramento_vazia">
+
+                <div class="grafico_monitoramento">
+
+                    <h2>Conexões ao longo do dia</h2>
+
+                    <div class="grafico_container">
+                        <canvas id="graficoConexoes"></canvas>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div class="card_status">
+
+                <h2>Conexões por estado</h2>
+
+            </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="painel_inferior">
+
+            <section class="ranking_monitoramento">
+
+                <div class="titulo_ranking">
+                    <div>
+                        <h2>Ranking de Risco — Máquinas</h2>
+                        <span>Servidores ordenados por carga atual</span>
+                    </div>
+
+                    <span class="tempo_real">Ultima Leitura</span>
+                </div>
+
+                <div class="tabela_monitoramento" id="tabela_ranking">
+
+                    <div class="linha_tabela cabecalho">
+                        <span>#</span>
+                        <span>Servidor</span>
+                        <span>Empresa</span>
+                        <span>Conexões</span>
+                        <span>SYN_RECV</span>
+                        <span>Portas</span>
+                        <span>Status</span>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="card_disco">
+
+                <h2>Top IPs remotos</h2>
+                <span class="subtitulo">Capacidade utilizada atualmente</span>
+
+                <div class="grafico_disco_container">
+                    <canvas id="graficoIps"></canvas>
+                </div>
+
+            </section>
+
+        </section>
+
+
+    </main>
+
+    <script src="./js/dashboard_rede.js"></script>
+
+</body>
+
+</html>
