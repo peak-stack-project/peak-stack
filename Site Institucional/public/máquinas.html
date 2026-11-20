@@ -445,25 +445,25 @@
                 }),
 
             })
+
                 .then(function (resposta) {
-                    console.log("chamei as variavel");
-                    console.log("resposta: ", resposta);
 
                     if (resposta.ok) {
-                        console.log("resposta ok");
+                        alert("Componente cadastrado com sucesso!");
                         container_cadastro.style.display = 'none';
                         container_cadastro2.style.display = 'flex';
-                        limparFormulario();
-                        finalizarAguardar();
+                        listarMaquinas();
+
 
                     } else {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
+                        alert("Erro ao cadastrar componente.");
                     }
+
                 })
-                .catch(function (resposta) {
-                    console.log(`#ERRO: ${resposta}`);
-                    finalizarAguardar();
+                .catch(function (erro) {
+                    console.error("Erro ao atualizar usuário:", erro);
                 });
+
 
             return false;
         }
