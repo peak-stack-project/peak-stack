@@ -89,7 +89,7 @@ function criptografarSenha(senha) {
 
 function autenticar(req, res) {
     var email = req.body.emailServer;
-    var senha = criptografarSenha(req.body.senhaServer);
+    var senha = req.body.senhaServer;
 
 
     if (email == undefined) {

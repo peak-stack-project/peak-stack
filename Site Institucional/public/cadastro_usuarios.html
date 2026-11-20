@@ -490,28 +490,21 @@
                     nomeUsuarioServer: nomeUsuarioVar
                 }),
             })
-                .then(function (resposta) {
-                    console.log("resposta: ", resposta);
+               .then(function (resposta) {
 
                     if (resposta.ok) {
-                        cardErro.style.display = "block";
+                        alert("Usuário cadastrado com sucesso!");
 
-                        mensagem_erro.innerHTML =
-                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+                        chamarCadastro();
+                        listarUsuarios();
 
-                        setTimeout(() => {
-                            window.location = "login.html";
-                        }, "2000");
-
-                        limparFormulario();
-                        finalizarAguardar();
                     } else {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
+                        alert("Erro ao cadastrar usuário.");
                     }
+
                 })
-                .catch(function (resposta) {
-                    console.log(`#ERRO: ${resposta}`);
-                    finalizarAguardar();
+                .catch(function (erro) {
+                    console.error("Erro ao atualizar usuário:", erro);
                 });
 
             return false;
