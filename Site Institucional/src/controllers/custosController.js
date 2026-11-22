@@ -9,11 +9,9 @@ async function consultar(req, res) {
 
         const empresa = empresas[0].id;
         const instanciasEc2 = await model.listarInstanciasEc2(empresa);
-
         if (!instanciasEc2.length) return res.json({ estado: "aguardando", mensagem: "Aguardando registros do Captura_EC2 no banco." });
-
         if (instanciasEc2.length > 1) return res.status(409).json({ erro: "O painel espera uma única EC2 registrada para a PeakStack." });
-        
+
         const instanciaEc2 = instanciasEc2[0];
 
         const [capturas, periodos, leituras] = await Promise.all([

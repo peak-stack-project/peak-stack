@@ -1,10 +1,4 @@
 const texto = (id, valor) => { document.getElementById(id).textContent = valor ?? '—'; };
-function data(valor) {
-    if (!valor) return 'Sem dados';
-    const instante = new Date(valor);
-    return Number.isNaN(instante.getTime()) ? 'Data indisponível' : instante.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-}
-
 const camposInstancia = {
     tipoInstancia: 'tipo', regiaoInstancia: 'regiao', zonaInstancia: 'zona_disponibilidade',
     imagemInstancia: 'imagem_id', arquiteturaInstancia: 'arquitetura',
@@ -52,7 +46,6 @@ function prepararGraficos() {
 
 function limparCustos() {
     for (const id of ['custoAcumulado', 'tempoExecucao', 'previsaoProximoMes', 'tendenciaCustos']) texto(id, null);
-    for (const id of ['ultimaAtualizacaoCustos', 'ultimaConsultaTarifas']) texto(id, 'Sem dados');
     texto('mesPrevisto', 'Aguardando histórico diário suficiente');
     texto('comparacaoPrevisao', 'Aguardando regressão linear');
     texto('statusGraficoComponentes', 'Aguardando intervalos calculados.');
@@ -70,15 +63,12 @@ function limparCustos() {
 function renderizarCustos(custos) {
     limparCustos();
     if (!custos || custos.estado === 'indisponivel') {
-        texto('statusCalculo', custos?.mensagem || 'Custos indisponíveis no momento.');
+        texto('statusGraficoComponentes', custos?.mensagem || 'Custos indisponíveis no momento.');
         return;
     }
-    texto('statusCalculo', `${custos.mensagem} Último intervalo processado: ${data(custos.acompanhado_ate)}. ${custos.motivo_ultimo_intervalo || ''}`.trim());
     texto('mesCustos', `${custos.mes} · EC2 + EBS · mês UTC · estimativa parcial`);
     texto('custoAcumulado', custos.total === null ? null : moeda(custos.total));
     texto('tempoExecucao', custos.total === null ? null : duracao(custos.segundos_ec2));
-    texto('ultimaAtualizacaoCustos', data(custos.atualizado_em));
-    texto('ultimaConsultaTarifas', data(custos.tarifas_consultadas_em));
     texto('premissasGrafico', `Acumulado parcial de ${custos.mes} em USD: computação EC2 e armazenamento EBS somente nos intervalos calculáveis.`);
     texto('statusGraficoComponentes', custos.total === null ? 'Ainda não há intervalos calculados neste mês.' : 'Valores persistidos no banco; sem dedução dos créditos AWS Student.');
     texto('coberturaCustos', `Tempo coberto neste mês: ${duracao(custos.segundos_cobertos)}. Trechos registrados sem estimativa: ${duracao(custos.segundos_nao_cobertos)} (${custos.trechos_sem_estimativa}). Períodos anteriores à coleta e posteriores à última captura também não estão incluídos.`);
@@ -149,9 +139,7 @@ function renderizarMetricas(metricas = {}) {
 
 function limpar() {
     limparCustos();
-    texto('statusCalculo', 'Aguardando dados de acompanhamento.');
-    for (const id of [...Object.keys(camposInstancia), 'nomeMaquina', 'idInstancia', 'periodoCoberto']) texto(id, null);
-    for (const id of ['ultimaCaptura', 'ultimaConsultaInventario', 'ultimaConsultaBanco']) texto(id, 'Sem dados');
+    for (const id of [...Object.keys(camposInstancia), 'nomeMaquina', 'idInstancia']) texto(id, null);
     texto('statusInventario', 'Inventário indisponível.');
     renderizarMetricas();
     renderizarVolumes(null);
@@ -162,30 +150,18 @@ function renderizar(dados) {
     texto('nomeMaquina', dados.maquina.nome);
     texto('idInstancia', dados.identidade.id);
     for (const [id, campo] of Object.entries(camposInstancia)) texto(id, instancia[campo]);
-    texto('ultimaCaptura', data(dados.capturado_em));
-    texto('ultimaConsultaBanco', data(dados.atualizado_em));
-    texto('ultimaConsultaInventario', data(dados.inventario?.consultado_em));
-    texto('periodoCoberto', `${data(dados.periodo.inicio)} até ${data(dados.periodo.fim)}`);
     const estados = {
         atualizado: 'Inventário AWS disponível.',
         desatualizado: 'Inventário antigo: a configuração exibida pode ter mudado.',
         indisponivel: 'Inventário AWS indisponível; exibindo apenas a identidade da EC2.',
         nao_consultado: 'Modo somente metadados: configuração EC2/EBS não consultada.'
     };
-    texto('statusInventario', `${estados[dados.estado_inventario] || 'Estado do inventário desconhecido.'} ${dados.erro_inventario || ''}`.trim());
+    const statusInventario = estados[dados.estado_inventario] || 'Estado do inventário desconhecido.';
+    const avisoCaptura = dados.captura_desatualizada ? ' Registros da EC2 desatualizados.' : '';
+    texto('statusInventario', `${statusInventario}${avisoCaptura} ${dados.erro_inventario || ''}`.trim());
     renderizarMetricas(dados.metricas);
     renderizarVolumes(dados.inventario);
     renderizarCustos(dados.custos);
-    const metricas = Object.values(dados.metricas);
-    let status = 'Dados do banco atualizados. Próxima consulta em 10 segundos.';
-    if (dados.captura_desatualizada) {
-        status = 'Os registros da EC2 estão antigos. Verifique se Captura_EC2.py continua executando.';
-    } else if (metricas.some(metrica => metrica.desatualizada)) {
-        status = 'Dados carregados. Há métricas antigas; verifique Captura_PeakStack.py.';
-    } else if (!metricas.length) {
-        status = 'Inventário carregado. Aguardando métricas de componentes da mesma máquina.';
-    }
-    texto('statusCustos', status);
 }
 
 async function atualizar() {
@@ -205,13 +181,13 @@ async function atualizar() {
         if (!resposta.ok) throw new Error(dados.erro || 'Falha ao consultar as capturas.');
         if (dados.estado === 'aguardando') {
             limpar();
-            texto('statusCustos', dados.mensagem);
+            texto('statusInventario', dados.mensagem);
             return;
         }
         renderizar(dados);
     } catch (erro) {
         limpar();
-        texto('statusCustos', erro.name === 'AbortError' ? 'A consulta ao banco demorou demais. Uma nova tentativa será feita.' : erro.message);
+        texto('statusInventario', erro.name === 'AbortError' ? 'A consulta ao banco demorou demais. Uma nova tentativa será feita.' : erro.message);
     } finally {
         clearTimeout(limite);
         emAndamento = false;

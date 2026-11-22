@@ -45,65 +45,8 @@
             <header class="cabecalho_dashboard">
                 <div>
                     <h1>Custos e Previsões da PeakStack</h1>
-                    <p class="nota_custos">Controle interno dos custos da infraestrutura AWS da PeakStack e da tendência para o próximo mês.</p>
                 </div>
             </header>
-
-            <section class="painel_grafico" aria-labelledby="tituloMonitoramento">
-                <h2 id="tituloMonitoramento">Acompanhamento da EC2 da PeakStack</h2>
-                <div class="formulario_custos">
-                    <p class="nota_custos">Origem dos dados: <strong>própria EC2 da PeakStack</strong>.</p>
-                    <p class="nota_custos">Atualização dos dados do banco: <strong>a cada 10 segundos</strong>.</p>
-                    <p id="statusCustos" class="nota_custos" role="status" aria-live="polite">Carregando os registros da EC2 e as métricas dos componentes.</p>
-                </div>
-                <dl class="nota_custos" aria-label="Estado da coleta">
-                    <dt>Último registro da EC2</dt>
-                    <dd><time id="ultimaCaptura">Sem dados</time></dd>
-                    <dt>Última consulta ao banco</dt>
-                    <dd><time id="ultimaConsultaBanco">Sem dados</time></dd>
-                    <dt>Inventário AWS consultado em</dt>
-                    <dd><time id="ultimaConsultaInventario">Sem dados</time></dd>
-                    <dt>Última atualização dos custos</dt>
-                    <dd><time id="ultimaAtualizacaoCustos">Sem dados</time></dd>
-                    <dt>Tarifas AWS consultadas em</dt>
-                    <dd><time id="ultimaConsultaTarifas">Sem dados</time></dd>
-                    <dt>Período coberto pelo acompanhamento</dt>
-                    <dd id="periodoCoberto">Aguardando histórico</dd>
-                </dl>
-                <p id="statusCalculo" class="nota_custos" role="status">Carregando custos acumulados e histórico diário.</p>
-                <p class="nota_custos">O cálculo continua no servidor com esta tela fechada. Os totais cobrem somente intervalos observados; o saldo de créditos do AWS Student não é descontado da estimativa.</p>
-            </section>
-
-            <section class="painel_grafico" aria-labelledby="tituloInstancia">
-                <h2 id="tituloInstancia">Configuração da Instância</h2>
-                <p id="statusInventario" class="nota_custos" role="status">Aguardando inventário AWS.</p>
-                <dl class="dados_instancia">
-                    <div><dt>Máquina cadastrada</dt><dd id="nomeMaquina">—</dd></div>
-                    <div><dt>ID da instância</dt><dd id="idInstancia">—</dd></div>
-                    <div><dt>Tipo</dt><dd id="tipoInstancia">—</dd></div>
-                    <div><dt>Região</dt><dd id="regiaoInstancia">—</dd></div>
-                    <div><dt>Zona de disponibilidade</dt><dd id="zonaInstancia">—</dd></div>
-                    <div><dt>Imagem (AMI)</dt><dd id="imagemInstancia">—</dd></div>
-                    <div><dt>Arquitetura</dt><dd id="arquiteturaInstancia">—</dd></div>
-                    <div><dt>Plataforma</dt><dd id="plataformaInstancia">—</dd></div>
-                    <div><dt>Estado na consulta AWS</dt><dd id="estadoInstancia">—</dd></div>
-                    <div><dt>Tenancy</dt><dd id="tenancyInstancia">—</dd></div>
-                    <div><dt>Ciclo de vida</dt><dd id="cicloVidaInstancia">—</dd></div>
-                    <div><dt>Operação de uso</dt><dd id="operacaoInstancia">—</dd></div>
-                </dl>
-            </section>
-
-            <section class="painel_grafico" aria-labelledby="tituloVolumes">
-                <h2 id="tituloVolumes">Volumes EBS da Instância</h2>
-                <p id="statusVolumes" class="nota_custos">Aguardando inventário dos volumes.</p>
-                <div class="tabela_wrap">
-                    <table class="tabela_volumes">
-                        <caption class="sr_only">Configuração dos volumes anexados à EC2 da PeakStack</caption>
-                        <thead><tr><th scope="col">Volume</th><th scope="col">Tipo</th><th scope="col">Capacidade (GiB)</th><th scope="col">IOPS</th><th scope="col">Throughput (MiB/s)</th><th scope="col">Estado</th></tr></thead>
-                        <tbody id="volumesEbs"><tr><td colspan="6">Sem dados disponíveis.</td></tr></tbody>
-                    </table>
-                </div>
-            </section>
 
             <section class="resumo_cards" aria-label="Resumo dos custos">
                 <article class="resumo_card">
@@ -155,12 +98,35 @@
                 </div>
             </section>
 
-            <section class="painel_grafico" aria-labelledby="tituloPremissas">
-                <h2 id="tituloPremissas">Como interpretar as estimativas</h2>
-                <p class="nota_custos">O custo da EC2 considera sua configuração e o tempo de execução. O custo do EBS considera a capacidade provisionada e o tempo de provisionamento, inclusive quando a EC2 está parada. Os percentuais de CPU, RAM e disco não são multiplicadores diretos dessas tarifas.</p>
-                <p class="nota_custos">A previsão usa regressão linear dos custos diários, normalizando para 24h somente dias com pelo menos 99% de cobertura. Mudanças na infraestrutura, nas tarifas ou no padrão de uso podem alterar os resultados; a extrapolação não é garantia de gasto futuro.</p>
-                <p class="nota_custos">EC2: tarifa por hora proporcional ao tempo observado. EBS gp2/gp3: armazenamento proporcional a um mês de 30 dias. A estimativa não ajusta mínimos de faturamento de 60 segundos nem reconstrói períodos com a instância parada ou sem capturas. Lacunas não representam custo zero.</p>
-                <p class="nota_custos">Valores estimados em USD, sem conversão cambial. O acompanhamento cobre EC2 e armazenamento EBS; não inclui rede, IPv4, snapshots, IOPS/throughput adicionais, créditos de CPU, descontos ou impostos. Não representa a fatura AWS.</p>
+            <section class="painel_grafico" aria-labelledby="tituloInstancia">
+                <h2 id="tituloInstancia">Configuração da Instância</h2>
+                <p id="statusInventario" class="nota_custos" role="status">Aguardando inventário AWS.</p>
+                <dl class="dados_instancia">
+                    <div><dt>Máquina cadastrada</dt><dd id="nomeMaquina">—</dd></div>
+                    <div><dt>ID da instância</dt><dd id="idInstancia">—</dd></div>
+                    <div><dt>Tipo</dt><dd id="tipoInstancia">—</dd></div>
+                    <div><dt>Região</dt><dd id="regiaoInstancia">—</dd></div>
+                    <div><dt>Zona de disponibilidade</dt><dd id="zonaInstancia">—</dd></div>
+                    <div><dt>Imagem (AMI)</dt><dd id="imagemInstancia">—</dd></div>
+                    <div><dt>Arquitetura</dt><dd id="arquiteturaInstancia">—</dd></div>
+                    <div><dt>Plataforma</dt><dd id="plataformaInstancia">—</dd></div>
+                    <div><dt>Estado na consulta AWS</dt><dd id="estadoInstancia">—</dd></div>
+                    <div><dt>Tenancy</dt><dd id="tenancyInstancia">—</dd></div>
+                    <div><dt>Ciclo de vida</dt><dd id="cicloVidaInstancia">—</dd></div>
+                    <div><dt>Operação de uso</dt><dd id="operacaoInstancia">—</dd></div>
+                </dl>
+            </section>
+
+            <section class="painel_grafico" aria-labelledby="tituloVolumes">
+                <h2 id="tituloVolumes">Volumes EBS da Instância</h2>
+                <p id="statusVolumes" class="nota_custos">Aguardando inventário dos volumes.</p>
+                <div class="tabela_wrap">
+                    <table class="tabela_volumes">
+                        <caption class="sr_only">Configuração dos volumes anexados à EC2 da PeakStack</caption>
+                        <thead><tr><th scope="col">Volume</th><th scope="col">Tipo</th><th scope="col">Capacidade (GiB)</th><th scope="col">IOPS</th><th scope="col">Throughput (MiB/s)</th><th scope="col">Estado</th></tr></thead>
+                        <tbody id="volumesEbs"><tr><td colspan="6">Sem dados disponíveis.</td></tr></tbody>
+                    </table>
+                </div>
             </section>
         </main>
     </div>
