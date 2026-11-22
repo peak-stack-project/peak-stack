@@ -1,146 +1,250 @@
-(() => {
-    const moeda = (valor) => new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-        maximumFractionDigits: 0
-    }).format(valor);
+const texto = (id, valor) => { document.getElementById(id).textContent = valor ?? '—'; };
+function data(valor) {
+    if (!valor) return 'Sem dados';
+    const instante = new Date(valor);
+    return Number.isNaN(instante.getTime()) ? 'Data indisponível' : instante.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+}
 
-    const legendaComum = {
-        position: "bottom",
-        labels: { usePointStyle: true, pointStyle: "rect", boxWidth: 11, boxHeight: 8, padding: 14, color: "#536177", font: { family: "Inter", size: 10 } }
+const camposInstancia = {
+    tipoInstancia: 'tipo', regiaoInstancia: 'regiao', zonaInstancia: 'zona_disponibilidade',
+    imagemInstancia: 'imagem_id', arquiteturaInstancia: 'arquitetura',
+    plataformaInstancia: 'plataforma', estadoInstancia: 'estado', tenancyInstancia: 'tenancy',
+    cicloVidaInstancia: 'ciclo_vida', operacaoInstancia: 'operacao_uso'
+};
+let encerrado = false;
+let emAndamento = false;
+let temporizador;
+let requisicao;
+let graficoBarras;
+let graficoPrevisao;
+const formatoMoeda = new Intl.NumberFormat('pt-BR', {
+    style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 6
+});
+
+function moeda(valor) {
+    return formatoMoeda.format(Number(valor));
+}
+function duracao(valor) {
+    const segundos = Math.max(0, Math.floor(Number(valor) || 0));
+    return `${Math.floor(segundos / 3600)} h ${Math.floor(segundos % 3600 / 60)} min ${segundos % 60} s`;
+}
+
+function prepararGraficos() {
+    if (typeof Chart !== 'function') return false;
+    const opcoes = {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { tooltip: { callbacks: { label: contexto => `${contexto.dataset.label}: ${moeda(contexto.raw)}` } } },
+        scales: { x: { ticks: { maxTicksLimit: 8 } }, y: { beginAtZero: true, ticks: { callback: valor => moeda(valor) } } }
     };
-    const eixoComum = {
-        grid: { color: "#e9edf2", drawBorder: false },
-        border: { display: false },
-        ticks: { color: "#627087", font: { family: "Inter", size: 9 }, maxTicksLimit: 5 }
-    };
-
-    const graficoComponentes = new Chart(document.getElementById("graficoComponentes"), {
-        type: "bar",
-        data: {
-            labels: ["Máquina", "Armazenamento", "Rede"],
-            datasets: [{
-                label: "Gasto mensal",
-                data: [720, 295, 680, 145],
-                backgroundColor: ["#3977d4", "#f2ad19", "#df4b5c"],
-                borderRadius: 2,
-                maxBarThickness: 54
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { ...legendaComum, onClick() {}, labels: { ...legendaComum.labels, generateLabels(chart) {
-                    return chart.data.labels.map((label, index) => ({ text: label, fillStyle: chart.data.datasets[0].backgroundColor[index], strokeStyle: "transparent", hidden: false, index }));
-                } } },
-                tooltip: { callbacks: { label: (context) => ` ${moeda(context.raw)}` } }
-            },
-            scales: {
-                x: { grid: { display: false }, border: { display: false }, ticks: { color: "#26344a", font: { family: "Inter", size: 10 } } },
-                y: { ...eixoComum, beginAtZero: true, max: 800, ticks: { ...eixoComum.ticks, callback: (value) => moeda(value) } }
-            }
-        }
+    if (!graficoBarras) graficoBarras = new Chart(document.getElementById('graficoComponentes'), {
+        type: 'bar', data: { labels: [], datasets: [{ label: 'Acumulado observado (USD)', data: [],
+            backgroundColor: ['#3977d4', '#f2ad19'], borderRadius: 4, maxBarThickness: 54 }] },
+        options: { ...opcoes, plugins: { ...opcoes.plugins, legend: { display: false } } }
     });
-
-    const graficoUsuarios = new Chart(document.getElementById("graficoUsuarios"), {
-        type: "scatter",
-        data: {
-            datasets: [
-                { label: "Cada ponto = um dia", data: [], borderColor: "#5688b5", backgroundColor: "rgba(86,136,181,.7)", pointRadius: 4, pointHoverRadius: 6 },
-                { label: "Tend\u00eancia", data: [], showLine: true, pointRadius: 0, borderColor: "#e09a3d", borderDash: [5, 4], borderWidth: 2, fill: false }
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            interaction: { intersect: true, mode: "nearest" },
-            plugins: {
-                legend: legendaComum,
-                tooltip: {
-                    filter: (item) => item.datasetIndex === 0,
-                    callbacks: {
-                        title: (items) => `Dia ${String(items[0].raw.dia).padStart(2, "0")}`,
-                        label(context) { return [` Usu\u00e1rios: ${context.raw.x}`, ` Custo di\u00e1rio: ${moeda(context.raw.y)}`]; }
-                    }
-                }
-            },
-            scales: {
-                x: { ...eixoComum, type: "linear", title: { display: true, text: "Volume de usuários", color: "#536177", font: { family: "Inter", size: 9 } }, ticks: { ...eixoComum.ticks, precision: 0 } },
-                y: { ...eixoComum, beginAtZero: true, title: { display: true, text: "Custo diário (R$)", color: "#536177", font: { family: "Inter", size: 9 } }, ticks: { ...eixoComum.ticks, callback: (value) => moeda(value) } }
-            }
-        }
+    if (!graficoPrevisao) graficoPrevisao = new Chart(document.getElementById('graficoPrevisao'), {
+        type: 'line', data: { labels: [], datasets: [
+            { label: 'Histórico diário observado', data: [], borderColor: '#3977d4', pointRadius: 2, spanGaps: false },
+            { label: 'Previsão por regressão linear', data: [], borderColor: '#f2ad19', borderDash: [6, 4], pointRadius: 2, spanGaps: false }
+        ] }, options: opcoes
     });
+    return true;
+}
 
-    const rotulosProjecao = ["Nov 2026", "Dez 2026", "Jan 2027", "Fev 2027", "Mar 2027", "Abr 2027"];
-    const graficoProjecao = new Chart(document.getElementById("graficoProjecao"), {
-        type: "line",
-        data: {
-            labels: rotulosProjecao,
-            datasets: [
-                { label: "Histórico", data: [1370, 1490, null, null, null, null], borderColor: "#4c78bd", backgroundColor: "rgba(91,130,199,.3)", fill: "origin", tension: .35, pointRadius: 2, borderWidth: 2 },
-                { label: "Previsão", data: [1370, 1490, 1620, 1740, 1830, 1910], borderColor: "#6297c0", backgroundColor: "rgba(121,173,211,.2)", fill: false, borderDash: [5, 4], tension: .32, pointRadius: 2, borderWidth: 2 },
-                { label: "Intervalo de Confiança", data: [null, 1490, 1840, 2000, 2160, 2320], borderColor: "transparent", backgroundColor: "rgba(139,190,220,.25)", fill: { target: "confidenceLower" }, pointRadius: 0, tension: .32 },
-                { label: "confidenceLower", id: "confidenceLower", data: [null, 1490, 1430, 1510, 1570, 1630], borderColor: "transparent", backgroundColor: "rgba(139,190,220,.25)", fill: false, pointRadius: 0, tension: .32 },
-                { label: "Limite do Orçamento", data: [1550, 1550, 1550, 1550, 1550, 1550], borderColor: "#9b9a99", borderDash: [5, 5], pointRadius: 0, borderWidth: 1.5, fill: false }
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            interaction: { intersect: false, mode: "index" },
-            plugins: {
-                legend: { ...legendaComum, labels: { ...legendaComum.labels, filter: (item) => item.text !== "confidenceLower" } },
-                tooltip: { filter: (item) => item.dataset.label !== "confidenceLower", callbacks: { label: (context) => ` ${context.dataset.label}: ${moeda(context.raw)}` } }
-            },
-            scales: {
-                x: { ...eixoComum, grid: { display: false } },
-                y: { ...eixoComum, beginAtZero: true, suggestedMax: 2500, ticks: { ...eixoComum.ticks, callback: (value) => moeda(value) } }
-            }
-        }
-    });
-
-    function atualizarSerieUsuarios(dias) {
-        const usuarios = [];
-        for (let deslocamento = dias - 1; deslocamento >= 0; deslocamento--) {
-            usuarios.push(Math.round(82 + 17 * Math.sin((dias - deslocamento) * .48) + 12 * Math.sin((dias - deslocamento) * .17) + (dias - deslocamento) * .24));
-        }
-        const pontos = usuarios.map((volume, index) => ({
-            x: volume,
-            y: Math.round(12 + volume * .38 + 5 * Math.sin((index + 1) * .77)),
-            dia: index + 1
-        }));
-        const mediaX = pontos.reduce((soma, ponto) => soma + ponto.x, 0) / pontos.length;
-        const mediaY = pontos.reduce((soma, ponto) => soma + ponto.y, 0) / pontos.length;
-        const inclinacao = pontos.reduce((soma, ponto) => soma + (ponto.x - mediaX) * (ponto.y - mediaY), 0)
-            / pontos.reduce((soma, ponto) => soma + (ponto.x - mediaX) ** 2, 0);
-        const intercepto = mediaY - inclinacao * mediaX;
-        const menorX = Math.min(...pontos.map((ponto) => ponto.x));
-        const maiorX = Math.max(...pontos.map((ponto) => ponto.x));
-
-        graficoUsuarios.data.datasets[0].data = pontos;
-        graficoUsuarios.data.datasets[1].data = [
-            { x: menorX, y: inclinacao * menorX + intercepto },
-            { x: maiorX, y: inclinacao * maiorX + intercepto }
-        ];
-        graficoUsuarios.update();
+function limparCustos() {
+    for (const id of ['custoAcumulado', 'tempoExecucao', 'previsaoProximoMes', 'tendenciaCustos']) texto(id, null);
+    for (const id of ['ultimaAtualizacaoCustos', 'ultimaConsultaTarifas']) texto(id, 'Sem dados');
+    texto('mesPrevisto', 'Aguardando histórico diário suficiente');
+    texto('comparacaoPrevisao', 'Aguardando regressão linear');
+    texto('statusGraficoComponentes', 'Aguardando intervalos calculados.');
+    texto('coberturaCustos', 'Cobertura indisponível.');
+    texto('statusPrevisao', 'Aguardando histórico diário de custos.');
+    texto('baseComparacaoPrevisao', 'A previsão usa dias encerrados com pelo menos 99% de cobertura.');
+    for (const grafico of [graficoBarras, graficoPrevisao]) {
+        if (!grafico) continue;
+        grafico.data.labels = [];
+        for (const dataset of grafico.data.datasets) dataset.data = [];
+        grafico.update('none');
     }
+}
 
-    document.getElementById("periodo").addEventListener("change", (event) => {
-        atualizarSerieUsuarios(Number(event.target.value));
-    });
-    atualizarSerieUsuarios(30);
+function renderizarCustos(custos) {
+    limparCustos();
+    if (!custos || custos.estado === 'indisponivel') {
+        texto('statusCalculo', custos?.mensagem || 'Custos indisponíveis no momento.');
+        return;
+    }
+    texto('statusCalculo', `${custos.mensagem} Último intervalo processado: ${data(custos.acompanhado_ate)}. ${custos.motivo_ultimo_intervalo || ''}`.trim());
+    texto('mesCustos', `${custos.mes} · EC2 + EBS · mês UTC · estimativa parcial`);
+    texto('custoAcumulado', custos.total === null ? null : moeda(custos.total));
+    texto('tempoExecucao', custos.total === null ? null : duracao(custos.segundos_ec2));
+    texto('ultimaAtualizacaoCustos', data(custos.atualizado_em));
+    texto('ultimaConsultaTarifas', data(custos.tarifas_consultadas_em));
+    texto('premissasGrafico', `Acumulado parcial de ${custos.mes} em USD: computação EC2 e armazenamento EBS somente nos intervalos calculáveis.`);
+    texto('statusGraficoComponentes', custos.total === null ? 'Ainda não há intervalos calculados neste mês.' : 'Valores persistidos no banco; sem dedução dos créditos AWS Student.');
+    texto('coberturaCustos', `Tempo coberto neste mês: ${duracao(custos.segundos_cobertos)}. Trechos registrados sem estimativa: ${duracao(custos.segundos_nao_cobertos)} (${custos.trechos_sem_estimativa}). Períodos anteriores à coleta e posteriores à última captura também não estão incluídos.`);
+    const previsao = custos.previsao;
+    if (previsao?.estado === 'disponivel') {
+        texto('previsaoProximoMes', moeda(previsao.total));
+        texto('mesPrevisto', `${previsao.mes} · mês completo previsto (UTC)`);
+        texto('tendenciaCustos', previsao.tendencia);
+        texto('comparacaoPrevisao', previsao.comparacao);
+        texto('statusPrevisao', `${previsao.mensagem} R² do ajuste histórico: ${previsao.r2.toFixed(3)}.`);
+        texto('baseComparacaoPrevisao', previsao.comparacao);
+    } else {
+        texto('statusPrevisao', previsao?.mensagem || 'Histórico diário insuficiente.');
+    }
+    if (!prepararGraficos()) {
+        texto('statusGraficoComponentes', 'Os valores estão disponíveis nos cards. Não foi possível carregar a biblioteca dos gráficos.');
+        return;
+    }
+    graficoBarras.data.labels = (custos.componentes || []).map(componente => componente.servico);
+    graficoBarras.data.datasets[0].data = (custos.componentes || []).map(componente => Number(componente.valor));
+    graficoBarras.update('none');
+    const historico = new Map((custos.diario || []).map(diaRegistrado => [diaRegistrado.dia, diaRegistrado.total === null ? null : Number(diaRegistrado.total)]));
+    const futuro = new Map((previsao?.serie || []).map(diaPrevisto => [diaPrevisto.dia, Number(diaPrevisto.valor)]));
+    const datas = [...historico.keys(), ...futuro.keys()].sort();
+    const labels = [];
+    // Preenche as datas ausentes com null: lacunas não são desenhadas como custo zero.
+    if (datas.length) {
+        for (let instante = Date.parse(`${datas[0]}T00:00:00Z`), fim = Date.parse(`${datas.at(-1)}T00:00:00Z`); instante <= fim; instante += 86400000) {
+            labels.push(new Date(instante).toISOString().slice(0, 10));
+        }
+    }
+    graficoPrevisao.data.labels = labels;
+    graficoPrevisao.data.datasets[0].data = labels.map(dia => historico.get(dia) ?? null);
+    graficoPrevisao.data.datasets[1].data = labels.map(dia => futuro.get(dia) ?? null);
+    graficoPrevisao.update('none');
+}
 
-    const toggleFiltro = document.getElementById("toggleFiltro");
-    const painelFiltro = document.getElementById("painelFiltro");
-    toggleFiltro.addEventListener("click", () => {
-        const aberto = toggleFiltro.getAttribute("aria-expanded") === "true";
-        toggleFiltro.setAttribute("aria-expanded", String(!aberto));
-        painelFiltro.hidden = aberto;
-    });
-    document.getElementById("filtroComponente").addEventListener("change", (event) => {
-        const componente = event.target.value;
-        const componentes = ["CPU", "RAM", "Disco", "Rede"];
-        graficoComponentes.data.labels = componente === "todos" ? componentes : [componente];
-        graficoComponentes.data.datasets[0].data = componente === "todos" ? [720, 295, 680, 145] : [["CPU", 720], ["RAM", 295], ["Disco", 680], ["Rede", 145]].filter(([nome]) => nome === componente).map(([, valor]) => valor);
-        graficoComponentes.data.datasets[0].backgroundColor = componente === "todos" ? ["#3977d4", "#f2ad19", "#df4b5c", "#3da987"] : [["CPU", "#3977d4"], ["RAM", "#f2ad19"], ["Disco", "#df4b5c"], ["Rede", "#3da987"]].filter(([nome]) => nome === componente).map(([, cor]) => cor);
-        graficoComponentes.update();
-    });
-})();
+function renderizarVolumes(inventario) {
+    const corpo = document.getElementById('volumesEbs');
+    corpo.replaceChildren();
+    const volumes = inventario?.volumes_ebs;
+    if (!Array.isArray(volumes) || !volumes.length) {
+        const celula = corpo.insertRow().insertCell();
+        celula.colSpan = 6;
+        celula.textContent = Array.isArray(volumes) ? 'Nenhum volume anexado na última consulta.' : 'Inventário dos volumes indisponível.';
+    } else {
+        for (const volume of volumes) {
+            const linha = corpo.insertRow();
+            for (const campo of ['id', 'tipo', 'capacidade_gib', 'iops', 'throughput_mib_s', 'estado']) {
+                linha.insertCell().textContent = volume[campo] ?? '—';
+            }
+        }
+    }
+    const capacidades = volumes?.map(volume => Number(volume.capacidade_gib));
+    texto('capacidadeEbs', capacidades && capacidades.every(Number.isFinite)
+        ? capacidades.reduce((total, valor) => total + valor, 0).toLocaleString('pt-BR') : null);
+    texto('statusVolumes', inventario ? 'Configuração na data da consulta do inventário AWS.' : 'Aguardando consulta EC2/EBS com as permissões do laboratório.');
+}
+
+function renderizarMetricas(metricas = {}) {
+    for (const [tipo, sufixo] of [['cpu', 'Cpu'], ['ram', 'Ram'], ['disco', 'Disco']]) {
+        const leitura = metricas[tipo];
+        texto(`utilizacao${sufixo}`, leitura ? `${Number(leitura.valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%` : null);
+        texto(`captura${sufixo}`, leitura ? `${leitura.capturado_em_local}${leitura.desatualizada ? ' · leitura antiga' : ''}` : 'Sem leitura cadastrada em %');
+        document.getElementById(`utilizacao${sufixo}`).classList.toggle('dado_antigo', Boolean(leitura?.desatualizada));
+    }
+}
+
+function limpar() {
+    limparCustos();
+    texto('statusCalculo', 'Aguardando dados de acompanhamento.');
+    for (const id of [...Object.keys(camposInstancia), 'nomeMaquina', 'idInstancia', 'periodoCoberto']) texto(id, null);
+    for (const id of ['ultimaCaptura', 'ultimaConsultaInventario', 'ultimaConsultaBanco']) texto(id, 'Sem dados');
+    texto('statusInventario', 'Inventário indisponível.');
+    renderizarMetricas();
+    renderizarVolumes(null);
+}
+
+function renderizar(dados) {
+    const instancia = { ...dados.identidade, ...dados.inventario?.instancia };
+    texto('nomeMaquina', dados.maquina.nome);
+    texto('idInstancia', dados.identidade.id);
+    for (const [id, campo] of Object.entries(camposInstancia)) texto(id, instancia[campo]);
+    texto('ultimaCaptura', data(dados.capturado_em));
+    texto('ultimaConsultaBanco', data(dados.atualizado_em));
+    texto('ultimaConsultaInventario', data(dados.inventario?.consultado_em));
+    texto('periodoCoberto', `${data(dados.periodo.inicio)} até ${data(dados.periodo.fim)}`);
+    const estados = {
+        atualizado: 'Inventário AWS disponível.',
+        desatualizado: 'Inventário antigo: a configuração exibida pode ter mudado.',
+        indisponivel: 'Inventário AWS indisponível; exibindo apenas a identidade da EC2.',
+        nao_consultado: 'Modo somente metadados: configuração EC2/EBS não consultada.'
+    };
+    texto('statusInventario', `${estados[dados.estado_inventario] || 'Estado do inventário desconhecido.'} ${dados.erro_inventario || ''}`.trim());
+    renderizarMetricas(dados.metricas);
+    renderizarVolumes(dados.inventario);
+    renderizarCustos(dados.custos);
+    const metricas = Object.values(dados.metricas);
+    let status = 'Dados do banco atualizados. Próxima consulta em 10 segundos.';
+    if (dados.captura_desatualizada) {
+        status = 'Os registros da EC2 estão antigos. Verifique se Captura_EC2.py continua executando.';
+    } else if (metricas.some(metrica => metrica.desatualizada)) {
+        status = 'Dados carregados. Há métricas antigas; verifique Captura_PeakStack.py.';
+    } else if (!metricas.length) {
+        status = 'Inventário carregado. Aguardando métricas de componentes da mesma máquina.';
+    }
+    texto('statusCustos', status);
+}
+
+async function atualizar() {
+    if (encerrado || emAndamento || document.hidden) return;
+    if (sessionStorage.getItem('FKCARGO_USUARIO') !== '4') {
+        encerrado = true;
+        window.location.replace('/login.html');
+        return;
+    }
+    const inicioConsulta = Date.now();
+    emAndamento = true;
+    requisicao = new AbortController();
+    const limite = setTimeout(() => requisicao.abort(), 15000);
+    try {
+        const resposta = await fetch('/custos/monitoramento', { signal: requisicao.signal });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.erro || 'Falha ao consultar as capturas.');
+        if (dados.estado === 'aguardando') {
+            limpar();
+            texto('statusCustos', dados.mensagem);
+            return;
+        }
+        renderizar(dados);
+    } catch (erro) {
+        limpar();
+        texto('statusCustos', erro.name === 'AbortError' ? 'A consulta ao banco demorou demais. Uma nova tentativa será feita.' : erro.message);
+    } finally {
+        clearTimeout(limite);
+        emAndamento = false;
+        if (!encerrado && !document.hidden) temporizador = setTimeout(atualizar, Math.max(0, 10000 - (Date.now() - inicioConsulta)));
+    }
+}
+
+function atualizarAoVoltarParaAba() {
+    clearTimeout(temporizador);
+    if (!document.hidden) atualizar();
+}
+
+function pausarAoSairDaPagina() {
+    encerrado = true;
+    clearTimeout(temporizador);
+    requisicao?.abort();
+}
+
+function retomarAoVoltarParaPagina(evento) {
+    if (!evento.persisted) return;
+    encerrado = false;
+    atualizar();
+}
+
+function sair() {
+    pausarAoSairDaPagina();
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/login.html';
+}
+
+document.addEventListener('visibilitychange', atualizarAoVoltarParaAba);
+window.addEventListener('pagehide', pausarAoSairDaPagina);
+window.addEventListener('pageshow', retomarAoVoltarParaPagina);
+document.getElementById('btn_logout').addEventListener('click', sair);
+atualizar();

@@ -72,6 +72,69 @@ CREATE TABLE IF NOT EXISTS maquina (
     REFERENCES so (id)
 );
 
+CREATE TABLE IF NOT EXISTS ec2_captura (
+  id INT AUTO_INCREMENT UNIQUE,
+  fk_maquina INT ,
+  fk_empresa INT ,
+  instancia_id VARCHAR(32) ,
+  regiao VARCHAR(100),
+  capturado_em DATETIME(6) ,
+  inventario_consultado_em DATETIME(6),
+  estado_inventario VARCHAR(60) ,
+  dados JSON,
+  PRIMARY KEY (id, fk_maquina, fk_empresa),
+  UNIQUE KEY uq_ec2_captura (fk_maquina, fk_empresa, instancia_id, regiao, capturado_em),
+  KEY idx_ec2_empresa_data (fk_empresa, capturado_em),
+  CONSTRAINT fk_ec2_captura_maquina
+    FOREIGN KEY (fk_maquina, fk_empresa)
+    REFERENCES maquina (id, fk_empresa)
+);
+
+CREATE TABLE IF NOT EXISTS ec2_custo_tarifa (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  chave VARCHAR(255) NOT NULL,
+  consultado_em DATETIME(6),
+  dados JSON NOT NULL,
+  UNIQUE KEY uq_ec2_custo_tarifa (chave)
+);
+
+CREATE TABLE IF NOT EXISTS ec2_custo_intervalo (
+  id INT AUTO_INCREMENT UNIQUE,
+  fk_maquina INT ,
+  fk_empresa INT ,
+  instancia_id VARCHAR(32) ,
+  regiao VARCHAR(100) ,
+  fk_captura_inicio INT ,
+  fk_captura_fim INT ,
+  fk_tarifa INT,
+  dia DATE ,
+  inicio DATETIME(6) ,
+  fim DATETIME(6) ,
+  segundos_cobertos DECIMAL(16,6) ,
+  segundos_ec2 DECIMAL(16,6) ,
+  segundos_nao_cobertos DECIMAL(16,6) ,
+  custo_ec2 DECIMAL(24,12),
+  custo_ebs DECIMAL(24,12),
+  situacao VARCHAR(60) ,
+  detalhe VARCHAR(300),
+  processado_em DATETIME(6) ,
+  PRIMARY KEY (id, fk_maquina, fk_empresa),
+  UNIQUE KEY uq_ec2_custo_intervalo (fk_captura_fim, dia),
+  KEY idx_ec2_custo_periodo (fk_empresa, fk_maquina, instancia_id, regiao, dia),
+  CONSTRAINT fk_ec2_custo_maquina
+    FOREIGN KEY (fk_maquina, fk_empresa)
+    REFERENCES maquina (id, fk_empresa),
+  CONSTRAINT fk_ec2_custo_inicio
+    FOREIGN KEY (fk_captura_inicio)
+    REFERENCES ec2_captura (id),
+  CONSTRAINT fk_ec2_custo_fim
+    FOREIGN KEY (fk_captura_fim)
+    REFERENCES ec2_captura (id),
+  CONSTRAINT fk_ec2_custo_tarifa
+    FOREIGN KEY (fk_tarifa)
+    REFERENCES ec2_custo_tarifa (id)
+);
+
 CREATE TABLE IF NOT EXISTS configuracao_comp (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     tipo VARCHAR(45),

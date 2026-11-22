@@ -72,6 +72,24 @@ CREATE TABLE IF NOT EXISTS maquina (
     REFERENCES so (id)
 );
 
+CREATE TABLE IF NOT EXISTS ec2_captura (
+  id INT AUTO_INCREMENT UNIQUE,
+  fk_maquina INT ,
+  fk_empresa INT ,
+  instancia_id VARCHAR(32) ,
+  regiao VARCHAR(100),
+  capturado_em DATETIME(6) ,
+  inventario_consultado_em DATETIME(6),
+  estado_inventario VARCHAR(60) ,
+  dados JSON,
+  PRIMARY KEY (id, fk_maquina, fk_empresa),
+  UNIQUE KEY uq_ec2_captura (fk_maquina, fk_empresa, instancia_id, regiao, capturado_em),
+  KEY idx_ec2_empresa_data (fk_empresa, capturado_em),
+  CONSTRAINT fk_ec2_captura_maquina
+    FOREIGN KEY (fk_maquina, fk_empresa)
+    REFERENCES maquina (id, fk_empresa)
+);
+
 CREATE TABLE IF NOT EXISTS configuracao_comp (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     tipo VARCHAR(45),
