@@ -1,0 +1,39 @@
+services:
+  banco:
+    image: mickaelarodrigues/meu_bd:v6
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Informe MYSQL_ROOT_PASSWORD no .env.dev do site}
+      MYSQL_DATABASE: ${DB_DATABASE:-db_peakstack}
+      MYSQL_USER: ${DB_USER:?Informe DB_USER no .env.dev do site}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Informe DB_PASSWORD no .env.dev do site}
+    volumes:
+      - dados_mysql:/var/lib/mysql
+    ports:
+      - "127.0.0.1:${DB_HOST_PORT:-3306}:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u \"$$MYSQL_USER\" \"$$MYSQL_DATABASE\" -e 'SELECT 1' >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  site:
+    image: ${SITE_IMAGE:-mickaelarodrigues/meu_site:v5}
+    environment:
+      AMBIENTE_PROCESSO: ${AMBIENTE_PROCESSO:-desenvolvimento}
+      APP_HOST: ${APP_HOST:-localhost}
+      APP_PORT: ${APP_PORT:-3333}
+      DB_HOST: banco
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-db_peakstack}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${APP_PORT:-3333}:${APP_PORT:-3333}"
+    depends_on:
+      banco:
+        condition: service_healthy
+
+volumes:
+  dados_mysql:
+    name: ${MYSQL_VOLUME_NAME:-peakstack_dados_mysql}

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Na EC2 Ubuntu/Linux: bash iniciar.sh
-# Mantenha este terminal aberto. Ctrl+C encerra os três processos.
-set -u
+# Execute na EC2 Ubuntu, na branch que deseja testar.
+set -Eeuo pipefail
 
-PASTA_PROJETO="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-PASTA_LOGS="$PASTA_PROJETO/logs"
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+PASTA_PROJETO="$PWD"
+ENV_SITE="Site Institucional/.env.dev"
+PYTHON=".venv/bin/python"
 PIDS=()
 
 erro() {
@@ -12,65 +13,55 @@ erro() {
     exit 1
 }
 
-# Usa o ambiente virtual do projeto, se existir; caso contrário, python3.
-PYTHON="python3"
-if [[ -x "$PASTA_PROJETO/.venv/bin/python" ]]; then
-    PYTHON="$PASTA_PROJETO/.venv/bin/python"
-elif [[ -x "$PASTA_PROJETO/Python/.venv/bin/python" ]]; then
-    PYTHON="$PASTA_PROJETO/Python/.venv/bin/python"
-fi
-
-command -v "$PYTHON" >/dev/null 2>&1 || erro "Instale o Python 3 e as dependências dos capturadores."
-command -v node >/dev/null 2>&1 || erro "Instale o Node.js 20 ou superior."
-command -v flock >/dev/null 2>&1 || erro "O comando flock é necessário (pacote util-linux no Ubuntu)."
-[[ -f "$PASTA_PROJETO/Python/.env" ]] || erro "Configure Python/.env com MySQL, MAC e Slack."
-[[ -f "$PASTA_PROJETO/Site Institucional/.env.dev" ]] || erro "Configure Site Institucional/.env.dev com os dados do servidor e do MySQL."
-[[ -d "$PASTA_PROJETO/Site Institucional/node_modules" ]] || erro "Execute npm install dentro de Site Institucional antes de iniciar."
-
-mkdir -p -- "$PASTA_LOGS" || erro "Não foi possível criar a pasta de logs."
-exec 9>"$PASTA_LOGS/iniciar.lock"
-flock -n 9 || erro "Já existe uma execução deste iniciar.sh."
-
-encerrar() {
-    trap - INT TERM HUP
-    printf '\nEncerrando os processos iniciados por este script...\n'
+encerrar_capturas() {
     for pid in "${PIDS[@]}"; do
         kill "$pid" 2>/dev/null || true
-    done
-    for pid in "${PIDS[@]}"; do
         wait "$pid" 2>/dev/null || true
     done
 }
 
-trap encerrar EXIT
-trap 'exit 0' INT
+[[ -f "$ENV_SITE" ]] || erro "Copie Site Institucional/.env.example para $ENV_SITE e preencha os dados do MySQL."
+[[ -f Python/.env ]] || erro "Configure Python/.env com os dados do MySQL, o MAC cadastrado e o token do Slack."
+
+mkdir -p logs
+exec 9>logs/iniciar.lock
+flock -n 9 || erro "Já existe um iniciar.sh rodando neste projeto."
+trap encerrar_capturas EXIT
+trap 'exit 130' INT
 trap 'exit 143' TERM
-trap 'exit 129' HUP
 
-(
-    cd -- "$PASTA_PROJETO/Python" || exit 1
-    exec "$PYTHON" -u Captura_PeakStack.py
-) >>"$PASTA_LOGS/componentes.log" 2>&1 &
+printf '[1/5] Preparando o ambiente Python...\n'
+if [[ ! -x "$PYTHON" ]]; then
+    python3 -m venv .venv || erro "Instale python3-venv na EC2."
+fi
+"$PYTHON" -m pip install -r Python/requirements.txt
+
+printf '[2/5] Subindo o banco e o site da branch %s...\n' "$(git branch --show-current)"
+if docker info >/dev/null 2>&1; then
+    docker_cli=(docker)
+else
+    docker_cli=(sudo docker)
+fi
+compose=("${docker_cli[@]}" compose --env-file "$ENV_SITE")
+"${compose[@]}" version >/dev/null || erro "Instale o Docker Compose v2 na EC2."
+"${compose[@]}" up -d --pull always --wait --wait-timeout 120
+
+printf '[3/5] Conferindo as tabelas de custos...\n'
+"${compose[@]}" exec -T banco sh -c '
+    export MYSQL_PWD="$MYSQL_PASSWORD"
+    exec mysql -h 127.0.0.1 -u "$MYSQL_USER" "$MYSQL_DATABASE" \
+        -e "SELECT 1 FROM ec2_captura LIMIT 0; SELECT 1 FROM ec2_custo_tarifa LIMIT 0; SELECT 1 FROM ec2_custo_intervalo LIMIT 0;"
+' || erro "Confira se o banco tem as tabelas de captura e custos do scriptPeakStack.sql."
+
+printf '[4/5] Iniciando as duas capturas...\n'
+"$PYTHON" -u Python/Captura_PeakStack.py >>logs/componentes.log 2>&1 &
+PIDS+=("$!")
+"$PYTHON" -u Python/Captura_EC2.py >>logs/ec2.log 2>&1 &
 PIDS+=("$!")
 
-(
-    cd -- "$PASTA_PROJETO/Python" || exit 1
-    exec "$PYTHON" -u Captura_EC2.py
-) >>"$PASTA_LOGS/ec2.log" 2>&1 &
-PIDS+=("$!")
+printf '[5/5] Estado dos contêineres\n'
+"${compose[@]}" ps
+printf 'Logs em %s/logs. Ctrl+C para os capturadores.\n' "$PASTA_PROJETO"
 
-(
-    cd -- "$PASTA_PROJETO/Site Institucional" || exit 1
-    exec node app.js
-) >>"$PASTA_LOGS/node.log" 2>&1 &
-PIDS+=("$!")
-
-printf 'Comandos de captura e servidor Node iniciados.\n'
-printf 'Logs em: %s\n' "$PASTA_LOGS"
-printf 'Para acompanhar: tail -f "%s"/*.log\n' "$PASTA_LOGS"
-printf 'Mantenha este terminal aberto. Pressione Ctrl+C para encerrar tudo.\n'
-
-# Se um processo encerrar, informa a falha e fecha os demais.
-wait -n "${PIDS[@]}"
-printf '\nUm dos processos encerrou. Consulte componentes.log, ec2.log e node.log.\n' >&2
-exit 1
+wait -n "${PIDS[@]}" || true
+erro "Um capturador parou. Confira logs/componentes.log e logs/ec2.log."

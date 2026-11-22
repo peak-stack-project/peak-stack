@@ -8,3 +8,4 @@ package-lock.json
 Python/dados_ec2/
 __pycache__/
 logs/
+.venv/
