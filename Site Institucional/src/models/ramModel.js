@@ -9,10 +9,18 @@ const JOIN_LEITURA = `
 
 function listarServidores(idEmpresa) {
     return database.executar(`
-        SELECT id AS idMaquina, nome, mac_address AS macAddress
-        FROM maquina
-        WHERE fk_empresa = ${idEmpresa}
-        ORDER BY nome ASC;
+        SELECT
+            m.id AS idMaquina,
+            m.nome,
+            m.mac_address AS macAddress,
+            COALESCE((
+                SELECT l.valor ${JOIN_LEITURA}
+                WHERE cm.fk_maquina = m.id AND cc.tipo = 'RAM' AND cc.unidade_medida = '%'
+                ORDER BY l.dt_hr_leitura DESC LIMIT 1
+            ), 0) AS ramAtualPct
+        FROM maquina m
+        WHERE m.fk_empresa = ${idEmpresa}
+        ORDER BY ramAtualPct DESC, m.nome ASC;
     `);
 }
 
@@ -42,19 +50,30 @@ function buscarHistoricoRam(idMaquina, periodo) {
 
 function buscarSerieVazamento(idMaquina) {
     return database.executar(`
-        SELECT DATE_FORMAT(MIN(l.dt_hr_leitura), '%H:%i') AS horario, ROUND(AVG(l.valor), 1) AS ramPct
+        SELECT 
+            DATE_FORMAT(MIN(l.dt_hr_leitura), '%H:%i') AS horario,
+            ROUND(AVG(l.valor), 1) AS ramPct
         ${JOIN_LEITURA}
-        WHERE cm.fk_maquina = ${idMaquina} AND cc.tipo = 'RAM' AND cc.unidade_medida = '%'
+        WHERE cm.fk_maquina = ${idMaquina} 
+          AND cc.tipo = 'RAM' 
+          AND cc.unidade_medida = '%'
           AND l.dt_hr_leitura >= NOW() - INTERVAL 6 HOUR
-        GROUP BY DATE_FORMAT(l.dt_hr_leitura, '%Y-%m-%d %H')
-        ORDER BY MIN(l.dt_hr_leitura) ASC;
+        GROUP BY FLOOR(UNIX_TIMESTAMP(l.dt_hr_leitura) / 300)
+        ORDER BY MIN(l.dt_hr_leitura) ASC
+        LIMIT 12;
     `);
 }
 
 function buscarDispersaoRede(idMaquina) {
     return database.executar(`
         SELECT
-            ROUND(AVG(CASE WHEN cc.tipo = 'Rede' THEN l.valor END), 2) AS trafegoRede,
+            ROUND(
+                CASE 
+                    WHEN MAX(CASE WHEN cc.tipo = 'Rede' THEN cc.unidade_medida END) = 'MB'
+                        THEN MAX(CASE WHEN cc.tipo = 'Rede' THEN l.valor END) - MIN(CASE WHEN cc.tipo = 'Rede' THEN l.valor END)
+                    ELSE AVG(CASE WHEN cc.tipo = 'Rede' THEN l.valor END)
+                END, 
+            2) AS trafegoRede,
             ROUND(AVG(CASE WHEN cc.tipo = 'RAM' AND cc.unidade_medida = '%' THEN l.valor END), 1) AS ramPct
         ${JOIN_LEITURA}
         WHERE cm.fk_maquina = ${idMaquina}
@@ -65,6 +84,7 @@ function buscarDispersaoRede(idMaquina) {
         LIMIT 120;
     `);
 }
+
 
 module.exports = {
     listarServidores,

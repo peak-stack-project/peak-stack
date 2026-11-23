@@ -27,7 +27,8 @@ function deletar(req, res) {
 }
 
 function listarUsuarios(req, res) {
-    usuarioModel.listarUsuarios()
+    var fk = req.params.fk;
+    usuarioModel.listarUsuarios(fk)
         .then(function (resultado) {
             res.json(resultado);
         })

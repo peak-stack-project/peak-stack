@@ -16,15 +16,15 @@ router.post("/listar", function (req, res) {
   maquinasController.listar(req, res);
 });
 
-router.get("/listarMaquinas", function (req, res) {
+router.get("/listarMaquinas/:fk", function (req, res) {
     maquinasController.listarMaquinas(req, res);
 });
 
-router.get("/buscar/:id", function (req, res) {
+router.get("/buscar/:idConfigMaq", function (req, res) {
     maquinasController.buscarMaquinaPorId(req, res);
 });
 
-router.put("/atualizar/:id", function (req, res) {
+router.put("/atualizar/:id/:idConfigMaq", function (req, res) {
     maquinasController.atualizarMaquina(req, res);
 });
 

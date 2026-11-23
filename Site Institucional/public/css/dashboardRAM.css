@@ -23,6 +23,37 @@
     font-size: 11px;
 }
 
+.maq_filtro.srv_normal {
+    background: var(--maq-verde-fundo);
+    color: var(--maq-verde);
+}
+
+.maq_filtro.srv_normal[aria-pressed="true"] {
+    background: var(--maq-verde);
+    color: #fff;
+}
+
+.maq_filtro.srv_atencao {
+    background: var(--maq-laranja-fundo);
+    color: var(--maq-laranja-texto);
+}
+
+.maq_filtro.srv_atencao[aria-pressed="true"] {
+    background: var(--maq-laranja);
+    color: #fff;
+}
+
+.maq_filtro.srv_critico {
+    background: var(--maq-vermelho-fundo);
+    color: var(--maq-vermelho-texto);
+}
+
+.maq_filtro.srv_critico[aria-pressed="true"] {
+    background: var(--maq-vermelho);
+    color: #fff;
+}
+
+/* KPIs */
 .ram_kpis_compactos {
     flex-shrink: 0;
     gap: 10px;
@@ -76,6 +107,7 @@
     background-color: var(--maq-vermelho-fundo);
 }
 
+/* Gráfico Principal */
 .ram_card_principal {
     flex: 1.05 1 0;
     min-height: 0;
@@ -124,6 +156,7 @@
     background-color: rgba(239, 68, 68, 0.40);
 }
 
+/* Gráficos Inferiores */
 .ram_grade_inferior {
     flex: 1 1 0;
     min-height: 0;

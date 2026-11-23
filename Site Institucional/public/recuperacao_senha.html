@@ -117,15 +117,7 @@
     var emailRecuperacao = "";
     var dataNascimentoRecuperacao = "";
 
-    if (resposta.ok) {
-        document.getElementById("etapa_email").style.display = "none";
-        document.getElementById("etapa_nascimento").style.display = "block";
-    } else {
-        resposta.text().then(function (texto) {
-            alert(texto);
-        });
-    }
-
+    
     function verificarEmail() {
         aguardar();
 

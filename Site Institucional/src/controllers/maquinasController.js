@@ -2,11 +2,15 @@ var maquinasModel = require("../models/maquinasModel");
 
 function atualizarMaquina(req, res) {
     var id = req.params.id;
+    var idConfigMaq = req.params.idConfigMaq;
     var nome = req.body.nome;
     var mac = req.body.mac;
     var fk_so = req.body.fk_so;
+    var status = req.body.status;
 
-    maquinasModel.atualizarMaquina(id, nome, mac, fk_so)
+   
+
+    maquinasModel.atualizarMaquina(id, idConfigMaq, nome, mac, fk_so, status)
         .then(
             function (resultado) {
                 res.json(resultado);
@@ -24,9 +28,9 @@ function atualizarMaquina(req, res) {
 }
 
 function buscarMaquinaPorId(req, res) {
-    var id = req.params.id;
+    var idConfigMaq = req.params.idConfigMaq;
 
-    maquinasModel.buscarMaquinaPorId(id)
+    maquinasModel.buscarMaquinaPorId(idConfigMaq)
         .then(
             function (resultado) {
                 if (resultado.length > 0) {
@@ -48,7 +52,8 @@ function buscarMaquinaPorId(req, res) {
 }
 
 function listarMaquinas(req, res){
-    maquinasModel.listarMaquinas()
+    var fk = req.params.fk;
+    maquinasModel.listarMaquinas(fk)
      .then(
             function (resultado) {
                 res.json(resultado)

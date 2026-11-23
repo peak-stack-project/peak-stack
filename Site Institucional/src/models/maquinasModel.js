@@ -22,25 +22,29 @@ function listar(email, senha) {
     return database.executar(instrucaoSql);
 }
 
-function listarMaquinas (req, res){
+function listarMaquinas (fk){
  var instrucaoSql = `
-select maquina.id as id, maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, concat(tipo, ' ', unidade_medida) as componente ,  status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
-join config_maq on fk_maquina = maquina.id join componentes on componentes.id = fk_componentes join configuracao_comp on configuracao_comp.id = fk_configuracao_comp order by id desc;`;
+select maquina.id as id, config_maq.id AS idConfigMaq, maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, concat(tipo, ' ', unidade_medida) as componente ,  status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id
+join config_maq on fk_maquina = maquina.id join componentes on componentes.id = fk_componentes join configuracao_comp on configuracao_comp.id = fk_configuracao_comp where empresa.id = '${fk}' order by id desc;`;
 
   return database.executar(instrucaoSql);
 }
 
-function buscarMaquinaPorId(id) {
+function buscarMaquinaPorId(idConfigMaq) {
     var instrucaoSql = `select maquina.nome as nome, mac_address as mac, so.nome as sistema_operacional, nome_fantasia, status_config as 'status' from maquina join so on fk_so = so.id join empresa on fk_empresa = empresa.id 
-join config_maq on fk_maquina = maquina.id where maquina.id = '${id}';`;
+join config_maq on fk_maquina = maquina.id join componentes on fk_componentes = componentes.id where config_maq.id = '${idConfigMaq}';`;
 
     return database.executar(instrucaoSql);
 }
 
-function atualizarMaquina(id, nome, mac, fk_so) {
-    var instrucaoSql = `UPDATE maquina SET nome = '${nome}', mac_address = '${mac}', fk_so = '${fk_so}' WHERE id = '${id}';`;
+function atualizarMaquina(id, idConfigMaq, nome, mac, fk_so, status) {
+      var instrucaoSql = `UPDATE maquina SET nome = '${nome}', mac_address = '${mac}', fk_so = '${fk_so}' WHERE id = '${id}';`;
+      var instrucaoSql2 = `UPDATE config_maq SET status_config = '${status}' WHERE id = '${idConfigMaq}';`;
 
-    return database.executar(instrucaoSql);
-}
+    return database.executar(instrucaoSql)
+        .then(function () {
+            return database.executar(instrucaoSql2);
+        });
+    }
 
 module.exports = { cadastrarMaquina, cadastrarComponente, listar, listarMaquinas, buscarMaquinaPorId, atualizarMaquina };

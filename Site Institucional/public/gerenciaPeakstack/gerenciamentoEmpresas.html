@@ -57,6 +57,7 @@
                                 <th>Razão social</th>
                                 <th>CNPJ</th>
                                 <th>CEO</th>
+                                <th>STATUS</th>
                                 <th>Edição</th>
                             </tr>
                         </thead>
@@ -101,6 +102,13 @@
                 <div class="campo_edicao">
                     <input id="atualizacaoCEO" name="ceo" placeholder="Nome do(a) CEO">
                 </div>
+                <label for="edicaoCnpj">STATUS</label>
+                <div class="campo_edicao">
+                   <select id="atualizacaoStatus">
+                        <option value="ativa">Ativa</option>
+                        <option value="inativa">Inativa</option>
+                    </select>
+                </div>
                 
                 <div class="acoes_edicao">
                     <button class="botao_cancelar_edicao" type="button" data-fechar-modal>Cancelar</button>
@@ -130,6 +138,7 @@
                                 </td>
                                 <td class="cnpj">${json[i].cnpj}</td>
                                 <td>${json[i].nome_ceo}</td>
+                                 <td>${json[i].status}</td>
                                 <td>
                                     <div class="acoes_linha">
                                         <button onclick="editar(${json[i].id_empresa})" id="botaoEdicao" type="button"
@@ -185,6 +194,8 @@
             let nomeFantasia = atualizacaoNomeFantasia.value
             let cnpjNovo = atualizacaoCNPJ.value
             let ceoNovo = atualizacaoCEO.value
+            let statusNovo = atualizacaoStatus.value
+            console.log(statusNovo)
 
             if (razaoSocial == '') {
                 alert("Razão social Invalida, deve ter ao menos 5 caracteres")
@@ -203,7 +214,7 @@
                 return;
             }
 
-
+            
 
             fetch(`/empresas/atualizar/${idEmpresa}`, {
                 method: 'PUT',
@@ -214,7 +225,8 @@
                     razao_social: razaoSocial,
                     nome_fantasia: nomeFantasia,
                     cnpj: cnpjNovo,
-                    ceo: ceoNovo
+                    ceo: ceoNovo,
+                    status: statusNovo
                 })
             })
                 .then(function (resposta) {

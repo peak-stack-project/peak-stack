@@ -26,7 +26,7 @@
             <span class="menu_rotulo">Menu</span>
             <a href="./dashboard_visao_geral.html">Visão geral</a>
             <a href="./alertas.html">Alertas</a>
-            <a class="ativo" href="./máquinas.html" >Máquinas</a>
+            <a class="ativo" href="./máquinas.html">Máquinas</a>
             <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
         </div>
         <div class="menu_lateral_rodape">
@@ -55,7 +55,7 @@
                                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                         </svg>
                     </button>
-                    <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações">
+                    <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações" onclick="irParaAlertas()">
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -99,54 +99,68 @@
             </div>
         </div>
     </section>
-    <section>
-
-        <div id="container_cadastro" style="display: none;">
-            <div class="sessao_cadastro">
-                <div class="container_tema">
-                    <h3>Cadastrar Máquinas</h3>
-                    <a href="./máquinas.html">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-x-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                            <path
-                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                        </svg>
-                    </a>
-
+    <!-- EDITADO (inicio): cadastro de maquina e de componente com o mesmo container do modal de empresas -->
+    <div id="container_cadastro" class="modal_edicao" style="display: none;">
+        <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroMaquina">
+            <header class="modal_edicao_cabecalho">
+                <h2 id="tituloCadastroMaquina">Cadastrar máquinas</h2>
+                <button class="modal_edicao_fechar" type="button" aria-label="Fechar cadastro" onclick="fechar()">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </header>
+            <div class="form_edicao_empresa">
+                <label for="nome_input">Nome do servidor</label>
+                <div class="campo_edicao">
+                    <input type="text" id="nome_input" placeholder="Ex: SRV-PROD-01">
+                </div>
+                <div class="alerta_erro">
+                    <span id="mensagem_Nome"></span>
                 </div>
 
-                <div class="nome_usuario">
-                    <h4>Nome do servidor</h4>
-                    <input type="text" id="nome_input" placeholder="   Ex: SRV-PROD-01">
+                <label for="mac_input">Endereço MAC</label>
+                <div class="campo_edicao">
+                    <input type="text" id="mac_input" placeholder="Ex: AA:BB:CC:DD:EE:FF">
                 </div>
-                <div class="email_usuario">
-                    <div class="email">
-                        <H4>Endereço MAC</H4>
-                        <input type="text" id="mac_input" placeholder="   Ex: AA:BB:CC:DD:EE:FF">
-                    </div>
+                <div class="alerta_erro">
+                    <span id="mensagem_MAC"></span>
                 </div>
-                <div class="senha">
-                    <h4>Sistema operacional</h4>
-                    <select name="" id="so_input">
-                        <option value="1">'Windows 11 Home Single Language</option>
+
+                <label for="so_input">Sistema operacional</label>
+                <div class="campo_edicao">
+                    <select id="so_input">
+                        <option value="1">Windows 11 Home Single Language</option>
                         <option value="2">Linux Ubuntu Server</option>
                     </select>
                 </div>
-                <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="fechar()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="cadastrar()">Adicionar</button>
+
+                <div class="acoes_edicao">
+                    <button class="botao_cancelar_edicao" type="button" onclick="fechar()">Cancelar</button>
+                    <button class="botao_atualizar_edicao" type="button" onclick="cadastrar()">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>Adicionar
+                    </button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
-    <section>
-        <div id="container_cadastro2" style="display: none;">
-            <div class="sessao_cadastro2">
-                <div class="container_empresa_usuario">
-                    <h4>Componentes monitoradas</h4>
-                    <select name="" id="componente_input">
+    <div id="container_cadastro2" class="modal_edicao" style="display: none;">
+        <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroComponente">
+            <header class="modal_edicao_cabecalho">
+                <h2 id="tituloCadastroComponente">Cadastrar componente</h2>
+                <button class="modal_edicao_fechar" type="button" aria-label="Fechar cadastro" onclick="fechar()">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </header>
+            <div class="form_edicao_empresa">
+                <label for="componente_input">Componentes monitoradas</label>
+                <div class="campo_edicao">
+                    <select id="componente_input">
                         <option value="7">CPU (%)</option>
                         <option value="8">CPU (MH)</option>
                         <option value="9">RAM (%)</option>
@@ -155,24 +169,30 @@
                         <option value="12">REDE (MB)</option>
                         <option value="13">REDE (MB - total)</option>
                         <option value="14">REDE (Mbps)</option>
-
                     </select>
                 </div>
-                <div class="container_atividade_usuario">
-                    <h4>Status</h4>
-                    <select name="" id="status_input">
+
+                <label for="status_input">Status</label>
+                <div class="campo_edicao">
+                    <select id="status_input">
                         <option value="Ativo">Ativo</option>
                         <option value="Não Ativo">Não Ativo</option>
                         <option value="Pendente">Pendente</option>
                     </select>
                 </div>
-                <div class="botoes_modal_cadastro">
-                    <button class="botao_cancelar_cadastro_usuario" onclick="fechar()">Cancelar</button>
-                    <button class="botao_cadastrar_usuario" onclick="cadastrarComponente()">Cadastrar</button>
+
+                <div class="acoes_edicao">
+                    <button class="botao_cancelar_edicao" type="button" onclick="fechar()">Cancelar</button>
+                    <button class="botao_atualizar_edicao" type="button" onclick="cadastrarComponente()">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>Cadastrar
+                    </button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
+    <!-- EDITADO (fim) -->
     <div id="modalEdicaoMaquina" class="modal_edicao" style="display: none;">
         <section class="modal_edicao_cartao" aria-modal="true">
 
@@ -204,6 +224,15 @@
                     </select>
                 </div>
 
+                <label for="edicaoSoMaquina">Status</label>
+                <div class="campo_edicao">
+                    <select id="edicaoStatusMaquina" name="status_maquina">
+                        <option value="Ativo">Ativo</option>
+                        <option value="Não Ativo">Não Ativo</option>
+                        <option value="Pendente">Pendente</option>
+                    </select>
+                </div>
+
                 <div class="acoes_edicao">
 
                     <button class="botao_cancelar_edicao" type="button" data-fechar-modal>
@@ -224,22 +253,27 @@
 </html>
 <script>
 
-const telaUsuarios = document.getElementById("tela_usuarios");
+    function irParaAlertas(){
+        window.location.href="./alertas.html"
+    }
 
-    function carregando(){
-        if(sessionStorage.FKCARGO_USUARIO == 3){
+    const telaUsuarios = document.getElementById("tela_usuarios");
+
+    function carregando() {
+        if (sessionStorage.FKCARGO_USUARIO == 3) {
             telaUsuarios.style.display = "none";
         }
     }
 
 
 
-    
+ let fkEmpresa = sessionStorage.getItem("FKEMPRESA_USUARIO");
 
     var cadastro_realizado = false;
 
-    function listarMaquinas() {
-        fetch("/maquinas/listarMaquinas")
+    function listarMaquinas(fk) {
+        fk = fkEmpresa;
+        fetch(`/maquinas/listarMaquinas/${fk}`)
             .then(function (resposta) {
                 resposta.json().then(function (json) {
 
@@ -279,7 +313,7 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                             </div>
 
                             <div class="container_acoes">
-                              <button onclick="editarMaquina(${json[i].id})" type="button">
+                              <button onclick="editarMaquina(${json[i].id}, ${json[i].idConfigMaq})" type="button">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
         fill="currentColor" viewBox="0 0 16 16">
         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -309,12 +343,14 @@ const telaUsuarios = document.getElementById("tela_usuarios");
     const modalMaquina = document.getElementById("modalEdicaoMaquina");
 
     let idMaquina;
+    let idConfigMaq;
 
-    function editarMaquina(id) {
+    function editarMaquina(id, idConfig) {
 
         idMaquina = id;
+        idConfigMaq = idConfig;
 
-        fetch(`/maquinas/buscar/${id}`)
+        fetch(`/maquinas/buscar/${idConfig}`)
             .then(function (resposta) {
                 return resposta.json();
             })
@@ -322,7 +358,8 @@ const telaUsuarios = document.getElementById("tela_usuarios");
 
                 edicaoNomeMaquina.value = json.nome;
                 edicaoMacMaquina.value = json.mac;
-                edicaoSoMaquina.value = json.sistema_operacional;
+                edicaoSoMaquina.value = json.fk_so;
+                edicaoStatusMaquina.value = json.status;
 
                 modalMaquina.style.display = "flex";
 
@@ -349,6 +386,7 @@ const telaUsuarios = document.getElementById("tela_usuarios");
             let nome = edicaoNomeMaquina.value;
             let mac = edicaoMacMaquina.value;
             let so = edicaoSoMaquina.value;
+            let status = edicaoStatusMaquina.value;
 
             if (nome.length < 3) {
                 alert("Nome da máquina inválido.");
@@ -360,7 +398,7 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                 return;
             }
 
-            fetch(`/maquinas/atualizar/${idMaquina}`, {
+            fetch(`/maquinas/atualizar/${idMaquina}/${idConfigMaq}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -368,7 +406,8 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                 body: JSON.stringify({
                     nome: nome,
                     mac: mac,
-                    fk_so: so
+                    fk_so: so,
+                    status: status,
                 })
             })
                 .then(function (resposta) {
@@ -431,25 +470,25 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                 }),
 
             })
+
                 .then(function (resposta) {
-                    console.log("chamei as variavel");
-                    console.log("resposta: ", resposta);
 
                     if (resposta.ok) {
-                        console.log("resposta ok");
+                        alert("Componente cadastrado com sucesso!");
                         container_cadastro.style.display = 'none';
                         container_cadastro2.style.display = 'flex';
-                        limparFormulario();
-                        finalizarAguardar();
+                        listarMaquinas();
+
 
                     } else {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
+                        alert("Erro ao cadastrar componente.");
                     }
+
                 })
-                .catch(function (resposta) {
-                    console.log(`#ERRO: ${resposta}`);
-                    finalizarAguardar();
+                .catch(function (erro) {
+                    console.error("Erro ao atualizar usuário:", erro);
                 });
+
 
             return false;
         }
@@ -489,12 +528,19 @@ const telaUsuarios = document.getElementById("tela_usuarios");
             soVar == ""
         ) {
             booleano = false;
+            mensagem_Nome.style.display = "block";
+            mac_input.style.background = "#FFE9E5";
+            nome_input.style.background = "#FFE9E5";
+            mensagem_Nome.style.color = "#FC1600";
+            mensagem_Nome.innerHTML = "Não deixe os campos em branco!";
+            mensagem_MAC.innerHTML = "Não deixe os campos em branco!";
         }
 
         if (macVar.length != 12) {
-            cardErro.style.display == "block";
-            cardErro.style.color = "#FC1600";
-            mensagem_erro.innerHTML = "Não foi possível fazer o login. Tente novamente.";
+            mensagem_MAC.style.display == "block";
+            mensagem_MAC.innerHTML = "O endereço tem " + macVar.length + " caracteres, mas deve ter 12.";
+            mensagem_MAC.style.color = "#FC1600";
+            mac_input.style.background = "#FFE9E5";
 
         } else {
 
@@ -557,20 +603,20 @@ const telaUsuarios = document.getElementById("tela_usuarios");
                         if (resposta.status == 403) {
                             cardErro.style.display = "block";
                             cardErro.style.color = "#FC1600";
-                            mensagem_erro.innerHTML = "E-mail ou senha incorretos";
+                            mensagem_MAC.innerHTML = "E-mail ou senha incorretos";
                         } else if (resposta.status == 500) {
                             cardErro.style.display = "block";
                             cardErro.style.color = "#FC1600";
-                            mensagem_erro.innerHTML = "Erro no servidor. Tente novamente mais tarde.";
+                            mensagem_MAC.innerHTML = "Erro no servidor. Tente novamente mais tarde.";
                         } else {
                             cardErro.style.display = "block";
                             cardErro.style.color = "#FC1600";
-                            mensagem_erro.innerHTML = "Não foi possível fazer o login. Tente novamente.";
+                            mensagem_MAC.innerHTML = "Não foi possível fazer o login. Tente novamente.";
                         }
                     }
                 }).catch(function () {
                     // cardErro.style.display = "block";
-                    // mensagem_erro.innerHTML = "Falha na conexão com o servidor.";
+                    // mensagem_MAC.innerHTML = "Falha na conexão com o servidor.";
                     finalizarAguardar();
                     // registrar_checkpoint("falha_conexao_login_peakstack");
                 });
