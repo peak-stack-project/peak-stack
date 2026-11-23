@@ -51,7 +51,6 @@ function limparCustos() {
     texto('statusGraficoComponentes', 'Aguardando intervalos calculados.');
     texto('coberturaCustos', 'Cobertura indisponível.');
     texto('statusPrevisao', 'Aguardando histórico diário de custos.');
-    texto('baseComparacaoPrevisao', 'A previsão usa dias encerrados com pelo menos 99% de cobertura.');
     for (const grafico of [graficoBarras, graficoPrevisao]) {
         if (!grafico) continue;
         grafico.data.labels = [];
@@ -71,14 +70,12 @@ function renderizarCustos(custos) {
     texto('tempoExecucao', custos.total === null ? null : duracao(custos.segundos_ec2));
     texto('premissasGrafico', `Acumulado parcial de ${custos.mes} em USD: computação EC2 e armazenamento EBS somente nos intervalos calculáveis.`);
     texto('statusGraficoComponentes', custos.total === null ? 'Ainda não há intervalos calculados neste mês.' : 'Valores persistidos no banco; sem dedução dos créditos AWS Student.');
-    texto('coberturaCustos', `Tempo coberto neste mês: ${duracao(custos.segundos_cobertos)}. Trechos registrados sem estimativa: ${duracao(custos.segundos_nao_cobertos)} (${custos.trechos_sem_estimativa}). Períodos anteriores à coleta e posteriores à última captura também não estão incluídos.`);
     const previsao = custos.previsao;
     if (previsao?.estado === 'disponivel') {
         texto('previsaoProximoMes', moeda(previsao.total));
         texto('mesPrevisto', `${previsao.mes} · mês completo previsto (UTC)`);
         texto('tendenciaCustos', previsao.tendencia);
         texto('comparacaoPrevisao', previsao.comparacao);
-        texto('statusPrevisao', `${previsao.mensagem} R² do ajuste histórico: ${previsao.r2.toFixed(3)}.`);
         texto('baseComparacaoPrevisao', previsao.comparacao);
     } else {
         texto('statusPrevisao', previsao?.mensagem || 'Histórico diário insuficiente.');

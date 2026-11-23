@@ -21,7 +21,7 @@ services:
     image: ${SITE_IMAGE:-mickaelarodrigues/meu_site:v5}
     environment:
       AMBIENTE_PROCESSO: ${AMBIENTE_PROCESSO:-desenvolvimento}
-      APP_HOST: ${APP_HOST:-localhost}
+      APP_HOST: ${APP_HOST:-localhos  t}
       APP_PORT: ${APP_PORT:-3333}
       DB_HOST: banco
       DB_PORT: "3306"

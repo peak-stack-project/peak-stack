@@ -235,14 +235,6 @@ INSERT INTO so (nome, versao, descricao) VALUES
 ('Windows 11 Home Single Language', '25H2', '      '),
 ('Linux Ubuntu Server', '26.4', '');
 
--- insert da máquina--
-INSERT INTO db_peakstack.maquina (nome, mac_address, updated_by ,fk_so, fk_empresa) VALUES
-('Cliente', '0EFFE89A6BF1','Beatriz', 2, 1),
-('Beatriz','A085271564DB','Beatriz', '1', '1'),
-('Enzo','DC215CF245A9','Beatriz', '1', '1');
-  
-SELECT * FROM maquina;
-
 -- insert da configuracao dos componentes --
 INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
 ('CPU', '%', 'psutil', 'cpu_percent(interval=0.1)'),
@@ -254,7 +246,8 @@ INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, co
 
 INSERT INTO configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
 ('Rede', 'MB',   'psutil', 'net_io_counters().bytes_sent'),   -- upload total
-('Rede', 'Mbps', 'psutil', 'delta bytes_recv (Mbps)');   	     -- velocidade de download
+('Rede', 'Mbps', 'psutil', 'delta bytes_recv (Mbps)'),   	     -- velocidade de download
+('Disco', '%', 'psutil', 'disk_usage("/").percent');
 
 SELECT * FROM configuracao_comp;
 
@@ -272,7 +265,7 @@ INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
 ('Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz', 2),
 ('DDR4', 3),
 ('DDR4', 4),
-('Amazon Elastic Block Store', 5),
+('Amazon Elastic Block Store', 9),
 ('Amazon.com, Inc. Elastic Network Adapter (ENA)', 6),
 ('Amazon.com, Inc. Elastic Network Adapter (ENA)', 7),
 ('Amazon.com, Inc. Elastic Network Adapter (ENA)', 8);
@@ -285,16 +278,6 @@ INSERT INTO usuario (fk_empresa, fk_cargo, nome, email, senha, updated_by, dt_na
 (1, 4, 'Felipe Dias', 'felipe@peakstack.com', 'Peakstack@123456', 'Beatriz', '2008-07-07');
 
 SELECT * FROM usuario;
--- insert da configuração da maquina --
-INSERT INTO config_maq (fk_componentes, fk_maquina, status_config) VALUES
-(7, 1, 'Ativo'),
-(8, 1, 'Pendente'),
-(9, 1, 'Ativo'),
-(10, 1, 'Ativo'),
-(11, 1, 'Não Ativo'),
-(12, 1, 'Ativo'),
-(13, 1, 'Ativo'),
-(14, 1, 'Ativo');
 
 -- insert de limite:
 INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
@@ -315,8 +298,7 @@ SELECT cm.id AS cm_id,
     JOIN config_maq cm    ON cm.fk_maquina = m.id
     JOIN componentes c          ON c.id = cm.fk_componentes
     JOIN configuracao_comp cc   ON cc.id = c.fk_configuracao_comp
-    WHERE UPPER(m.mac_address) = '0EFFE89A6BF1'
-      AND cm.status_config = 'Ativo';
+    WHERE cm.status_config = 'Ativo';
 
 
 -- LEITURA:
