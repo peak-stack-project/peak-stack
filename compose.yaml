@@ -1,6 +1,6 @@
 services:
   banco:
-    image: mickaelarodrigues/meu_bd:v6
+    image: mickaelarodrigues/meu_bd:latest
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Informe MYSQL_ROOT_PASSWORD no .env.dev do site}
       MYSQL_DATABASE: ${DB_DATABASE:-db_peakstack}
@@ -18,7 +18,7 @@ services:
       start_period: 30s
 
   site:
-    image: ${SITE_IMAGE:-mickaelarodrigues/meu_site:v5}
+    image: ${SITE_IMAGE:-mickaelarodrigues/meu_site:latest}
     environment:
       AMBIENTE_PROCESSO: ${AMBIENTE_PROCESSO:-desenvolvimento}
       APP_HOST: ${APP_HOST:-localhos  t}
