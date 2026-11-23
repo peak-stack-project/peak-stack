@@ -1,7 +1,5 @@
 import mysql.connector
 from rich import print
-import getpass
-import psutil as p
 import time as t
 from datetime import datetime
 import importlib
@@ -20,7 +18,7 @@ def variavel_obrigatoria(nome):
         raise RuntimeError(f"A variável {nome} não foi definida no arquivo .env")
     return valor
 
-INTERVALO = 5
+INTERVALO = 10
 
 BIBLIOTECAS_PERMITIDAS = {"psutil"}
 
@@ -234,8 +232,9 @@ def capturar():
 
 if __name__ == "__main__":
     while True:
+        inicio_captura = t.monotonic()
         try:
             capturar()
         except mysql.connector.Error as erro:
             print(f"[red]Erro de banco: {erro}[/red]")
-        t.sleep(INTERVALO)
+        t.sleep(max(0, INTERVALO - (t.monotonic() - inicio_captura)))

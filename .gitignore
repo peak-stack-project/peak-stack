@@ -5,3 +5,7 @@ package-lock.json
 .env.dev
 .env*
 !.env.example
+Python/dados_ec2/
+__pycache__/
+logs/
+.venv/

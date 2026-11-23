@@ -122,7 +122,7 @@ body {
 .menu_grupo {
     display: grid;
     gap: 8px;
-    height: 11dvh;
+    height: auto;
 }
 
 .menu_grupo a{
@@ -509,3 +509,7 @@ h1 {
     width: 30px;
 }
 
+
+#cadastroADM {
+    display: none;
+}

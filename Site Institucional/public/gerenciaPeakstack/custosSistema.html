@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#eef3f8">
+    <title>PeakStack | Controle Interno de Custos AWS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/menuGerencia.css">
+    <link rel="stylesheet" href="./css/custosSistema.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    <script src="js/custosSistema.js" defer></script>
+</head>
+
+<body>
+    <div id="gradient-waves-background" aria-hidden="true">
+        <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="../assets/onda-fundo.webm" type="video/webm">
+        </video>
+    </div>
+
+    <div class="layout">
+        <aside class="menu_lateral gerencia_menu">
+            <a class="marca marca_lateral" href="./cadastro_empresas.html">
+                <img class="marca_icone" src="../assets/Design%20sem%20nome.png" alt="">
+                <h4>PeakStack</h4>
+            </a>
+            <nav class="menu_grupo" aria-label="Menu principal">
+                <span class="menu_rotulo">Menu</span>
+                <a href="./cadastro_empresas.html">Cadastro</a>
+                <a href="./gerenciamentoEmpresas.html">Gerenciamento de Empresas</a>
+                <a class="ativo" href="./custosSistema.html" aria-current="page">Custos e Previsões</a>
+            </nav>
+            <div class="menu_lateral_rodape">
+                <button id="btn_logout" class="botao botao_lateral" type="button">
+                    Sair
+                </button>
+            </div>
+        </aside>
+
+        <main class="conteudo">
+            <header class="cabecalho_dashboard">
+                <div>
+                    <h1>Custos e Previsões da PeakStack</h1>
+                </div>
+            </header>
+
+            <section class="resumo_cards" aria-label="Resumo dos custos">
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_azul" aria-hidden="true">▤</span>
+                    <div class="resumo_texto"><p>Custo Acumulado Estimado</p><strong id="custoAcumulado">—</strong><span id="mesCustos" class="indicador">EC2 + EBS · mês atual (UTC) · estimativa parcial</span></div>
+                </article>
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_amarelo" aria-hidden="true">↗</span>
+                    <div class="resumo_texto"><p>Tempo Observado de Execução</p><strong id="tempoExecucao">—</strong><span class="indicador">Somente intervalos com configuração e tarifa válidas</span></div>
+                </article>
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_verde" aria-hidden="true">◷</span>
+                    <div class="resumo_texto"><p>Previsão para o Próximo Mês</p><strong id="previsaoProximoMes">—</strong><span id="mesPrevisto" class="indicador">Aguardando histórico diário suficiente</span></div>
+                </article>
+                <article class="resumo_card">
+                    <span class="icone_resumo icone_azul" aria-hidden="true">↗</span>
+                    <div class="resumo_texto"><p>Tendência de Custos</p><strong id="tendenciaCustos">—</strong><span id="comparacaoPrevisao" class="indicador">Aguardando histórico diário suficiente</span></div>
+                </article>
+            </section>
+
+            <section class="graficos_duplos" aria-label="Custo acumulado e previsão de custos">
+                <article class="painel_grafico" aria-labelledby="tituloComponentes">
+                    <h2 id="tituloComponentes">Custo Acumulado por Serviço</h2>
+                    <p id="premissasGrafico" class="nota_custos">Estimativa em USD para EC2 e EBS com base no tempo e na configuração dos recursos acompanhados.</p>
+                    <div class="canvas_wrap"><canvas id="graficoComponentes" role="img" aria-label="Gráfico de barras do custo acumulado estimado por serviço" aria-describedby="statusGraficoComponentes">Custo estimado de EC2 e EBS. Aguardando dados.</canvas></div>
+                    <p id="statusGraficoComponentes" class="nota_custos" role="status">Aguardando intervalos calculados.</p>
+                    <p id="coberturaCustos" class="nota_custos">Cobertura do acompanhamento ainda indisponível.</p>
+                </article>
+                <article class="painel_grafico painel_projecao" aria-labelledby="tituloProjecao">
+                    <div class="titulo_com_legenda">
+                        <h2 id="tituloProjecao">Histórico e Previsão de Custos</h2>
+                        <span class="selo_projecao">Regressão linear</span>
+                    </div>
+                    <p class="nota_custos">Custos diários históricos e projeção diária para o próximo mês, em USD. Dias de referência em UTC; dias parciais não entram na regressão.</p>
+                    <div class="canvas_wrap"><canvas id="graficoPrevisao" role="img" aria-label="Gráfico de linhas com custos diários históricos e previsão para o próximo mês" aria-describedby="statusPrevisao">Histórico e previsão diária de custos. Aguardando dados.</canvas></div>
+                    <p id="statusPrevisao" class="nota_custos" role="status">Previsão disponível após pelo menos 7 dias encerrados com 99% de cobertura e sem trechos inválidos.</p>
+                    <p id="baseComparacaoPrevisao" class="nota_custos">A tendência compara totais mensais quando existe um mês encerrado com cobertura suficiente; até lá, mostra a direção diária da regressão.</p>
+                </article>
+            </section>
+
+            <section class="painel_grafico" aria-labelledby="tituloUtilizacao">
+                <h2 id="tituloUtilizacao">Utilização dos Recursos Monitorados</h2>
+                <p class="nota_custos">Últimas métricas recebidas da própria EC2 da PeakStack. Os valores ajudam a avaliar a utilização da infraestrutura interna.</p>
+                <div class="resumo_cards">
+                    <article class="resumo_texto"><h3>CPU</h3><strong id="utilizacaoCpu">—</strong><span class="indicador">Utilização (%)</span><span id="capturaCpu" class="indicador">Sem leitura</span></article>
+                    <article class="resumo_texto"><h3>RAM</h3><strong id="utilizacaoRam">—</strong><span class="indicador">Memória utilizada (%)</span><span id="capturaRam" class="indicador">Sem leitura</span></article>
+                    <article class="resumo_texto"><h3>Disco</h3><strong id="utilizacaoDisco">—</strong><span class="indicador">Espaço ocupado (%)</span><span id="capturaDisco" class="indicador">Sem leitura</span></article>
+                    <article class="resumo_texto"><h3>Capacidade EBS</h3><strong id="capacidadeEbs">—</strong><span class="indicador">Armazenamento provisionado (GiB)</span></article>
+                </div>
+            </section>
+
+            <section class="painel_grafico" aria-labelledby="tituloInstancia">
+                <h2 id="tituloInstancia">Configuração da Instância</h2>
+                <p id="statusInventario" class="nota_custos" role="status">Aguardando inventário AWS.</p>
+                <dl class="dados_instancia">
+                    <div><dt>Máquina cadastrada</dt><dd id="nomeMaquina">—</dd></div>
+                    <div><dt>ID da instância</dt><dd id="idInstancia">—</dd></div>
+                    <div><dt>Tipo</dt><dd id="tipoInstancia">—</dd></div>
+                    <div><dt>Região</dt><dd id="regiaoInstancia">—</dd></div>
+                    <div><dt>Zona de disponibilidade</dt><dd id="zonaInstancia">—</dd></div>
+                    <div><dt>Imagem (AMI)</dt><dd id="imagemInstancia">—</dd></div>
+                    <div><dt>Arquitetura</dt><dd id="arquiteturaInstancia">—</dd></div>
+                    <div><dt>Plataforma</dt><dd id="plataformaInstancia">—</dd></div>
+                    <div><dt>Estado na consulta AWS</dt><dd id="estadoInstancia">—</dd></div>
+                    <div><dt>Tenancy</dt><dd id="tenancyInstancia">—</dd></div>
+                    <div><dt>Ciclo de vida</dt><dd id="cicloVidaInstancia">—</dd></div>
+                    <div><dt>Operação de uso</dt><dd id="operacaoInstancia">—</dd></div>
+                </dl>
+            </section>
+
+            <section class="painel_grafico" aria-labelledby="tituloVolumes">
+                <h2 id="tituloVolumes">Volumes EBS da Instância</h2>
+                <p id="statusVolumes" class="nota_custos">Aguardando inventário dos volumes.</p>
+                <div class="tabela_wrap">
+                    <table class="tabela_volumes">
+                        <caption class="sr_only">Configuração dos volumes anexados à EC2 da PeakStack</caption>
+                        <thead><tr><th scope="col">Volume</th><th scope="col">Tipo</th><th scope="col">Capacidade (GiB)</th><th scope="col">IOPS</th><th scope="col">Throughput (MiB/s)</th><th scope="col">Estado</th></tr></thead>
+                        <tbody id="volumesEbs"><tr><td colspan="6">Sem dados disponíveis.</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
