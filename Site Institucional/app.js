@@ -29,6 +29,7 @@ var ramRouter = require("./src/routes/ram");
 var dashboardRoutes = require("./src/routes/dashboard");
 var custosRouter = require("./src/routes/custos");
 var custosAcumulados = require("./src/models/custos/custosModel");
+var previsaoSaturacaoRouter = require("./src/routes/previsao");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -49,6 +50,7 @@ app.use("/alerta", alertaRoutes);
 app.use("/ram", ramRouter);
 app.use("/dashboard", dashboardRoutes);
 app.use("/custos", custosRouter);
+app.use("/previsao", previsaoSaturacaoRouter);
 
 
 app.listen(PORTA_APP, function () {
