@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Dashboard CPU</title>
+    <link rel="icon" href="./assets/react.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js" defer></script>
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/dashboardCPU.css">
+</head>
+<body>
+       <div class="corpo_dashboard">
+        <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+            <span>PeakStack</span>
+        </a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <div class="menu_item_drop">
+                 <a href="./dashboardCPU.html" class="ativo dropbtn">CPU</a>
+                <button type="button" class="menu_drop_botao" id="btn_drop_dash" aria-expanded="false"
+                    aria-controls="submenu_dash" aria-label="Mostrar outras dashboards">▾</button>
+            </div>
+            <div class="menu_submenu" id="submenu_dash">
+                 <a href="./dashboard_visao_geral.html">Visão geral</a>
+                <a href="./dashboardRAM.html">RAM</a>
+                <a href="./dashboard_disco.html">Disco</a>
+            </div>
+            <a href="./alertas.html">Alertas</a>
+            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
+        </div>
+        <div class="menu_lateral_rodape">
+            <span class="menu_grupo">
+                <a href="./index.html">Sair</a>
+            </span>
+            <!-- <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                Sair
+            </button> -->
+        </div>
+    </aside>
+
+</body>
+
+</html>
+<script>
+ const btnDrop = document.getElementById("btn_drop_dash");
+    const submenu = document.getElementById("submenu_dash");
+
+    btnDrop.addEventListener("click", () => {
+        const abriu = submenu.classList.toggle("aberto");
+        btnDrop.classList.toggle("aberto", abriu);
+        btnDrop.setAttribute("aria-expanded", abriu);
+    });
+</script>
