@@ -88,8 +88,6 @@ h1 {
     vertical-align: middle;
 }
 
-
-
 .botao {
     display: inline-flex;
     align-items: center;
@@ -1423,4 +1421,45 @@ h1 {
         flex: none;
         min-height: 230px;
     }
+}
+
+/* ---------- Menu lateral: dropdown das dashboards ---------- */
+.menu_item_drop {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+}
+
+.menu_item_drop a {
+    flex: 1;
+}
+
+.menu_drop_botao {
+    width: 38px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: transparent;
+    transition: 0.3s;
+}
+
+.menu_drop_botao:hover {
+    background: var(--cor-primaria);
+}
+
+.menu_drop_botao.aberto {
+    transform: rotate(180deg);
+}
+
+.menu_submenu {
+    display: grid;
+    gap: 4px;
+    max-height: 0;
+    overflow: hidden;
+    padding-left: 14px;
+    transition: max-height 0.3s ease;
+}
+
+.menu_submenu.aberto {
+    max-height: 300px;
 }

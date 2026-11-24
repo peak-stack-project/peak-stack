@@ -21,7 +21,16 @@
         </a>
         <div class="menu_grupo">
             <span class="menu_rotulo">Menu</span>
-            <a class="ativo" href="./dashboard_visao_geral.html">Visão geral</a>
+            <div class="menu_item_drop">
+                <a class="ativo dropbtn" href="./dashboard_visao_geral.html">Visão geral</a>
+                <button type="button" class="menu_drop_botao" id="btn_drop_dash" aria-expanded="false"
+                    aria-controls="submenu_dash" aria-label="Mostrar outras dashboards">▾</button>
+            </div>
+            <div class="menu_submenu" id="submenu_dash">
+                <a href="./dashboard_cpu.html">CPU</a>
+                <a href="./dashboard_ram.html">RAM</a>
+                <a href="./dashboard_disco.html">Disco</a>
+            </div>
             <a href="./alertas.html">Alertas</a>
             <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
             <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
@@ -204,20 +213,30 @@
     </main>
 
     <script src="./js/dashboard_geral.js"></script>
+    <script src="./js/menu_dropdown.js"></script>
 
 </body>
 
 </html>
 <script>
     const telaMaquina = document.getElementById("tela_maquinas");
-const telaUsuarios = document.getElementById("tela_usuarios");
+    const telaUsuarios = document.getElementById("tela_usuarios");
 
-    function carregando(){
-        if(sessionStorage.FKCARGO_USUARIO == 2){
+    function carregando() {
+        if (sessionStorage.FKCARGO_USUARIO == 2) {
             telaMaquina.style.display = "none";
             telaUsuarios.style.display = "none";
-        } else if(sessionStorage.FKCARGO_USUARIO == 3){
+        } else if (sessionStorage.FKCARGO_USUARIO == 3) {
             telaUsuarios.style.display = "none";
         }
     }
+
+    const btnDrop = document.getElementById("btn_drop_dash");
+    const submenu = document.getElementById("submenu_dash");
+
+    btnDrop.addEventListener("click", () => {
+        const abriu = submenu.classList.toggle("aberto");
+        btnDrop.classList.toggle("aberto", abriu);
+        btnDrop.setAttribute("aria-expanded", abriu);
+    });
 </script>
