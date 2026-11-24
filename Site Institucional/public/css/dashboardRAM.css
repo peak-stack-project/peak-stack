@@ -1,3 +1,45 @@
+.banner_relatorio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 9px;
+    border-left: 3px solid var(--cor-primaria);
+    background: var(--cor-primaria-clara);
+    font-size: 12px;
+    color: var(--cor-texto);
+    flex-shrink: 0;
+}
+
+.banner_relatorio_texto {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.banner_relatorio_titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f1f3d;
+}
+
+.banner_relatorio_sub {
+    font-size: 10px;
+    color: var(--cor-texto-suave);
+}
+
+.banner_relatorio_confirmacao {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--maq-verde);
+    flex-shrink: 0;
+    padding: 10px 16px;
+}
+
 .ram_conteudo {
     height: 100%;
     min-height: 0;
