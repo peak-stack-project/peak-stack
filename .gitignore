@@ -1,4 +1,12 @@
+# A linha abaixo determina que o diretório node_modules não será enviado ao repositório
+node_modules
+package-lock.json
 .env
-.env.*
+.env.dev
+.env*
 Python/.env
-node_modules/
+!.env.example
+Python/dados_ec2/
+__pycache__/
+logs/
+.venv/
