@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Previsão de saturação</title>
+    <link rel="icon" href="./assets/react.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/previsao_saturacao.css">
+    <script src="./js/sessao.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body class="corpo_dashboard" onload="carregando()">
+
+    <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+            <span>PeakStack</span>
+        </a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <div class="menu_item_drop">
+                <a class="dropbtn" href="./dashboard_visao_geral.html">Visão geral</a>
+                <button type="button" class="menu_drop_botao aberto" id="btn_drop_dash" aria-expanded="true"
+                    aria-controls="submenu_dash" aria-label="Mostrar outras dashboards">▾</button>
+            </div>
+            <div class="menu_submenu aberto" id="submenu_dash">
+                <a href="./dashboard_cpu.html">CPU</a>
+                <a href="./dashboard_ram.html">RAM</a>
+                <a class="ativo" href="./previsao_saturacao.html">Disco</a>
+            </div>
+            <a href="./alertas.html">Alertas</a>
+            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
+        </div>
+    </aside>
+
+    <main class="conteudo_dashboard conteudo_maquinas sat_conteudo">
+
+        <header class="maq_topo">
+            <div>
+                <h1>Previsão de saturação do disco</h1>
+                <p id="atualizado">Regressão linear sobre a média diária de uso</p>
+            </div>
+            <div class="maq_filtros" id="periodos" role="group" aria-label="Período analisado">
+                <button type="button" class="maq_filtro" data-dias="7" aria-pressed="false">7 dias</button>
+                <button type="button" class="maq_filtro" data-dias="15" aria-pressed="false">15 dias</button>
+                <button type="button" class="maq_filtro" data-dias="30" aria-pressed="true">30 dias</button>
+                <button type="button" class="maq_filtro" data-dias="60" aria-pressed="false">60 dias</button>
+                <button type="button" class="maq_filtro" data-dias="90" aria-pressed="false">90 dias</button>
+            </div>
+        </header>
+
+        <nav class="sat_servidores" id="servidores" aria-label="Escolha o servidor"></nav>
+
+        <p class="sat_mensagem" id="mensagem" role="status"></p>
+
+        <section class="kpis_monitoramento" aria-label="Indicadores do servidor selecionado">
+            <div class="kpi_card">
+                <div class="kpi_icone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <ellipse cx="12" cy="5" rx="8" ry="3" />
+                        <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
+                        <path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
+                    </svg>
+                </div>
+                <div>
+                    <span>Uso atual do disco</span>
+                    <strong id="kpiUso">--</strong>
+                    <small>de 100% de capacidade</small>
+                </div>
+            </div>
+
+            <div class="kpi_card">
+                <div class="kpi_icone verde">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 17l6-6 4 4 8-8" />
+                        <path d="M15 7h6v6" />
+                    </svg>
+                </div>
+                <div>
+                    <span>Crescimento diário</span>
+                    <strong id="kpiCresc">--</strong>
+                    <small id="kpiR2">&nbsp;</small>
+                </div>
+            </div>
+
+            <div class="kpi_card">
+                <div class="kpi_icone amarelo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5l3 2" />
+                    </svg>
+                </div>
+                <div>
+                    <span>Dias até saturar</span>
+                    <strong id="kpiDias">--</strong>
+                    <small id="kpiData">&nbsp;</small>
+                </div>
+            </div>
+
+            <div class="kpi_card">
+                <div class="kpi_icone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z" />
+                        <path d="m9 12 2 2 4-4" />
+                    </svg>
+                </div>
+                <div>
+                    <span>Status</span>
+                    <b class="maq_status sem_dados" id="kpiStatus">--</b>
+                    <small id="kpiLimite">limite de alerta: 80%</small>
+                </div>
+            </div>
+        </section>
+
+        <article class="det_cartao">
+            <div class="det_grafico_topo">
+                <div>
+                    <h2>Regressão linear — uso de disco</h2>
+                    <p class="det_cartao_sub" id="graficoSub">Selecione um servidor</p>
+                </div>
+                <div class="det_legenda">
+                    <span><i style="background:#2b65ca"></i>Uso real (média diária)</span>
+                    <span><i class="sat_leg_tracejada" style="--cor:#0f1f3d"></i>Regressão linear</span>
+                    <span><i style="background:#ef4444"></i>Limite 100%</span>
+                    <span><i class="sat_leg_pontilhada" style="--cor:#f59e0b"></i>Alerta 80%</span>
+                </div>
+            </div>
+            <div class="sat_grafico"><canvas id="graficoRegressao"></canvas></div>
+            <p class="sat_vazio" id="graficoVazio" hidden>Este servidor ainda não tem leituras suficientes (mínimo de 5
+                dias) para traçar a tendência.</p>
+        </article>
+
+        <section class="ranking_monitoramento">
+            <div class="titulo_ranking">
+                <div>
+                    <h2>Servidores por urgência</h2>
+                    <span>Quanto menos dias restantes, mais urgente. Clique em uma linha para ver o servidor.</span>
+                </div>
+            </div>
+            <div class="tabela_monitoramento" id="tabela_ranking">
+                <div class="linha_tabela sat_linha cabecalho">
+                    <span>#</span>
+                    <span>Servidor</span>
+                    <span>Uso atual</span>
+                    <span>Cresc./dia</span>
+                    <span>Dias restantes</span>
+                    <span>Status</span>
+                </div>
+                <div id="ranking"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="./js/previsao_saturacao.js"></script>
+
+    <script>
+        var telaMaquina = document.getElementById("tela_maquinas");
+        var telaUsuarios = document.getElementById("tela_usuarios");
+
+        function carregando() {
+            if (sessionStorage.FKCARGO_USUARIO == 2) {
+                telaMaquina.style.display = "none";
+                telaUsuarios.style.display = "none";
+            } else if (sessionStorage.FKCARGO_USUARIO == 3) {
+                telaUsuarios.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
+<script>
+    var telaMaquina = document.getElementById("tela_maquinas");
+    var telaUsuarios = document.getElementById("tela_usuarios");
+
+    function carregando() {
+        if (sessionStorage.FKCARGO_USUARIO == 2) {
+            telaMaquina.style.display = "none";
+            telaUsuarios.style.display = "none";
+        } else if (sessionStorage.FKCARGO_USUARIO == 3) {
+            telaUsuarios.style.display = "none";
+        }
+    }
+
+    var btnDrop = document.getElementById("btn_drop_dash");
+    var submenu = document.getElementById("submenu_dash");
+
+    btnDrop.addEventListener("click", function () {
+        var abriu = submenu.classList.toggle("aberto");
+        btnDrop.classList.toggle("aberto", abriu);
+        btnDrop.setAttribute("aria-expanded", abriu);
+    });
+</script>
