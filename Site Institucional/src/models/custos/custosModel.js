@@ -67,10 +67,37 @@ const filtro = "fk_empresa = ? AND fk_maquina = ? AND instancia_id = ? AND regia
 async function capturasPendentes(empresa, instanciaEc2) {
     const params = parametrosInstancia(empresa, instanciaEc2);
     const [cursor] = await executarConsulta(`SELECT MAX(fk_captura_fim) AS ultimo FROM ec2_custo_intervalo WHERE ${filtro}`, params);
+    // Dá ao capturador de componentes tempo para gravar a leitura do mesmo período.
     return executarConsulta(`SELECT id, dados, estado_inventario,
         CONCAT(DATE_FORMAT(capturado_em, '%Y-%m-%dT%H:%i:%s.'), LEFT(DATE_FORMAT(capturado_em, '%f'), 3), 'Z') AS capturado_em
-        FROM ec2_captura WHERE ${filtro} AND id >= ? ORDER BY id LIMIT 501`,
+        FROM ec2_captura WHERE ${filtro} AND id >= ?
+          AND capturado_em <= UTC_TIMESTAMP(6) - INTERVAL 20 SECOND
+        ORDER BY id LIMIT 501`,
     [...params, cursor.ultimo ?? 0]);
+}
+
+async function leiturasDeEnvio(empresa, instanciaEc2, capturas) {
+    const configuracoes = await executarConsulta(`SELECT cm.id FROM config_maq cm
+        JOIN maquina m ON m.id = cm.fk_maquina
+        JOIN componentes c ON c.id = cm.fk_componentes
+        JOIN configuracao_comp cc ON cc.id = c.fk_configuracao_comp
+        WHERE m.fk_empresa = ? AND m.id = ? AND cm.status_config = 'Ativo'
+          AND cc.tipo = 'Rede' AND cc.unidade_medida = 'MB'
+          AND cc.codigo = 'net_io_counters().bytes_sent' LIMIT 2`, [empresa, instanciaEc2.fk_maquina]);
+    if (configuracoes.length !== 1) return [];
+
+    const primeiraCaptura = Date.parse(capturas[0].capturado_em);
+    return executarConsulta(`SELECT valor, TIMESTAMPDIFF(SECOND, '1970-01-01 00:00:00', dt_hr_leitura) * 1000 AS instante
+        FROM leitura WHERE fk_config_maq = ? AND dt_hr_leitura BETWEEN ? AND ?
+        ORDER BY dt_hr_leitura, id`, [configuracoes[0].id, dataSql(primeiraCaptura - 30000), dataSql(capturas.at(-1).capturado_em)]);
+}
+
+function calcularEnvio(anterior, atual, inicio, fim) {
+    if (!anterior || !atual || anterior === atual || inicio - anterior.instante > 30000 ||
+        fim - atual.instante > 30000 || atual.instante - anterior.instante > 60000) return null;
+    // O coletor grava MiB na coluna identificada como MB.
+    const diferenca = new Decimal(atual.valor).minus(anterior.valor);
+    return diferenca.isNegative() ? null : diferenca.div(1024);
 }
 
 async function buscarTarifas(chave) {
@@ -98,13 +125,13 @@ async function salvarIntervalo(empresa, instanciaEc2, anterior, atual, partes, t
         anterior.id, atual.id, tarifaId || null, parte.dia,
         dataSql(parte.inicio), dataSql(parte.fim), parte.segundos_cobertos,
         parte.segundos_ec2, parte.segundos_nao_cobertos, parte.custo_ec2,
-        parte.custo_ebs, parte.situacao, parte.detalhe, dataSql(new Date())
+        parte.custo_ebs, parte.custo_rede, parte.situacao, parte.detalhe, dataSql(new Date())
     ]);
     // Um INSERT para todas as partes: divisão à meia-noite é atômica e idempotente.
     await executarConsulta(`INSERT INTO ec2_custo_intervalo
         (fk_maquina, fk_empresa, instancia_id, regiao, fk_captura_inicio, fk_captura_fim,
          fk_tarifa, dia, inicio, fim, segundos_cobertos, segundos_ec2, segundos_nao_cobertos,
-         custo_ec2, custo_ebs, situacao, detalhe, processado_em)
+         custo_ec2, custo_ebs, custo_rede, situacao, detalhe, processado_em)
         VALUES ? ON DUPLICATE KEY UPDATE id = id`, [valores]);
 }
 
@@ -113,7 +140,9 @@ async function painel(empresa, instanciaEc2) {
     const [diarios, ultimo, tarifas] = await Promise.all([
         executarConsulta(`SELECT DATE_FORMAT(dia, '%Y-%m-%d') AS dia,
             SUM(custo_ec2) AS custo_ec2, SUM(custo_ebs) AS custo_ebs,
-            SUM(custo_ec2 + custo_ebs) AS total,
+            SUM(custo_rede) AS custo_rede, SUM(custo_ec2 + custo_ebs) AS total_base,
+            SUM(custo_ec2 + custo_ebs + COALESCE(custo_rede, 0)) AS total,
+            SUM(CASE WHEN custo_rede IS NULL THEN segundos_ec2 ELSE 0 END) AS segundos_ec2_sem_rede,
             SUM(segundos_cobertos) AS segundos_cobertos,
             SUM(segundos_ec2) AS segundos_ec2,
             SUM(segundos_nao_cobertos) AS segundos_nao_cobertos,
@@ -137,13 +166,15 @@ function custoEm24Horas(dia) {
     return new Decimal(dia.total).times(SEGUNDOS_DIA).div(dia.segundos_cobertos);
 }
 
-function prever(diarios, agora = new Date()) {
+function prever(diarios, incluirRede, agora = new Date()) {
     const hoje = agora.toISOString().slice(0, 10);
     const completos = diarios.filter(diaRegistrado => diaRegistrado.dia < hoje && Number(diaRegistrado.segundos_cobertos) >= SEGUNDOS_DIA * .99
-        && Number(diaRegistrado.trechos_sem_estimativa) === 0 && diaRegistrado.total !== null);
+        && Number(diaRegistrado.trechos_sem_estimativa) === 0 && diaRegistrado.total !== null
+        && (!incluirRede || Number(diaRegistrado.segundos_cobertos) - Number(diaRegistrado.segundos_ec2_sem_rede) >= SEGUNDOS_DIA * .99));
     if (completos.length < 7) return {
         estado: "historico_insuficiente", dias_validos: completos.length,
-        mensagem: "São necessários pelo menos 7 dias encerrados com 99% de cobertura e sem trechos inválidos. Dias incompletos não entram na regressão."
+        mensagem: incluirRede ? "Aguardando 7 dias encerrados com cobertura suficiente de EC2, EBS e Rede." :
+            "São necessários pelo menos 7 dias encerrados com 99% de cobertura e sem trechos inválidos. Dias incompletos não entram na regressão."
     };
     const origem = Date.parse(`${completos[0].dia}T00:00:00Z`);
     const pontos = completos.map(diaRegistrado => ({
@@ -244,7 +275,22 @@ async function obterTarifas(config) {
     return salvarTarifas(chave, pacote);
 }
 
-function partesDoIntervalo(inicio, fim, situacao, detalhe, config, pacote) {
+async function obterTarifaRede(regiao) {
+    const dia = new Date().toISOString().slice(0, 10);
+    const chave = [dia, "Rede", regiao].join("|");
+    const referencia = await buscarTarifas(chave);
+    if (referencia) return referencia.pacote.rede;
+    try {
+        const rede = await precos.coletarPrecoRede(regiao);
+        const salva = await salvarTarifas(chave, { consultado_em: new Date().toISOString(), rede });
+        return salva.pacote.rede;
+    } catch (erro) {
+        console.warn("[Custos] Tarifa de Rede indisponível:", erro.message);
+        return null;
+    }
+}
+
+function partesDoIntervalo(inicio, fim, situacao, detalhe, config, pacote, custoRede) {
     const partes = [];
     const calculado = situacao === "calculado";
     const ec2Ligada = calculado && config.estado === "running";
@@ -269,7 +315,8 @@ function partesDoIntervalo(inicio, fim, situacao, detalhe, config, pacote) {
             segundos_ec2: ec2Ligada ? segundos.toFixed(6) : "0",
             segundos_nao_cobertos: calculado ? "0" : segundos.toFixed(6),
             custo_ec2: custoEc2?.toFixed(12) ?? null,
-            custo_ebs: custoEbs?.toFixed(12) ?? null, situacao, detalhe });
+            custo_ebs: custoEbs?.toFixed(12) ?? null,
+            custo_rede: custoRede?.times(ate - instante).div(fim - inicio).toFixed(12) ?? null, situacao, detalhe });
         instante = ate;
     }
     return partes;
@@ -278,6 +325,14 @@ function partesDoIntervalo(inicio, fim, situacao, detalhe, config, pacote) {
 async function processar(empresa, instanciaEc2) {
     const chave = chaveInstancia(empresa, instanciaEc2);
     const capturas = await capturasPendentes(empresa, instanciaEc2);
+    const leiturasRede = capturas.length > 1 ? await leiturasDeEnvio(empresa, instanciaEc2, capturas) : [];
+    let indiceRede = 0, leituraRede, tarifaRede;
+    function leituraAte(instante) {
+        while (indiceRede < leiturasRede.length && Number(leiturasRede[indiceRede].instante) <= instante) {
+            leituraRede = leiturasRede[indiceRede++];
+        }
+        return leituraRede;
+    }
     let mensagem = "Aguardando novos intervalos de captura para atualizar a estimativa.";
     for (let indice = 1; indice < capturas.length; indice++) {
         const anterior = capturas[indice - 1], atual = capturas[indice];
@@ -320,7 +375,13 @@ async function processar(empresa, instanciaEc2) {
                 detalhe = "As tarifas disponíveis não estavam vigentes neste intervalo histórico.";
             }
         }
-        const partes = partesDoIntervalo(inicio, fim, situacao, detalhe, config, tarifas?.pacote);
+        const envio = calcularEnvio(leituraAte(inicio), leituraAte(fim), inicio, fim);
+        let custoRede = null;
+        if (situacao === "calculado" && config.estado === "running" && envio !== null) {
+            if (tarifaRede === undefined) tarifaRede = await obterTarifaRede(config.regiao);
+            if (tarifaRede && Date.parse(tarifaRede.vigencia) <= inicio) custoRede = envio.times(tarifaRede.preco_unitario);
+        }
+        const partes = partesDoIntervalo(inicio, fim, situacao, detalhe, config, tarifas?.pacote, custoRede);
         await salvarIntervalo(empresa, instanciaEc2, anterior, atual, partes, tarifas?.tarifaId);
         mensagem = situacao === "calculado" ? "Custos estimados sobre os intervalos observados." : detalhe;
     }
@@ -364,13 +425,17 @@ async function obterPainel(empresa, instanciaEc2) {
         const mes = new Date().toISOString().slice(0, 7);
         const mensais = diarios.filter(diaRegistrado => diaRegistrado.dia.startsWith(mes));
         const temCustos = mensais.some(diaRegistrado => diaRegistrado.total !== null);
+        const temRede = mensais.some(diaRegistrado => diaRegistrado.custo_rede !== null);
+        const historico = temRede ? diarios : diarios.map(dia => ({ ...dia, total: dia.total_base }));
         const somar = campo => mensais.reduce((soma, diaRegistrado) => soma.plus(diaRegistrado[campo] || 0), new Decimal(0));
+        const componentes = temCustos ? [{ servico: "EC2", valor: somar("custo_ec2").toFixed(12) },
+            { servico: "EBS", valor: somar("custo_ebs").toFixed(12) }] : [];
+        componentes.push({ servico: "Rede", valor: temRede ? somar("custo_rede").toFixed(12) : null });
         const processamento = estados.get(chaveInstancia(empresa, instanciaEc2)) || { estado: "aguardando", mensagem: "Processador de custos iniciando." };
         return {
             ...processamento, mes, moeda: "USD", parcial: true,
             total: temCustos ? somar("total").toFixed(12) : null,
-            componentes: temCustos ? [{ servico: "EC2", valor: somar("custo_ec2").toFixed(12) },
-                { servico: "EBS", valor: somar("custo_ebs").toFixed(12) }] : [],
+            componentes,
             segundos_ec2: somar("segundos_ec2").toNumber(),
             segundos_cobertos: somar("segundos_cobertos").toNumber(),
             segundos_nao_cobertos: somar("segundos_nao_cobertos").toNumber(),
@@ -378,11 +443,11 @@ async function obterPainel(empresa, instanciaEc2) {
             atualizado_em: ultimo.processado_em, acompanhado_ate: ultimo.fim,
             tarifas_consultadas_em: tarifa?.consultado_em,
             motivo_ultimo_intervalo: ultimo.detalhe,
-            diario: diarios, previsao: prever(diarios),
+            diario: historico, previsao: prever(historico, temRede),
             observacoes: "Estimativa parcial dos intervalos observados; lacunas e períodos anteriores à coleta não são custo zero. EBS proporcional a 30 dias. Sem créditos educacionais, mínimos de faturamento ou serviços adicionais."
         };
     } catch (erro) {
-        return { estado: "indisponivel", mensagem: "Histórico de custos indisponível. Aplique Banco de Dados/custos_ec2.sql e confira a conexão do Node." };
+        return { estado: "indisponivel", mensagem: "Histórico de custos indisponível. Confira a conexão e se o banco tem a coluna custo_rede em ec2_custo_intervalo." };
     }
 }
 

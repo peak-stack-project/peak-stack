@@ -70,8 +70,9 @@
             <section class="graficos_duplos" aria-label="Custo acumulado e previsão de custos">
                 <article class="painel_grafico" aria-labelledby="tituloComponentes">
                     <h2 id="tituloComponentes">Custo Acumulado por Serviço</h2>
-                    <p id="premissasGrafico" class="nota_custos">Estimativa em USD para EC2 e EBS com base no tempo e na configuração dos recursos acompanhados.</p>
-                    <div class="canvas_wrap"><canvas id="graficoComponentes" role="img" aria-label="Gráfico de barras do custo acumulado estimado por serviço" aria-describedby="statusGraficoComponentes">Custo estimado de EC2 e EBS. Aguardando dados.</canvas></div>
+                    <p id="premissasGrafico" class="nota_custos">Estimativa em USD para os intervalos monitorados.</p>
+                    <div class="canvas_wrap"><canvas id="graficoComponentes" role="img" aria-label="Gráfico de barras do custo acumulado estimado por serviço" aria-describedby="statusGraficoComponentes statusCustoRede">Custo estimado de EC2, EBS e Rede.</canvas></div>
+                    <p id="statusCustoRede" class="nota_custos">Rede aguardando leituras de envio e tarifa regional.</p>
                     <p id="statusGraficoComponentes" class="nota_custos" role="status">Aguardando intervalos calculados.</p>
                     <p id="coberturaCustos" class="nota_custos">Cobertura do acompanhamento ainda indisponível.</p>
                 </article>

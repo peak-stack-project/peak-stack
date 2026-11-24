@@ -72,7 +72,7 @@ function corresponde(produto, filtros) {
     return true;
 }
 
-function criarTarifa(produto, termo, dimensao, categoria, moeda, preco, url) {
+function criarTarifa(produto, termo, dimensao, categoria, moeda, preco, url, servico = "AmazonEC2") {
     if (typeof preco !== "string" || !/^\d+(?:\.\d+)?$/.test(preco)) {
         throw new Error("Tarifa inválida no catálogo AWS.");
     }
@@ -81,7 +81,7 @@ function criarTarifa(produto, termo, dimensao, categoria, moeda, preco, url) {
     }
     return {
         categoria,
-        servico: "AmazonEC2",
+        servico,
         sku: produto.sku,
         atributos: produto.attributes || {},
         modalidade: "OnDemand",
@@ -165,6 +165,24 @@ async function coletarPrecos(configuracao) {
     };
 }
 
+async function coletarPrecoRede(regiao) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)+-\d+$/.test(regiao)) throw new Error("Região inválida para consultar o preço de Rede.");
+    const url = `${ORIGEM}/offers/v1.0/aws/AWSDataTransfer/current/${regiao}/index.json`;
+    const resposta = await fetch(url, { signal: AbortSignal.timeout(15000), redirect: "error" });
+    if (!resposta.ok) throw new Error(`Catálogo AWS de Rede indisponível (HTTP ${resposta.status}).`);
+
+    const catalogo = await resposta.json();
+    const tarifas = Object.values(catalogo.products).filter(produto => corresponde(produto, {
+        productFamily: "Data Transfer", transferType: "AWS Outbound", fromRegionCode: regiao, toLocation: "External"
+    })).flatMap(produto => Object.values(catalogo.terms.OnDemand[produto.sku] || {}).flatMap(termo =>
+        Object.values(termo.priceDimensions || {}).filter(dimensao =>
+            dimensao.unit === "GB" && dimensao.beginRange === "0" && !dimensao.appliesTo?.length &&
+            Number(dimensao.pricePerUnit?.USD) > 0
+        ).map(dimensao => criarTarifa(produto, termo, dimensao, "Rede", "USD", dimensao.pricePerUnit.USD, url, "AWSDataTransfer"))));
+    if (tarifas.length !== 1) throw new Error("Primeira faixa paga de saída para a internet sem tarifa USD única.");
+    return tarifas[0];
+}
+
 function selecionarTarifa(tarifas, categoria, unidade, combina = () => true) {
     const opcoes = tarifas.filter(tarifa =>
         tarifa.categoria === categoria && tarifa.modalidade === "OnDemand" &&
@@ -180,4 +198,4 @@ function selecionarTarifa(tarifas, categoria, unidade, combina = () => true) {
     return opcoes[0];
 }
 
-module.exports = { coletarPrecos, selecionarTarifa };
+module.exports = { coletarPrecos, coletarPrecoRede, selecionarTarifa };

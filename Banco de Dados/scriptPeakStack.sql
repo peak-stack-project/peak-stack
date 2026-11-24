@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS ec2_custo_intervalo (
   segundos_nao_cobertos DECIMAL(16,6) ,
   custo_ec2 DECIMAL(24,12),
   custo_ebs DECIMAL(24,12),
+  custo_rede DECIMAL(24,12),
   situacao VARCHAR(60) ,
   detalhe VARCHAR(300),
   processado_em DATETIME(6) ,
@@ -173,6 +174,7 @@ CREATE TABLE IF NOT EXISTS leitura (
   dt_hr_leitura DATETIME DEFAULT current_timestamp,
   fk_config_maq INT NOT NULL,
   PRIMARY KEY (id, fk_config_maq),
+  KEY idx_leitura_config_data (fk_config_maq, dt_hr_leitura),
   CONSTRAINT fk_leitura_config_maq
     FOREIGN KEY (fk_config_maq)
     REFERENCES config_maq (id)
