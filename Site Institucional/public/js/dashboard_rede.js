@@ -17,25 +17,35 @@ var grafConexoes = new Chart(ctxConexoes, {
     data: {
         labels: [],
         datasets: [
-            { label: "Conexões ativas", data: [], borderColor: "#3b82f6", backgroundColor: gradiente,
-              fill: true, tension: 0.4, borderWidth: 2, pointRadius: 0, pointBackgroundColor: "#ef4444",
-              spanGaps: true, yAxisID: "y" },
-            { label: "Novas conexões por minuto", data: [], borderColor: "#f43f5e",
-              fill: false, tension: 0.4, borderWidth: 2, pointRadius: 0, spanGaps: true, yAxisID: "y1" },
-            { label: "Limite de anomalia", data: [], borderColor: "#f59e0b",
-              fill: false, tension: 0, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, spanGaps: true, yAxisID: "y" }
+            {
+                label: "Conexões ativas", data: [], borderColor: "#3b82f6", backgroundColor: gradiente,
+                fill: true, tension: 0.4, borderWidth: 2, pointRadius: 0, pointBackgroundColor: "#ef4444",
+                spanGaps: true, yAxisID: "y"
+            },
+            {
+                label: "Novas conexões por minuto", data: [], borderColor: "#f43f5e",
+                fill: false, tension: 0.4, borderWidth: 2, pointRadius: 0, spanGaps: true, yAxisID: "y1"
+            },
+            {
+                label: "Limite de anomalia", data: [], borderColor: "#f59e0b",
+                fill: false, tension: 0, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, spanGaps: true, yAxisID: "y"
+            }
         ]
     },
     options: {
         responsive: true, maintainAspectRatio: false,
         interaction: { mode: "index", intersect: false },
         scales: {
-            y: { beginAtZero: true, position: "left",
-                 title: { display: true, text: "Conexões", font: { family: "Inter", size: 12 } },
-                 ticks: { precision: 0, font: { family: "Inter", size: 11 } }, grid: { color: "#f3f4f6" } },
-            y1: { beginAtZero: true, position: "right",
-                  title: { display: true, text: "Novas por minuto", font: { family: "Inter", size: 12 } },
-                  ticks: { precision: 0, font: { family: "Inter", size: 11 } }, grid: { drawOnChartArea: false } },
+            y: {
+                beginAtZero: true, position: "left",
+                title: { display: true, text: "Conexões", font: { family: "Inter", size: 12 } },
+                ticks: { precision: 0, font: { family: "Inter", size: 11 } }, grid: { color: "#f3f4f6" }
+            },
+            y1: {
+                beginAtZero: true, position: "right",
+                title: { display: true, text: "Novas por minuto", font: { family: "Inter", size: 12 } },
+                ticks: { precision: 0, font: { family: "Inter", size: 11 } }, grid: { drawOnChartArea: false }
+            },
             x: { grid: { display: false }, ticks: { maxTicksLimit: 12, font: { family: "Inter", size: 11 } } }
         },
         plugins: { legend: { display: true, position: "top", labels: { font: { family: "Inter", size: 12 }, boxWidth: 12 } } }
@@ -44,30 +54,71 @@ var grafConexoes = new Chart(ctxConexoes, {
 
 var grafEstados = new Chart(document.getElementById("graficoEstados").getContext("2d"), {
     type: "doughnut",
-    data: { labels: ["ESTABLISHED", "TIME_WAIT", "CLOSE_WAIT", "SYN_RECV", "Outras"],
-            datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: CORES_ESTADOS, borderWidth: 0, hoverOffset: 4 }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: "70%",
-               plugins: { legend: { display: true, position: "bottom",
-                                    labels: { usePointStyle: true, font: { family: "Inter", size: 12 } } } } }
+    data: {
+        labels: ["ESTABLISHED", "TIME_WAIT", "CLOSE_WAIT", "SYN_RECV", "Outras"],
+        datasets: [{
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: CORES_ESTADOS,
+            borderWidth: 0,
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "70%",
+        layout: {
+            padding: { right: 8 }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: "right",
+                align: "center",
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: "circle",
+                    boxWidth: 7,
+                    boxHeight: 7,
+                    padding: 10,
+                    color: "#52617d",
+                    font: { family: "Inter", size: 10 }
+                }
+            }
+        }
+    }
 });
 
-var grafIps = new Chart(document.getElementById("graficoIps"), {
+var grafTrafego = new Chart(document.getElementById("graficoIps"), {
     type: "bar",
-    data: { labels: [], datasets: [{ label: "Conexões", data: [], backgroundColor: [],
-                                     borderRadius: 4, borderSkipped: false, barThickness: 13 }] },
+    data: {
+        labels: [],
+        datasets: [
+            { label: "Download (Mbps)", data: [], backgroundColor: COR_INTERNO, borderRadius: 4, borderSkipped: false, barThickness: 10 },
+            { label: "Upload (Mbps)", data: [], backgroundColor: COR_EXTERNO, borderRadius: 4, borderSkipped: false, barThickness: 10 }
+        ]
+    },
     options: {
-        indexAxis: "y", responsive: true, maintainAspectRatio: false,
+        indexAxis: "y",
+        responsive: true,
+        maintainAspectRatio: false,
         layout: { padding: { left: 10, right: 20 } },
         scales: {
-            x: { beginAtZero: true,
-                 ticks: { precision: 0, font: { family: "Inter", size: 10 }, color: "#91a0bb" },
-                 grid: { color: "#f0f2f7" }, border: { display: false } },
-            y: { afterFit: function (scale) { scale.width = 120; },
-                 ticks: { padding: 8, font: { family: "Inter", size: 10 }, color: "#52617d" },
-                 grid: { display: false }, border: { display: false } }
+            x: {
+                beginAtZero: true,
+                ticks: { font: { family: "Inter", size: 10 }, color: "#91a0bb" },
+                grid: { color: "#f0f2f7" }, border: { display: false }
+            },
+            y: {
+                afterFit: function (scale) { scale.width = 110; },
+                ticks: { padding: 8, font: { family: "Inter", size: 10 }, color: "#52617d" },
+                grid: { display: false }, border: { display: false }
+            }
         },
-        plugins: { legend: { display: false },
-                   tooltip: { callbacks: { label: function (c) { return " " + c.raw + " conexões"; } } } }
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (c) { return " " + c.dataset.label + ": " + c.raw + " Mbps"; } } }
+        }
     }
 });
 
@@ -174,10 +225,11 @@ function carregarDashboard() {
             grafEstados.data.datasets[0].data = [e.established, e.timeWait, e.closeWait, e.synRecv, e.outras];
             grafEstados.update("none");
 
-            grafIps.data.labels = d.topIps.map(function (x) { return x.ip; });
-            grafIps.data.datasets[0].data = d.topIps.map(function (x) { return x.quantidade; });
-            grafIps.data.datasets[0].backgroundColor = d.topIps.map(function (x) { return x.interno ? COR_INTERNO : COR_EXTERNO; });
-            grafIps.update("none");
+            var trafego = d.trafego || [];
+            grafTrafego.data.labels = trafego.map(function (x) { return x.servidor; });
+            grafTrafego.data.datasets[0].data = trafego.map(function (x) { return x.download; });
+            grafTrafego.data.datasets[1].data = trafego.map(function (x) { return x.upload; });
+            grafTrafego.update("none");
 
             var k = d.kpis;
             escrever("kpi_conexoes", numero(k.conexoes));
