@@ -27,6 +27,7 @@ var maquinasRoutes = require("./src/routes/maquinas");
 var alertaRoutes = require("./src/routes/alerta");
 var ramRouter = require("./src/routes/ram");
 var dashboardRoutes = require("./src/routes/dashboard");
+var dashboardRedeRoutes = require("./src/routes/dashboardRede");
 var custosRouter = require("./src/routes/custos");
 var custosAcumulados = require("./src/models/custos/custosModel");
 var previsaoSaturacaoRouter = require("./src/routes/previsao");
@@ -50,6 +51,7 @@ app.use("/alerta", alertaRoutes);
 app.use("/ram", ramRouter);
 app.use("/dashboard", dashboardRoutes);
 app.use("/custos", custosRouter);
+app.use("/dashboard", dashboardRedeRoutes);
 app.use("/previsao", previsaoSaturacaoRouter);
 
 

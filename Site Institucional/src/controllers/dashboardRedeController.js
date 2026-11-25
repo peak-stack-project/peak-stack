@@ -1,4 +1,4 @@
-var dashboardModel = require("../models/dashboardModel");
+var dashboardModel = require("../models/dashboardRedeModel");
 var maquinasModel = require("../models/maquinasModel");
 
 var LIMITE_OFFLINE_SEG = 60;
