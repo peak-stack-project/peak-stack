@@ -6,8 +6,13 @@
     width: 38%;
 }
 
+.container_interacao_usuarios {
+    justify-content: space-between;
+}
+
 .status_usuarios.critico { background-color: #f3c3c5; color: #6f1c20; }
 .status_usuarios.atencao { background-color: #f6dd9d; color: #6d4800; }
+.status_usuarios.normal { background-color: #eaf1ff; color: #2a63c9; }
 
 /* cartão em coluna: cabeçalho em cima, lista preenchendo o resto */
 .tabela_alertas {
@@ -26,6 +31,7 @@
     padding-top: 1dvh;
     border-top: solid 1px rgb(95, 94, 94);
     overflow-y: auto;
+    overscroll-behavior: contain;
     scrollbar-width: thin;
     scrollbar-color: #aebbd0 transparent;
 }
@@ -42,7 +48,7 @@
 /* cores de cada tipo de alerta */
 .alerta.critico { --c: #c8353c; --bg: #fdeeee; --line: #f1b9bc; }
 .alerta.atencao { --c: #b87800; --bg: #fff6df; --line: #f0d38a; }
-.alerta.info    { --c: #2a63c9; --bg: #eaf1ff; --line: #b5cdf5; }
+.alerta.normal  { --c: #2a63c9; --bg: #eaf1ff; --line: #b5cdf5; }
 
 /* cada alerta divide a altura do cartão; texto 14px como as linhas da tabela */
 .alerta {

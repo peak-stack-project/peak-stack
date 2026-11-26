@@ -11,6 +11,10 @@ router.put("/marcarCiente/:idDiscretizada", function (req, res) {
     alertaController.marcarCiente(req, res);
 });
 
+router.put("/marcarCienteTodos", function (req, res) {
+    alertaController.marcarCienteTodos(req, res);
+});
 
 
-module.exports = router; 
+
+module.exports = router;

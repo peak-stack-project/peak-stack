@@ -41,38 +41,28 @@
     <section class="sessao_cadastro_usuarios">
         <div class="container_cadastro_usuarios">
 
-            <!-- Título e busca -->
+            <!-- Título -->
             <div class="container_inicial">
                 <div class="texto_inicial">
                     <h3>Alertas</h3>
                     <p>Notificações e eventos dos servidores monitorados</p>
                 </div>
-                <div class="container_pesquisa">
-                    <input type="text" placeholder="  Buscar alertas">
-                    <button>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-search"
-                            viewBox="0 0 16 16">
-                            <path
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                        </svg>
-                    </button>
-                </div>
             </div>
 
-            <!-- Contadores e botão -->
+            <!-- Contadores -->
             <div class="container_interacao_usuarios">
                 <div class="container_status_usuarios container_status_alertas">
                     <div class="status_usuarios critico">
-                        <p>2 Crítico</p>
+                        <p id="contador_critico">0 Crítico</p>
                     </div>
                     <div class="status_usuarios atencao">
-                        <p>2 Atenção</p>
+                        <p id="contador_alerta">0 Atenção</p>
                     </div>
-                    <div class="status_usuarios">
-                        <p>2 Info</p>
+                    <div class="status_usuarios normal">
+                        <p id="contador_normal">0 Info</p>
                     </div>
                 </div>
-                <button id="botao_cadastro_funcionarios">✓ Ciente de todos</button>
+                <button id="botao_cadastro_funcionarios" onclick="marcarTodosCientes()">✓ Ciente de todos</button>
             </div>
 
             <!-- Cartão com a lista -->
@@ -80,10 +70,10 @@
                 <div class="container_tabela tabela_alertas">
 
                     <div class="colunas_tabela">
-                        <div>PENDENTES · 6</div>
+                        <div id="contador_pendentes">PENDENTES · 0</div>
                     </div>
 
-                    <div id="lista_alertas">
+                    <div id="lista_alertas" class="lista_alertas">
 
                         <!-- Alerta 1 -->
                         <!-- <div class="alerta critico">
@@ -220,7 +210,12 @@
 
 <script>
     const telaMaquina = document.getElementById("tela_maquinas");
-const telaUsuarios = document.getElementById("tela_usuarios");
+    const telaUsuarios = document.getElementById("tela_usuarios");
+    const contadorCritico = document.getElementById("contador_critico");
+    const contadorAlerta = document.getElementById("contador_alerta");
+    const contadorNormal = document.getElementById("contador_normal");
+    const contadorPendentes = document.getElementById("contador_pendentes");
+    const listaAlertas = document.getElementById("lista_alertas");
 
     function carregando(){
         if(sessionStorage.FKCARGO_USUARIO == 2){
@@ -230,6 +225,19 @@ const telaUsuarios = document.getElementById("tela_usuarios");
             telaUsuarios.style.display = "none";
         }
     }
+    function classeDoAlerta(situacao) {
+        if (situacao === "Crítico") return "critico";
+        if (situacao === "Alerta") return "atencao";
+        return "normal";
+    }
+
+    function atualizarResumo(alertas) {
+        contadorCritico.textContent = `${alertas.filter(alerta => alerta.situacao === "Crítico").length} Crítico`;
+        contadorAlerta.textContent = `${alertas.filter(alerta => alerta.situacao === "Alerta").length} Atenção`;
+        contadorNormal.textContent = `${alertas.filter(alerta => alerta.situacao === "Normal").length} Info`;
+        contadorPendentes.textContent = `PENDENTES · ${alertas.length}`;
+    }
+
     function listarAlerta() {
         const idEmpresa = sessionStorage.FKEMPRESA_USUARIO;
 
@@ -241,83 +249,43 @@ const telaUsuarios = document.getElementById("tela_usuarios");
         fetch(`/alerta/listarAlerta/${idEmpresa}`)
             .then(function (resposta) {
                 if (resposta.status == 204) {
-                    lista_alertas.innerHTML = "<p>Nenhum alerta encontrado.</p>";
+                    atualizarResumo([]);
+                    listaAlertas.innerHTML = "<p>Nenhum alerta encontrado.</p>";
                     return;
                 }
 
                 if (resposta.ok) {
                     resposta.json().then(function (json) {
                         let htmlCodigo = "";
+                        atualizarResumo(json);
 
                         for (let i = 0; i < json.length; i++) {
                             let alertaAtual = json[i];
                             let dataFormatada = new Date(alertaAtual.dt_hr_leitura).toLocaleString('pt-BR');
-
-                            if (alertaAtual.situacao == "critico") {
-                                htmlCodigo += `
-                                    <div class="alerta critico">
-                                        <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                            <path d="m12 3 9 17H3L12 3Z" />
-                                            <path d="M12 9v5M12 17h.01" />
-                                        </svg>
-                                        <div class="alerta_texto">
-                                            <div class="alerta_info">
-                                                <span class="gravidade">${alertaAtual.situacao}</span>
-                                                <span class="servidor">${alertaAtual.nome_maquina}</span>
-                                            </div>
-                                            <div>${alertaAtual.descricao}</div>
+                            let classe = classeDoAlerta(alertaAtual.situacao);
+                            htmlCodigo += `
+                                <div class="alerta ${classe}">
+                                    <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="m12 3 9 17H3L12 3Z" />
+                                        <path d="M12 9v5M12 17h.01" />
+                                    </svg>
+                                    <div class="alerta_texto">
+                                        <div class="alerta_info">
+                                            <span class="gravidade">${alertaAtual.situacao}</span>
+                                            <span class="servidor">${alertaAtual.nome_maquina}</span>
                                         </div>
-                                        <div class="alerta_lado">
-                                            <span class="horario">${dataFormatada}</span>
-                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].id_discretizada})">✓ Ciente</button>
-                                        </div>
+                                        <div>${alertaAtual.descricao}</div>
                                     </div>
-                                `;
-                            } else if (alertaAtual.situacao == "atencao") {
-                                htmlCodigo += `
-                                    <div class="alerta atencao">
-                                        <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                            <path d="m12 3 9 17H3L12 3Z" />
-                                            <path d="M12 9v5M12 17h.01" />
-                                        </svg>
-                                        <div class="alerta_texto">
-                                            <div class="alerta_info">
-                                                <span class="gravidade">${alertaAtual.situacao}</span>
-                                                <span class="servidor">${alertaAtual.nome_maquina}</span>
-                                            </div>
-                                            <div>${alertaAtual.descricao}</div>
-                                        </div>
-                                        <div class="alerta_lado">
-                                            <span class="horario">${dataFormatada}</span>
-                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].id_discretizada})">✓ Ciente</button>
-                                        </div>
+                                    <div class="alerta_lado">
+                                        <span class="horario">${dataFormatada}</span>
+                                        <button class="botao_ciente" onclick="marcarCiente(${json[i].id_discretizada})">✓ Ciente</button>
                                     </div>
-                                `;
-                            } else {
-                                htmlCodigo += `
-                                    <div class="alerta info">
-                                        <svg class="alerta_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                            <path d="M18 9a6 6 0 0 0-12 0v5l-2 2h16l-2-2V9Z" />
-                                            <path d="M10 20h4" />
-                                        </svg>
-                                        <div class="alerta_texto">
-                                            <div class="alerta_info">
-                                                <span class="gravidade">${alertaAtual.situacao}</span>
-                                                <span class="servidor">${alertaAtual.nome_maquina}</span>
-                                            </div>
-                                            <div>${alertaAtual.descricao}</div>
-                                        </div>
-                                        <div class="alerta_lado">
-                                            <span class="horario">${dataFormatada}</span>
-                                            <button class="botao_ciente" onclick="marcarCiente(${json[i].id_discretizada})">✓ Ciente</button>
-                                        </div>
-                                    </div>
-                                `;
-                            }
+                                </div>
+                            `;
                         }
 
                         console.log(json);
-                        lista_alertas.innerHTML = htmlCodigo;
+                        listaAlertas.innerHTML = htmlCodigo;
                     });
                 }
             })
@@ -343,5 +311,20 @@ function marcarCiente(idDiscretizada) {
     })
     .catch(erro => console.error("Erro na requisição:", erro));
 }
+
+function marcarTodosCientes() {
+    fetch("/alerta/marcarCienteTodos", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idEmpresa: sessionStorage.FKEMPRESA_USUARIO })
+    })
+    .then(function (resposta) {
+        if (resposta.ok) listarAlerta();
+        else console.error("Erro ao marcar todos os alertas como ciente.");
+    })
+    .catch(erro => console.error("Erro na requisição:", erro));
+}
+
     listarAlerta();
+    setInterval(listarAlerta, 10000);
 </script>
