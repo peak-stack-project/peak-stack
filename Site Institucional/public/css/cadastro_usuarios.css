@@ -190,7 +190,6 @@ h1 {
 
 }
 
-/* EDITADO: regra removida (o modal agora usa .modal_edicao, .campo_edicao e .form_edicao_empresa) */
 
 .container_pesquisa button {
 
@@ -231,7 +230,6 @@ h1 {
 
 }
 
-/* EDITADO: regra removida (o modal agora usa .modal_edicao, .campo_edicao e .form_edicao_empresa) */
 
 #botao_cadastro_funcionarios {
     height: 5dvh;
@@ -566,6 +564,14 @@ h1 {
 .campo_edicao select {
     height: 100%;
     cursor: pointer;
+}
+
+.botao_mostrar_senha {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 .acoes_edicao {

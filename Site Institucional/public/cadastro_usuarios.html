@@ -10,13 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboard.css">
     <link rel="stylesheet" href="./css/cadastro_usuarios.css">
-    <!-- <link rel="stylesheet" href="./css/dashboard.css"> -->
     <script src="./js/sessao.js" defer></script>
 </head>
 
 <body class="corpo_dashboard">
 
-    <!-- Barra lateral (ilha flutuante) -->
     <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
@@ -46,23 +44,12 @@
                     <h3>Usuários</h3>
                     <p>Cadastros para acesso ao sistema</p>
                 </div>
-                <div class="container_pesquisa">
-                    <input type="text" placeholder="  Buscar usuarios">
-                    <button>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-search"
-                            viewBox="0 0 16 16">
-                            <path
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                        </svg>
-                    </button>
-
-                </div>
             </div>
 
             <div class="container_interacao_usuarios">
                 <div class="container_status_usuarios">
                     <div class="status_usuarios">
-                        <p>2 Usuários Ativos</p>
+                        <p id="contador_usuarios_ativos">0 Usuários Ativos</p>
                     </div>
 
                 </div>
@@ -84,7 +71,6 @@
                 </div>
             </div>
     </section>
-    <!-- EDITADO (inicio): cadastro de usuario com o mesmo container do modal de empresas -->
     <div id="container_cadastro" class="modal_edicao" style="display: none;">
         <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroUsuario">
             <header class="modal_edicao_cabecalho">
@@ -108,18 +94,23 @@
                 </div>
 
                 <label for="senha_input">Senha</label>
-                <div class="campo_edicao">
+                <div class="campo_edicao senha_edicao">
                     <input type="password" id="senha_input" placeholder="Mínimo 6 caracteres">
+                    <button type="button" class="botao_mostrar_senha" aria-label="Mostrar senha"
+                        onclick="toggleSenha('senha_input', this)">👁️</button>
                 </div>
 
                 <label for="confirmacao_senha_input">Confirmar senha</label>
-                <div class="campo_edicao">
+                <div class="campo_edicao senha_edicao">
                     <input type="password" id="confirmacao_senha_input" placeholder="Mínimo 6 caracteres">
+                    <button type="button" class="botao_mostrar_senha" aria-label="Mostrar confirmação de senha"
+                        onclick="toggleSenha('confirmacao_senha_input', this)">👁️</button>
                 </div>
 
                 <label for="data_input">Data de nascimento</label>
                 <div class="campo_edicao">
-                    <input type="text" id="data_input" placeholder="YYYY-MM-DD">
+                    <input type="text" id="data_input" placeholder="DD/MM/AAAA" maxlength="10"
+                        oninput="formatarDataNascimento(this)">
                 </div>
 
                 <label for="cargo_input">Cargo</label>
@@ -142,7 +133,6 @@
             </div>
         </section>
     </div>
-    <!-- EDITADO (fim) -->
     <div id="modalEdicaoUsuario" class="modal_edicao" style="display: none;">
 
         <section class="modal_edicao_cartao">
@@ -230,6 +220,22 @@
 </html>
 <script>
 
+    function toggleSenha(idInput, botao) {
+        const input = document.getElementById(idInput);
+        const mostrando = input.type === "password";
+        input.type = mostrando ? "text" : "password";
+        botao.textContent = mostrando ? "🔒" : "👁️";
+    }
+
+    function formatarDataNascimento(input) {
+        let numeros = input.value.replace(/\D/g, "").slice(0, 8);
+        input.value = numeros.replace(/(\d{2})(\d)/, "$1/$2").replace(/(\d{2}\/\d{2})(\d)/, "$1/$2");
+    }
+
+    function dataParaBanco(data) {
+        return data.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1");
+    }
+
      let fkEmpresa = sessionStorage.getItem("FKEMPRESA_USUARIO");
 
     
@@ -243,6 +249,7 @@
             .then(function (json) {
 
                 let htmlCodigo = "";
+                contador_usuarios_ativos.textContent = `${json.length} Usuários Ativos`;
 
                 for (let i = 0; i < json.length; i++) {
 
@@ -350,8 +357,7 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
+                   
                     idUsuarioServer: id
                 }),
             })
@@ -476,7 +482,13 @@
             booleano = false;
         }
 
-        // Enviando o valor da nova input
+        if (dataVar && !/^\d{2}\/\d{2}\/\d{4}$/.test(dataVar)) {
+            alert("Informe a data de nascimento no formato DD/MM/AAAA.");
+            return;
+        }
+
+        if (dataVar) dataVar = dataParaBanco(dataVar);
+
         if (senhaVar == confirmacaoSenhaVar && booleano == true) {
             fetch("/usuarios/cadastrar", {
                 method: "POST",
@@ -484,8 +496,7 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
+                    
                     nomeServer: nomeVar,
                     emailServer: emailVar,
                     senhaServer: senhaVar,
