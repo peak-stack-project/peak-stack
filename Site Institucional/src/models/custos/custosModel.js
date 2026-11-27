@@ -66,14 +66,19 @@ const filtro = "fk_empresa = ? AND fk_maquina = ? AND instancia_id = ? AND regia
 
 async function capturasPendentes(empresa, instanciaEc2) {
     const params = parametrosInstancia(empresa, instanciaEc2);
-    const [cursor] = await executarConsulta(`SELECT MAX(fk_captura_fim) AS ultimo FROM ec2_custo_intervalo WHERE ${filtro}`, params);
+    const [cursor] = await executarConsulta(`SELECT fk_captura_fim AS ultimo,
+        DATE_FORMAT(fim, '%Y-%m-%d %H:%i:%s.%f') AS fim
+        FROM ec2_custo_intervalo WHERE ${filtro}
+        ORDER BY fim DESC, id DESC LIMIT 1`, params);
+    // Reusa a captura final do último intervalo e ignora horários já processados.
+    const retomar = cursor ? "AND (id = ? OR capturado_em >= DATE_ADD(?, INTERVAL 1000 MICROSECOND))" : "";
     // Dá ao capturador de componentes tempo para gravar a leitura do mesmo período.
     return executarConsulta(`SELECT id, dados, estado_inventario,
         CONCAT(DATE_FORMAT(capturado_em, '%Y-%m-%dT%H:%i:%s.'), LEFT(DATE_FORMAT(capturado_em, '%f'), 3), 'Z') AS capturado_em
-        FROM ec2_captura WHERE ${filtro} AND id >= ?
+        FROM ec2_captura WHERE ${filtro} ${retomar}
           AND capturado_em <= UTC_TIMESTAMP(6) - INTERVAL 20 SECOND
-        ORDER BY id LIMIT 501`,
-    [...params, cursor.ultimo ?? 0]);
+        ORDER BY capturado_em, id LIMIT 501`,
+    cursor ? [...params, cursor.ultimo, cursor.fim] : params);
 }
 
 async function leiturasDeEnvio(empresa, instanciaEc2, capturas) {
@@ -334,10 +339,12 @@ async function processar(empresa, instanciaEc2) {
         return leituraRede;
     }
     let mensagem = "Aguardando novos intervalos de captura para atualizar a estimativa.";
+    let anterior = capturas[0];
     for (let indice = 1; indice < capturas.length; indice++) {
-        const anterior = capturas[indice - 1], atual = capturas[indice];
+        const atual = capturas[indice];
         const inicio = Date.parse(anterior.capturado_em), fim = Date.parse(atual.capturado_em);
-        if (!Number.isFinite(inicio) || !Number.isFinite(fim) || fim <= inicio || fim > Date.now() + 5000) {
+        if (fim === inicio) continue; // O cálculo trabalha com milissegundos.
+        if (!Number.isFinite(inicio) || !Number.isFinite(fim) || fim < inicio || fim > Date.now() + 5000) {
             throw new Error("Datas de captura inválidas ou fora de ordem; processamento suspenso.");
         }
         let situacao = "calculado", detalhe = null, config, tarifas;
@@ -383,6 +390,7 @@ async function processar(empresa, instanciaEc2) {
         }
         const partes = partesDoIntervalo(inicio, fim, situacao, detalhe, config, tarifas?.pacote, custoRede);
         await salvarIntervalo(empresa, instanciaEc2, anterior, atual, partes, tarifas?.tarifaId);
+        anterior = atual;
         mensagem = situacao === "calculado" ? "Custos estimados sobre os intervalos observados." : detalhe;
     }
     estados.set(chave, { estado: capturas.length === 501 ? "processando_historico" : "acompanhando", mensagem });

@@ -63,7 +63,8 @@ function limparCustos() {
 
 function renderizarCustos(custos) {
     limparCustos();
-    if (!custos || custos.estado === 'indisponivel') {
+    const calculoIndisponivel = custos?.estado === 'indisponivel';
+    if (!custos || (calculoIndisponivel && custos.total == null && !custos.diario?.length)) {
         texto('statusGraficoComponentes', 'Custos indisponíveis.');
         return;
     }
@@ -71,9 +72,10 @@ function renderizarCustos(custos) {
     const custoRede = componentes.find(componente => componente.servico === 'Rede')?.valor;
     const servicos = custoRede == null ? 'EC2 + EBS' : 'EC2 + EBS + Rede';
     texto('mesCustos', `${custos.mes} · ${servicos} · mês UTC · estimativa parcial`);
-    texto('custoAcumulado', custos.total === null ? null : moeda(custos.total));
-    texto('tempoExecucao', custos.total === null ? null : duracao(custos.segundos_ec2));
-    texto('statusGraficoComponentes', custos.total === null ? 'Aguardando custos.' : 'Custos atualizados.');
+    texto('custoAcumulado', custos.total == null ? null : moeda(custos.total));
+    texto('tempoExecucao', custos.total == null ? null : duracao(custos.segundos_ec2));
+    const statusCustos = custos.total == null ? 'Aguardando custos.' : 'Custos atualizados.';
+    texto('statusGraficoComponentes', calculoIndisponivel ? 'Atualização falhou. Exibindo custos salvos.' : statusCustos);
     const previsao = custos.previsao;
     if (previsao?.estado === 'disponivel') {
         texto('previsaoProximoMes', moeda(previsao.total));
