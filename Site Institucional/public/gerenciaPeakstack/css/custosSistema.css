@@ -12,6 +12,12 @@ body {
 .tabela_volumes th { color: #536177; font-size: 12px; }
 .dado_antigo { color: #a96d00; }
 
+.painel_grafico > .nota_custos {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .conteudo {
     gap: 22px;
     padding: 28px;

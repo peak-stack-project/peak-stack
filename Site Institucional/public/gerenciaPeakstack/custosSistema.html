@@ -70,21 +70,16 @@
             <section class="graficos_duplos" aria-label="Custo acumulado e previsão de custos">
                 <article class="painel_grafico" aria-labelledby="tituloComponentes">
                     <h2 id="tituloComponentes">Custo Acumulado por Serviço</h2>
-                    <p id="premissasGrafico" class="nota_custos">Estimativa em USD para os intervalos monitorados.</p>
-                    <div class="canvas_wrap"><canvas id="graficoComponentes" role="img" aria-label="Gráfico de barras do custo acumulado estimado por serviço" aria-describedby="statusGraficoComponentes statusCustoRede">Custo estimado de EC2, EBS e Rede.</canvas></div>
-                    <p id="statusCustoRede" class="nota_custos">Rede aguardando leituras de envio e tarifa regional.</p>
-                    <p id="statusGraficoComponentes" class="nota_custos" role="status">Aguardando intervalos calculados.</p>
-                    <p id="coberturaCustos" class="nota_custos">Cobertura do acompanhamento ainda indisponível.</p>
+                    <div class="canvas_wrap"><canvas id="graficoComponentes" role="img" aria-label="Gráfico de barras do custo acumulado estimado por serviço" aria-describedby="statusGraficoComponentes">Custo estimado de EC2, EBS e Rede.</canvas></div>
+                    <p id="statusGraficoComponentes" class="nota_custos" role="status">Aguardando custos.</p>
                 </article>
                 <article class="painel_grafico painel_projecao" aria-labelledby="tituloProjecao">
                     <div class="titulo_com_legenda">
                         <h2 id="tituloProjecao">Histórico e Previsão de Custos</h2>
                         <span class="selo_projecao">Regressão linear</span>
                     </div>
-                    <p class="nota_custos">Custos diários históricos e projeção diária para o próximo mês, em USD. Dias de referência em UTC; dias parciais não entram na regressão.</p>
                     <div class="canvas_wrap"><canvas id="graficoPrevisao" role="img" aria-label="Gráfico de linhas com custos diários históricos e previsão para o próximo mês" aria-describedby="statusPrevisao">Histórico e previsão diária de custos. Aguardando dados.</canvas></div>
-                    <p id="statusPrevisao" class="nota_custos" role="status">Previsão disponível após pelo menos 7 dias encerrados com 99% de cobertura e sem trechos inválidos.</p>
-                    <p id="baseComparacaoPrevisao" class="nota_custos">A tendência compara totais mensais quando existe um mês encerrado com cobertura suficiente; até lá, mostra a direção diária da regressão.</p>
+                    <p id="statusPrevisao" class="nota_custos" role="status">Aguardando previsão.</p>
                 </article>
             </section>
 

@@ -1,4 +1,7 @@
-const texto = (id, valor) => { document.getElementById(id).textContent = valor ?? '—'; };
+const texto = (id, valor) => {
+    const elemento = document.getElementById(id);
+    if (elemento) elemento.textContent = valor ?? '—';
+};
 const camposInstancia = {
     tipoInstancia: 'tipo', regiaoInstancia: 'regiao', zonaInstancia: 'zona_disponibilidade',
     imagemInstancia: 'imagem_id', arquiteturaInstancia: 'arquitetura',
@@ -48,10 +51,8 @@ function limparCustos() {
     for (const id of ['custoAcumulado', 'tempoExecucao', 'previsaoProximoMes', 'tendenciaCustos']) texto(id, null);
     texto('mesPrevisto', 'Aguardando histórico diário suficiente');
     texto('comparacaoPrevisao', 'Aguardando regressão linear');
-    texto('statusGraficoComponentes', 'Aguardando intervalos calculados.');
-    texto('statusCustoRede', 'Rede aguardando leituras de envio e tarifa regional.');
-    texto('coberturaCustos', 'Cobertura indisponível.');
-    texto('statusPrevisao', 'Aguardando histórico diário de custos.');
+    texto('statusGraficoComponentes', 'Aguardando custos.');
+    texto('statusPrevisao', 'Aguardando previsão.');
     for (const grafico of [graficoBarras, graficoPrevisao]) {
         if (!grafico) continue;
         grafico.data.labels = grafico === graficoBarras ? ['Rede'] : [];
@@ -63,7 +64,7 @@ function limparCustos() {
 function renderizarCustos(custos) {
     limparCustos();
     if (!custos || custos.estado === 'indisponivel') {
-        texto('statusGraficoComponentes', custos?.mensagem || 'Custos indisponíveis no momento.');
+        texto('statusGraficoComponentes', 'Custos indisponíveis.');
         return;
     }
     const componentes = custos.componentes || [];
@@ -72,9 +73,7 @@ function renderizarCustos(custos) {
     texto('mesCustos', `${custos.mes} · ${servicos} · mês UTC · estimativa parcial`);
     texto('custoAcumulado', custos.total === null ? null : moeda(custos.total));
     texto('tempoExecucao', custos.total === null ? null : duracao(custos.segundos_ec2));
-    texto('premissasGrafico', `Acumulado parcial de ${custos.mes} em USD para ${servicos}.`);
-    if (custoRede != null) texto('statusCustoRede', `Rede: ${moeda(custoRede)}. O cálculo trata o volume enviado como saída para a internet, à primeira tarifa paga da região, antes da franquia.`);
-    texto('statusGraficoComponentes', custos.total === null ? 'Ainda não há intervalos calculados neste mês.' : 'Valores persistidos no banco; sem dedução dos créditos AWS Student.');
+    texto('statusGraficoComponentes', custos.total === null ? 'Aguardando custos.' : 'Custos atualizados.');
     const previsao = custos.previsao;
     if (previsao?.estado === 'disponivel') {
         texto('previsaoProximoMes', moeda(previsao.total));
@@ -82,11 +81,12 @@ function renderizarCustos(custos) {
         texto('tendenciaCustos', previsao.tendencia);
         texto('comparacaoPrevisao', previsao.comparacao);
         texto('baseComparacaoPrevisao', previsao.comparacao);
+        texto('statusPrevisao', 'Previsão calculada.');
     } else {
-        texto('statusPrevisao', previsao?.mensagem || 'Histórico diário insuficiente.');
+        texto('statusPrevisao', 'Histórico insuficiente para previsão.');
     }
     if (!prepararGraficos()) {
-        texto('statusGraficoComponentes', 'Os valores estão disponíveis nos cards. Não foi possível carregar a biblioteca dos gráficos.');
+        texto('statusGraficoComponentes', 'Gráfico indisponível.');
         return;
     }
     if (componentes.length) {
