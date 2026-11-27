@@ -51,6 +51,64 @@ slack_client = WebClient(token=SLACK_TOKEN)
 INTERVALO_ALERTAS_SEGUNDOS = 10 
 ultimo_alerta = {}
 
+conexoes_anteriores = set()
+portas_anteriores = set()
+rede_anterior = None
+tempo_anterior = None
+
+
+def coletar_conexoes():
+    global conexoes_anteriores, portas_anteriores, rede_anterior, tempo_anterior
+
+    conexoes = psutil.net_connections(kind="inet")
+
+    estados = {}
+    portas = set()
+    atuais = set()
+
+    for c in conexoes:
+        estados[c.status] = estados.get(c.status, 0) + 1
+        if c.status == "LISTEN":
+            portas.add(c.laddr.port)
+        if c.raddr:
+            atuais.add((c.laddr.ip, c.laddr.port, c.raddr.ip, c.raddr.port))
+
+    primeiro_ciclo = rede_anterior is None
+    agora_t = t.monotonic()
+    rede = psutil.net_io_counters()
+
+    download = 0.0
+    upload = 0.0
+    novas_conexoes = 0
+    portas_novas = 0
+
+    if not primeiro_ciclo:
+        segundos = max(agora_t - tempo_anterior, 0.001)
+        download = max(0.0, (rede.bytes_recv - rede_anterior.bytes_recv) * 8 / 1_000_000 / segundos)
+        upload = max(0.0, (rede.bytes_sent - rede_anterior.bytes_sent) * 8 / 1_000_000 / segundos)
+        novas_conexoes = len(atuais - conexoes_anteriores)
+        portas_novas = len(portas - portas_anteriores)
+
+    conexoes_anteriores = atuais
+    portas_anteriores = portas
+    rede_anterior = rede
+    tempo_anterior = agora_t
+
+    return {
+        "total": len(conexoes),
+        "established": estados.get("ESTABLISHED", 0),
+        "time_wait": estados.get("TIME_WAIT", 0),
+        "close_wait": estados.get("CLOSE_WAIT", 0),
+        "syn_recv": estados.get("SYN_RECV", 0),
+        "novas_conexoes": novas_conexoes,
+        "portas_abertas": len(portas),
+        "portas_novas": portas_novas,
+        "download_mbps": round(download, 2),
+        "upload_mbps": round(upload, 2),
+        "erros": rede.errin + rede.errout,
+        "descartados": rede.dropin + rede.dropout,
+    }
+
 
 
 SQL_COMPONENTES = """
@@ -183,15 +241,19 @@ def capturar():
         agora = datetime.now()
         leituras = []
         print(f"\n[blue]{agora:%H:%M:%S}[/blue]  máquina [bold]{mac}[/bold]")
+        resumo_rede = coletar_conexoes() if any(c["biblioteca"] == "interno" for c in componentes) else None
 
         for c in componentes:
             try:
-                if c["biblioteca"] not in BIBLIOTECAS_PERMITIDAS:
-                    raise ValueError(f"biblioteca '{c['biblioteca']}' não permitida")
+                if c["biblioteca"] == "interno":
+                    bruto = resumo_rede[c["codigo"]]
+                else:
+                    if c["biblioteca"] not in BIBLIOTECAS_PERMITIDAS:
+                        raise ValueError(f"biblioteca '{c['biblioteca']}' não permitida")
 
-                modulo = importlib.import_module(c["biblioteca"])
-                espaco = {**vars(modulo), modulo.__name__: modulo}
-                bruto = eval(c["codigo"], {"__builtins__": {}}, espaco)
+                    modulo = importlib.import_module(c["biblioteca"])
+                    espaco = {**vars(modulo), modulo.__name__: modulo}
+                    bruto = eval(c["codigo"], {"__builtins__": {}}, espaco)
 
                 unidade = (c["unidade_medida"] or "").strip()
                 valor = round(float(bruto) / BYTES.get(unidade.upper(), 1), 2)
@@ -203,6 +265,8 @@ def capturar():
                 leituras.append((valor, agora, c["cm_id"], nivel, c["nome"], unidade))
                 print(f"{c['nome']}: [bold {cor}]{valor} {unidade}[/bold {cor}] ({situacao})")
 
+            except Exception as erro:
+                print(f"[red]Falha ao capturar '{c['nome']}': {erro}[/red]")
             except Exception as erro:
                 print(f"[red]Falha ao capturar '{c['nome']}': {erro}[/red]")
 

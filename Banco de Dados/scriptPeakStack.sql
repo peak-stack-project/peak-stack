@@ -326,3 +326,69 @@ INNER JOIN maquina m
 LEFT JOIN discretizada d	
     ON d.fk_leitura = l.id
 ORDER BY l.dt_hr_leitura DESC;
+
+INSERT INTO configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
+('Conexões', 'conexões', 'interno', 'total'),
+('Conexões', 'conexões', 'interno', 'established'),
+('Conexões', 'conexões', 'interno', 'time_wait'),
+('Conexões', 'conexões', 'interno', 'close_wait'),
+('Conexões', 'conexões', 'interno', 'syn_recv'),
+('Conexões', 'conexões', 'interno', 'novas_conexoes'),
+('Portas',   'portas',   'interno', 'portas_abertas'),
+('Portas',   'portas',   'interno', 'portas_novas'),
+('Rede',     'Mbps',     'interno', 'download_mbps'),
+('Rede',     'Mbps',     'interno', 'upload_mbps'),
+('Rede',     'pacotes',  'interno', 'erros'),
+('Rede',     'pacotes',  'interno', 'descartados');
+
+INSERT INTO componentes (nome, fk_configuracao_comp)
+SELECT CASE codigo
+         WHEN 'total'          THEN 'Conexões ativas'
+         WHEN 'established'    THEN 'Conexões estabelecidas'
+         WHEN 'time_wait'      THEN 'Conexões em TIME_WAIT'
+         WHEN 'close_wait'     THEN 'Conexões em CLOSE_WAIT'
+         WHEN 'syn_recv'       THEN 'Conexões em SYN_RECV'
+         WHEN 'novas_conexoes' THEN 'Novas conexões'
+         WHEN 'portas_abertas' THEN 'Portas abertas'
+         WHEN 'portas_novas'   THEN 'Portas novas'
+         WHEN 'download_mbps'  THEN 'Download da rede'
+         WHEN 'upload_mbps'    THEN 'Upload da rede'
+         WHEN 'erros'          THEN 'Erros de pacotes'
+         ELSE 'Pacotes descartados'
+       END,
+       id
+FROM configuracao_comp
+WHERE biblioteca = 'interno';
+
+SET @id_empresa = 1;
+
+INSERT INTO config_maq (fk_componentes, fk_maquina, status_config)
+SELECT c.id, m.id, 'Ativo'
+FROM componentes c
+JOIN configuracao_comp cc ON cc.id = c.fk_configuracao_comp
+JOIN maquina m ON m.fk_empresa = @id_empresa
+WHERE cc.biblioteca = 'interno';
+
+SET @comp_syn = (
+  SELECT c.id FROM componentes c
+  JOIN configuracao_comp cc ON cc.id = c.fk_configuracao_comp
+  WHERE cc.biblioteca = 'interno' AND cc.codigo = 'syn_recv'
+  LIMIT 1
+);
+
+INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
+(1,  0, 19.99,  @comp_syn, @id_empresa),
+(2, 20, 49.99,  @comp_syn, @id_empresa),
+(3, 50, 999999, @comp_syn, @id_empresa);
+
+SET @comp_portas_novas = (
+  SELECT c.id FROM componentes c
+  JOIN configuracao_comp cc ON cc.id = c.fk_configuracao_comp
+  WHERE cc.biblioteca = 'interno' AND cc.codigo = 'portas_novas'
+  LIMIT 1
+);
+
+INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
+(1, 0, 0,      @comp_portas_novas, @id_empresa),
+(2, 1, 2,      @comp_portas_novas, @id_empresa),
+(3, 3, 999999, @comp_portas_novas, @id_empresa);
