@@ -329,7 +329,6 @@ h1 {
     border: none;
 }
 
-/* EDITADO: regra removida (o modal agora usa .modal_edicao, .campo_edicao e .form_edicao_empresa) */
 
 .sessao_cadastro {
     position: relative;
@@ -342,7 +341,6 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-self: center;
-    /* top: 25%; */
 
 }
 
@@ -357,11 +355,9 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-self: center;
-    /* top: 2%; */
 
 }
 
-/* EDITADO: regra removida (o modal agora usa .modal_edicao, .campo_edicao e .form_edicao_empresa) */
 
 .container_tema {
 
@@ -455,9 +451,7 @@ h1 {
 
 }
 
-/* EDITADO (inicio): estilo de modal igual ao de Gerenciamento de Empresas.
-   Vale para o cadastro de maquinas, cadastro de componente, cadastro de usuarios,
-   edicao e exclusao (todos usam as classes modal_edicao*). */
+
 .modal_edicao {
     position: fixed;
     inset: 0;
@@ -619,4 +613,3 @@ h1 {
         padding-left: 18px;
     }
 }
-/* EDITADO (fim) */

@@ -1,7 +1,4 @@
-/* Só o que é específico da página de alertas.
-   Menu, título, busca, botão e cartão vêm de dashboard.css e cadastro_usuarios.css */
 
-/* três contadores em vez de dois */
 .container_status_alertas {
     width: 38%;
 }
@@ -14,7 +11,6 @@
 .status_usuarios.atencao { background-color: #f6dd9d; color: #6d4800; }
 .status_usuarios.normal { background-color: #eaf1ff; color: #2a63c9; }
 
-/* cartão em coluna: cabeçalho em cima, lista preenchendo o resto */
 .tabela_alertas {
     display: flex;
     flex-direction: column;
@@ -45,12 +41,10 @@
     background: #aebbd0;
 }
 
-/* cores de cada tipo de alerta */
 .alerta.critico { --c: #c8353c; --bg: #fdeeee; --line: #f1b9bc; }
 .alerta.atencao { --c: #b87800; --bg: #fff6df; --line: #f0d38a; }
 .alerta.normal  { --c: #2a63c9; --bg: #eaf1ff; --line: #b5cdf5; }
 
-/* cada alerta divide a altura do cartão; texto 14px como as linhas da tabela */
 .alerta {
     flex: 0 0 84px;
     min-height: 84px;
