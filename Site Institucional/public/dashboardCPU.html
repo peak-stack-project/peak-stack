@@ -45,6 +45,95 @@
         </div>
     </aside>
 
+<main class="conteudo_dashboard">
+
+    <header class="cabecalho_dashboard">
+        <div>
+            <span class="etiqueta">PeakStack</span>
+            <h1>Monitoramento de CPU</h1>
+            <p>Acompanhamento e análise preditiva do uso de CPU.</p>
+        </div>
+    </header>
+
+    <section class="kpis_monitoramento">
+
+        <div class="kpi_card">
+            <div class="kpi_icone">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div>
+                <p>Faixa horária mais estável</p>
+                <h2 id="kpi_estabilidade">--</h2>
+                <span>Menor variação de CPU nos últimos 30 dias</span>
+            </div>
+        </div>
+
+        <div class="kpi_card">
+            <div class="kpi_icone">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div>
+                <p>Horário de maior pico registrado</p>
+                <h2 id="kpi_maior_pico">--</h2>
+                <span>Maior utilização registrada nos últimos 30 dias</span>
+            </div>
+        </div>
+
+        <div class="kpi_card">
+            <div class="kpi_icone">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+                <p>Próximo pico previsto</p>
+                <h2 id="kpi_proximo_pico">--</h2>
+                <span>Horário com maior utilização prevista</span>
+            </div>
+        </div>
+
+        <div class="kpi_card">
+            <div class="kpi_icone">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <p>Faixa horária de maior risco</p>
+                <h2 id="kpi_maior_risco">--</h2>
+                <span>Período com maior risco de sobrecarga</span>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="graficos_dashboard">
+
+        <div class="grafico_monitoramento">
+            <h2>Variação do uso de CPU por horário</h2>
+            <canvas id="graficoBoxplotCPU"></canvas>
+        </div>
+
+        <div class="grafico_monitoramento">
+            <h2>Previsão de utilização da CPU</h2>
+            <canvas id="graficoPrevisaoCPU"></canvas>
+        </div>
+
+    </section>
+
+    <section class="graficos_dashboard">
+
+        <div class="grafico_monitoramento">
+            <h2>Horários com maior frequência de CPU elevada</h2>
+            <canvas id="graficoRankingCPU"></canvas>
+        </div>
+
+        <div class="grafico_monitoramento">
+            <h2>Períodos com maior risco previsto</h2>
+            <canvas id="graficoRiscoCPU"></canvas>
+        </div>
+
+    </section>
+
+</main>
+
+
 </body>
 
 </html>
