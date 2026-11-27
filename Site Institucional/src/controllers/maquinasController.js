@@ -104,7 +104,7 @@ function cadastrarComponente(req, res) {
     var idMaquina = req.body.idMaquinaServer;
    
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        maquinasModel.cadastrarComponente(componente, idMaquina, status)
+        adicionarComponenteSeNaoTiver(idMaquina, componente, status)
             .then(
                 function (resultado) {
                     res.json(resultado);
@@ -160,7 +160,71 @@ function listar(req, res) {
 }
 }
 
+var STATUS_VALIDOS = ["Ativo", "Não Ativo", "Pendente"];
+
+// Só cadastra o componente se a máquina ainda não tiver ele (senão a captura mediria duplicado).
+// Se já tiver, devolve { affectedRows: 0 } sem inserir nada.
+function adicionarComponenteSeNaoTiver(idMaquina, componente, status) {
+    return maquinasModel.listarComponentesMaquina(idMaquina).then(function (atuais) {
+        var jaTem = atuais.some(function (c) { return String(c.idComponente) == String(componente); });
+        if (jaTem) return { affectedRows: 0 };
+        return maquinasModel.cadastrarComponente(componente, idMaquina, status);
+    });
+}
+
+// GET /maquinas/detalhe/:idMaquina -> dados da máquina + componentes dela
+function detalheMaquina(req, res) {
+    var idMaquina = Number(req.params.idMaquina);
+    if (!idMaquina) return res.status(400).send("Id da máquina inválido!");
+
+    Promise.all([
+        maquinasModel.buscarDadosMaquina(idMaquina),
+        maquinasModel.listarComponentesMaquina(idMaquina)
+    ]).then(function (r) {
+        if (r[0].length == 0) return res.status(404).send("Máquina não encontrada");
+        var maquina = r[0][0];
+        maquina.componentes = r[1];
+        res.json(maquina);
+    }).catch(function (erro) {
+        console.log(erro);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+// PUT /maquinas/atualizarCompleta/:idMaquina
+// body: { nome, mac, fk_so, componentes: [{ idConfigMaq, status }] }
+function atualizarMaquinaCompleta(req, res) {
+    var idMaquina = Number(req.params.idMaquina);
+    var nome = req.body.nome;
+    var mac = req.body.mac;
+    var fk_so = req.body.fk_so;
+    var componentes = req.body.componentes || [];
+    var novoComponente = req.body.novoComponente;   // opcional: componente escolhido em "Adicionar componente"
+
+    if (!idMaquina) return res.status(400).send("Id da máquina inválido!");
+    if (!nome || !mac || !fk_so) return res.status(400).send("Preencha nome, MAC e sistema operacional!");
+    var invalido = componentes.some(function (c) { return !Number(c.idConfigMaq) || STATUS_VALIDOS.indexOf(c.status) == -1; });
+    if (invalido) return res.status(400).send("Status de componente inválido!");
+
+    maquinasModel.atualizarDadosMaquina(idMaquina, nome, mac, fk_so)
+        .then(function () {
+            if (novoComponente) return adicionarComponenteSeNaoTiver(idMaquina, Number(novoComponente), "Ativo");
+        })
+        .then(function () {
+            return Promise.all(componentes.map(function (c) {
+                return maquinasModel.atualizarStatusComponente(idMaquina, Number(c.idConfigMaq), c.status);
+            }));
+        })
+        .then(function () { res.json({ ok: true }); })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
+  detalheMaquina,
+  atualizarMaquinaCompleta,
   cadastrarMaquina,
   cadastrarComponente,
   listar,

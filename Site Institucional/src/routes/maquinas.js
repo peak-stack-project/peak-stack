@@ -28,4 +28,13 @@ router.put("/atualizar/:id/:idConfigMaq", function (req, res) {
     maquinasController.atualizarMaquina(req, res);
 });
 
+// Edição da máquina com os componentes dela
+router.get("/detalhe/:idMaquina", function (req, res) {
+    maquinasController.detalheMaquina(req, res);
+});
+
+router.put("/atualizarCompleta/:idMaquina", function (req, res) {
+    maquinasController.atualizarMaquinaCompleta(req, res);
+});
+
 module.exports = router;

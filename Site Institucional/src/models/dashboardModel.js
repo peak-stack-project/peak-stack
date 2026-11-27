@@ -102,4 +102,17 @@ function eventosRecentes(idEmpresa, idMaquina) {
     return database.executar(instrucaoSql);
 }
 
-module.exports = { ultimasLeituras, serieHoraria, serieRecente, historicoTempoReal, eventosRecentes };
+// Dados de cadastro de UMA máquina pelo id da MÁQUINA (usado na tela de tempo real).
+// Obs.: maquinasModel.buscarMaquinaPorId busca pelo id do config_maq (tela de Máquinas), por isso não serve aqui.
+function buscarMaquina(idEmpresa, idMaquina) {
+    var instrucaoSql = `
+        SELECT m.nome, m.mac_address AS mac, so.nome AS sistema_operacional, e.nome_fantasia
+        FROM maquina m
+        JOIN so ON so.id = m.fk_so
+        JOIN empresa e ON e.id = m.fk_empresa
+        WHERE m.id = ${Number(idMaquina)} AND m.fk_empresa = ${Number(idEmpresa)};
+    `;
+    return database.executar(instrucaoSql);
+}
+
+module.exports = { ultimasLeituras, serieHoraria, serieRecente, historicoTempoReal, eventosRecentes, buscarMaquina };

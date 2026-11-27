@@ -3,6 +3,7 @@ from rich import print
 import time as t
 from datetime import datetime
 import importlib
+import socket
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -20,7 +21,7 @@ def variavel_obrigatoria(nome):
 
 INTERVALO = 10
 
-BIBLIOTECAS_PERMITIDAS = {"psutil"}
+BIBLIOTECAS_PERMITIDAS = {"psutil", "socket"}
 
 BYTES = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
 
@@ -32,7 +33,16 @@ LIMITES_PADRAO = {
     "disco":            ("maior", 60, 71, "%"),
     "memória restante": ("menor", 40, 15, "%"),
     "pacotes perdidos": ("maior", 50, 500, None),
+    "rede":             ("maior", 100, 200, "ms"),   # latência; só vale para Rede em ms
 }
+
+# Velocidade de rede: guarda o contador da captura anterior de cada componente
+# (codigo no banco: 'delta bytes_recv (Mbps)' ou 'delta bytes_sent (Mbps)')
+contador_anterior = {}
+
+# Latência da rede: quantas conexões TCP por captura e quanto esperar cada uma
+LATENCIA_TENTATIVAS = 3
+LATENCIA_TIMEOUT = 1  # segundos
 
 DB = dict(
     user=variavel_obrigatoria("DB_USER"),
@@ -132,6 +142,37 @@ SQL_COMPONENTES = """
 def identificar_tipo(tipo, nome):
     """Usa o tipo cadastrado em configuracao_comp (CPU, RAM, Disco...); se vier vazio, tenta o nome."""
     return (tipo or nome or "").strip().lower()
+
+
+def medir_latencia(codigo):
+    """Latência em ms: média do tempo para abrir uma conexão TCP com 'host:porta' (ex.: 8.8.8.8:53).
+    Usamos TCP em vez de ping (ICMP) porque o ping precisa de permissão de administrador."""
+    host, porta = codigo.strip().rsplit(":", 1)
+    tempos = []
+    for _ in range(LATENCIA_TENTATIVAS):
+        inicio = t.perf_counter()
+        try:
+            with socket.create_connection((host, int(porta)), timeout=LATENCIA_TIMEOUT):
+                tempos.append((t.perf_counter() - inicio) * 1000)
+        except OSError:
+            pass  # tentativa perdida (timeout / sem rede)
+    if not tempos:
+        raise ConnectionError(f"sem resposta de {host}:{porta}")
+    return sum(tempos) / len(tempos)
+
+
+def medir_velocidade(cm_id, codigo, psutil):
+    """Mbps = (bytes agora - bytes na captura anterior) * 8 / segundos / 1.000.000.
+    Na primeira captura ainda não tem com o que comparar, então devolve None (não grava)."""
+    contador = codigo.split()[1]  # 'bytes_recv' ou 'bytes_sent'
+    agora_bytes = getattr(psutil.net_io_counters(), contador)
+    agora_seg = t.monotonic()
+
+    anterior = contador_anterior.get(cm_id)
+    contador_anterior[cm_id] = (agora_bytes, agora_seg)
+    if anterior is None or agora_seg <= anterior[1] or agora_bytes < anterior[0]:
+        return None
+    return (agora_bytes - anterior[0]) * 8 / (agora_seg - anterior[1]) / 1_000_000
 
 
 def nivel_padrao(tipo, valor, unidade):
@@ -251,6 +292,17 @@ def capturar():
                     if c["biblioteca"] not in BIBLIOTECAS_PERMITIDAS:
                         raise ValueError(f"biblioteca '{c['biblioteca']}' não permitida")
 
+<<<<<<< Updated upstream
+=======
+                if c["biblioteca"] == "socket":
+                    bruto = medir_latencia(c["codigo"])
+                elif c["codigo"].strip().startswith("delta "):
+                    bruto = medir_velocidade(c["cm_id"], c["codigo"].strip(), importlib.import_module("psutil"))
+                    if bruto is None:
+                        print(f"{c['nome']}: [dim]aguardando a 2ª captura para calcular a velocidade[/dim]")
+                        continue
+                else:
+>>>>>>> Stashed changes
                     modulo = importlib.import_module(c["biblioteca"])
                     espaco = {**vars(modulo), modulo.__name__: modulo}
                     bruto = eval(c["codigo"], {"__builtins__": {}}, espaco)
