@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeakStack | Dashboard</title>
+    <title>PeakStack | Dashboard Rede</title>
     <link rel="icon" href="./assets/react.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -67,8 +67,8 @@
 
                 <div>
                     <span>Conexões por minuto</span>
-                    <strong id="kpi_critica">--</strong>
-                    <small id="kpi_critica_motivo"></small>
+                    <strong id="kpi_novas">--</strong>
+                    <small id="kpi_novas_detalhe"></small>
                 </div>
 
             </div>
@@ -80,8 +80,8 @@
 
                 <div>
                     <span>Conexões suspeitas</span>
-                    <strong id="kpi_alertas">--</strong>
-                    <small id="kpi_alertas_detalhe"></small>
+                    <strong id="kpi_syn ">--</strong>
+                    <small id="kpi_syn_detalhe"></small>
                 </div>
 
             </div>
@@ -108,7 +108,7 @@
 
                 <div class="grafico_monitoramento">
 
-                    <h2>Conexões ao longo do dia</h2>
+                    <h2>Conexões nos últimos 60 minutos</h2>
 
                     <div class="grafico_container">
                         <canvas id="graficoConexoes"></canvas>
@@ -121,6 +121,7 @@
             <div class="card_status">
 
                 <h2>Conexões por estado</h2>
+                <canvas id="graficoEstados"></canvas>
 
             </div>
 
@@ -137,7 +138,7 @@
                 <div class="titulo_ranking">
                     <div>
                         <h2>Ranking de Risco — Máquinas</h2>
-                        <span>Servidores ordenados por carga atual</span>
+                        <span>Servidores ordenados por risco</span>
                     </div>
 
                     <span class="tempo_real">Ultima Leitura</span>
@@ -160,8 +161,8 @@
 
             <section class="card_disco">
 
-                <h2>Top IPs remotos</h2>
-                <span class="subtitulo">Capacidade utilizada atualmente</span>
+                <h2>Tráfego de Rede por Servidor</h2>
+                <span class="subtitulo">Azul: Download (Mbps) • Laranja: Upload (Mbps)</span>
 
                 <div class="grafico_disco_container">
                     <canvas id="graficoIps"></canvas>

@@ -1,0 +1,191 @@
+/* ==========================================================
+   PREVISÃO DE SATURAÇÃO DO DISCO
+   Complemento do dashboard.css (carregue DEPOIS dele).
+   Reaproveita as variáveis e classes da dashboard específica
+   (menu_lateral, maq_topo, maq_filtro, det_cartao, kpi_card,
+   maq_status, linha_tabela, nivel_*). Só o que não existe lá
+   é criado aqui, com o prefixo "sat_".
+   ========================================================== */
+
+/* a página rola dentro do conteúdo (o body do dashboard.css não rola) */
+.sat_conteudo {
+    overflow-y: auto;
+    padding-right: 12px;
+    padding-bottom: 24px;
+}
+
+.sat_conteudo > * {
+    flex-shrink: 0;
+}
+
+/* ---------- Caixinhas de servidor (uma ao lado da outra) ---------- */
+.sat_servidores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sat_servidor {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border: 1px solid var(--maq-borda);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--maq-azul-titulo);
+    background: var(--cor-superficie);
+    transition: 0.2s ease;
+}
+
+.sat_servidor:hover {
+    border-color: var(--cor-primaria);
+}
+
+.sat_servidor[aria-pressed="true"] {
+    color: var(--cor-primaria);
+    background: var(--cor-primaria-clara);
+    border-color: var(--cor-primaria);
+}
+
+.sat_servidor:focus-visible {
+    outline: 2px solid var(--cor-primaria);
+    outline-offset: 2px;
+}
+
+.sat_servidor_uso {
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.sat_ponto {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: #9aa3b8;
+}
+
+.sat_ponto.online { background: #16a34a; }
+.sat_ponto.atencao { background: var(--maq-laranja); }
+.sat_ponto.offline { background: var(--maq-vermelho); }
+
+.sat_mensagem {
+    min-height: 0;
+    padding: 0 6px;
+    font-size: 12px;
+    color: var(--cor-texto-suave);
+}
+
+.sat_mensagem:empty {
+    display: none;
+}
+
+/* ---------- KPIs (kpi_card do dashboard.css) ---------- */
+.kpi_icone svg {
+    width: 18px;
+    height: 18px;
+}
+
+.kpi_card strong.sat_ok { color: var(--maq-verde); }
+.kpi_card strong.sat_atencao { color: var(--maq-laranja-texto); }
+.kpi_card strong.sat_critico { color: var(--maq-vermelho-texto); }
+
+.maq_status.sem_dados {
+    color: var(--cor-texto-suave);
+    background: #f1f3f8;
+}
+
+/* ---------- Gráfico ---------- */
+.sat_grafico {
+    position: relative;
+    height: 300px;
+    margin-top: 14px;
+}
+
+.sat_vazio {
+    padding: 60px 24px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--cor-texto-suave);
+}
+
+.sat_leg_tracejada,
+.sat_leg_pontilhada {
+    background: repeating-linear-gradient(90deg, var(--cor) 0 4px, transparent 4px 7px);
+}
+
+.sat_leg_pontilhada {
+    background: repeating-linear-gradient(90deg, var(--cor) 0 2px, transparent 2px 5px);
+}
+
+.sat_link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cor-primaria);
+}
+
+.sat_link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Ranking (linha_tabela do dashboard.css) ---------- */
+.sat_conteudo .ranking_monitoramento {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    margin-top: 0;
+    padding: 20px 24px;
+}
+
+.linha_tabela.sat_linha {
+    grid-template-columns: 28px minmax(120px, 1.4fr) minmax(130px, 1.2fr) 90px 110px 90px;
+    column-gap: 8px;
+    min-height: 44px;
+    font-size: 11px;
+}
+
+.linha_tabela.sat_linha.cabecalho {
+    min-height: 30px;
+    font-size: 10px;
+}
+
+.sat_linha[data-id] {
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.sat_linha[data-id]:hover {
+    background: #fafbfd;
+}
+
+.sat_linha.sat_selecionada {
+    background: var(--cor-primaria-clara);
+}
+
+.sat_linha .maq_medidor {
+    width: 70px;
+}
+
+.sat_linha .sat_nome {
+    font-weight: 700;
+    color: var(--maq-azul-titulo);
+}
+
+.sat_linha .status {
+    font-size: 10px;
+    padding: 4px 8px;
+}
+
+@media (max-width: 1100px) {
+    .sat_conteudo {
+        overflow-y: visible;
+    }
+}
+
+.kpi_card .maq_status {
+    margin: 3px 0;
+}

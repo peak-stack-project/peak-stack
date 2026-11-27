@@ -17,6 +17,7 @@ var app = express();
 
 var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
+var cpuRouter = require("./src/routes/cpu");
 var empresaRouter = require("./src/routes/empresas");
 var avisosRouter = require("./src/routes/avisos");
 var medidasRouter = require("./src/routes/medidas");
@@ -26,8 +27,10 @@ var maquinasRoutes = require("./src/routes/maquinas");
 var alertaRoutes = require("./src/routes/alerta");
 var ramRouter = require("./src/routes/ram");
 var dashboardRoutes = require("./src/routes/dashboard");
+var dashboardRedeRoutes = require("./src/routes/dashboardRede");
 var custosRouter = require("./src/routes/custos");
 var custosAcumulados = require("./src/models/custos/custosModel");
+var previsaoSaturacaoRouter = require("./src/routes/previsao");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -37,6 +40,7 @@ app.use(cors());
 
 app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
+app.use("/cpu", cpuRouter);
 app.use("/empresas", empresaRouter);
 app.use("/avisos", avisosRouter);
 app.use("/medidas", medidasRouter);
@@ -47,6 +51,8 @@ app.use("/alerta", alertaRoutes);
 app.use("/ram", ramRouter);
 app.use("/dashboard", dashboardRoutes);
 app.use("/custos", custosRouter);
+app.use("/dashboard", dashboardRedeRoutes);
+app.use("/previsao", previsaoSaturacaoRouter);
 
 
 app.listen(PORTA_APP, function () {

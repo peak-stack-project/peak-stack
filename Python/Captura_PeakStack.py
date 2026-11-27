@@ -214,11 +214,13 @@ def capturar():
                     (valor, dt_hr, cm_id),
                 )
                 if nivel is not None:
+                    situacao = NIVEIS[nivel][0]
+                    descricao = f"{nome_comp}: {valor} {unidade} ({situacao})."
                     cursor.execute(
                         "INSERT INTO discretizada "
-                        "(fk_leitura, situacao, consciente) "
-                        "VALUES (%s, %s, %s)",
-                        (cursor.lastrowid, NIVEIS[nivel][0], False),
+                        "(fk_leitura, situacao, descricao, consciente) "
+                        "VALUES (%s, %s, %s, %s)",
+                        (cursor.lastrowid, situacao, descricao, False),
                     )
 
                     if nivel in (2, 3):

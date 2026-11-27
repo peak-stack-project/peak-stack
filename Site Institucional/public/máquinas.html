@@ -47,14 +47,6 @@
                     <p>Gerencie os servidores monitorados</p>
                 </div>
                 <div class="container_pesquisa">
-
-                    <button>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-search"
-                            viewBox="0 0 16 16">
-                            <path
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                        </svg>
-                    </button>
                     <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações" onclick="irParaAlertas()">
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -74,7 +66,7 @@
             <div class="container_interacao_usuarios">
                 <div class="container_status_usuarios">
                     <div class="status_usuarios">
-                        <p>2 Máquinas Ativos</p>
+                        <p id="contador_maquinas_ativas">0 Máquinas Ativas</p>
                     </div>
 
                 </div>
@@ -99,7 +91,6 @@
             </div>
         </div>
     </section>
-    <!-- EDITADO (inicio): cadastro de maquina e de componente com o mesmo container do modal de empresas -->
     <div id="container_cadastro" class="modal_edicao" style="display: none;">
         <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroMaquina">
             <header class="modal_edicao_cabecalho">
@@ -192,7 +183,6 @@
             </div>
         </section>
     </div>
-    <!-- EDITADO (fim) -->
     <div id="modalEdicaoMaquina" class="modal_edicao" style="display: none;">
         <section class="modal_edicao_cartao" aria-modal="true">
 
@@ -278,6 +268,10 @@
                 resposta.json().then(function (json) {
 
                     let htmlCodigo = "";
+                    let maquinasAtivas = new Set(
+                        json.filter(maquina => maquina.status === "Ativo").map(maquina => maquina.id)
+                    ).size;
+                    contador_maquinas_ativas.textContent = `${maquinasAtivas} Máquinas Ativas`;
 
                     for (let i = 0; i < json.length; i++) {
 
@@ -461,8 +455,7 @@
                 },
                 body: JSON.stringify({
 
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
+                    
                     commponenteServer: componenteVar,
                     statusServer: statusVar,
                     idMaquinaServer: idMaquinaVar
@@ -520,7 +513,6 @@
         console.log(nomeUsuarioVar)
         console.log(idEmpresaVar)
 
-        // aguardar();
 
         if (
             nomeVar == "" ||
@@ -557,8 +549,7 @@
                     },
                     body: JSON.stringify({
 
-                        // crie um atributo que recebe o valor recuperado aqui
-                        // Agora vá para o arquivo routes/usuario.js
+                        
                         nomeServer: nomeVar,
                         macServer: macVar,
                         soServer: soVar,
@@ -615,10 +606,8 @@
                         }
                     }
                 }).catch(function () {
-                    // cardErro.style.display = "block";
-                    // mensagem_MAC.innerHTML = "Falha na conexão com o servidor.";
+                    
                     finalizarAguardar();
-                    // registrar_checkpoint("falha_conexao_login_peakstack");
                 });
 
                 return false;

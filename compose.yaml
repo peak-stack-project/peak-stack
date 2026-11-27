@@ -1,6 +1,6 @@
 services:
   banco:
-    image: mickaelarodrigues/meu_bd:latest
+    image: mickaelarodrigues/meu_bd:v8
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Informe MYSQL_ROOT_PASSWORD no .env.dev do site}
       MYSQL_DATABASE: ${DB_DATABASE:-db_peakstack}
