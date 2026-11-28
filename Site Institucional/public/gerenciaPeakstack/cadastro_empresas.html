@@ -60,7 +60,8 @@
                     </div>
                     <div class="campo">
                         <label for="cnpj_input">CNPJ</label>
-                        <input id="cnpj_input" type="text" placeholder="00.000.000/0001-00">
+                        <input id="cnpj_input" type="text" placeholder="00.000.000/0001-00" maxlength="18"
+                            oninput="formatarCnpj(this)">
                     </div>
                     <div class="campo_botao">
                         <button type="button" class="botao botao_primario botao_largo" id="btnProximo"
@@ -110,7 +111,8 @@
                         </div>
                         <div class="campo">
                             <label for="data_input">Data de nascimento</label>
-                            <input id="data_input" type="text" placeholder="YYYY-MM-DD">
+                            <input id="data_input" type="text" placeholder="DD/MM/AAAA" maxlength="10"
+                                oninput="formatarDataNascimento(this)">
                         </div>
                     </div>
 
@@ -131,6 +133,15 @@
 
 <script>
     var cadastro_realizado = false;
+
+    function formatarDataNascimento(input) {
+        let numeros = input.value.replace(/\D/g, "").slice(0, 8);
+        input.value = numeros.replace(/(\d{2})(\d)/, "$1/$2").replace(/(\d{2}\/\d{2})(\d)/, "$1/$2");
+    }
+
+    function dataParaBanco(data) {
+        return data.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1");
+    }
 
     function cadastrarUsuario() {
 
@@ -161,6 +172,13 @@
             booleano = false;
         }
 
+        if (dataVar && !/^\d{2}\/\d{2}\/\d{4}$/.test(dataVar)) {
+            alert("Informe a data de nascimento no formato DD/MM/AAAA.");
+            return;
+        }
+
+        if (dataVar) dataVar = dataParaBanco(dataVar);
+
         // Enviando o valor da nova input
         if (senhaVar == confirmacaoSenhaVar && booleano == true) {
             fetch("/usuarios/cadastrar", {
@@ -169,8 +187,7 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
+
                     nomeServer: nomeVar,
                     emailServer: emailVar,
                     senhaServer: senhaVar,
@@ -221,11 +238,21 @@
 
     }
 
+    function formatarCnpj(input) {
+        let cnpj = input.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 14).toUpperCase();
+        let resultado = cnpj.slice(0, 2);
+        if (cnpj.length > 2) resultado += "." + cnpj.slice(2, 5);
+        if (cnpj.length > 5) resultado += "." + cnpj.slice(5, 8);
+        if (cnpj.length > 8) resultado += "/" + cnpj.slice(8, 12);
+        if (cnpj.length > 12) resultado += "-" + cnpj.slice(12, 14);
+        input.value = resultado;
+    }
+
     function cadastrar() {
         console.log("chamei a funcao cadastrar");
         var razaoSocialVar = razao_social_input.value;
         var nomeVar = nome_fantasia_input.value;
-        var cnpjVar = cnpj_input.value;
+        var cnpjVar = cnpj_input.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
         var booleano = true;
         var emailVar = "opa";
         var senhaVar = "opa";
@@ -238,6 +265,11 @@
             razaoSocialVar == ""
         ) {
             booleano = false;
+        }
+
+        if (cnpjVar && cnpjVar.length != 14) {
+            alert("Informe os 14 caracteres do CNPJ.");
+            return;
         }
 
         console.log(nomeVar)

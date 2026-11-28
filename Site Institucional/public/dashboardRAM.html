@@ -27,12 +27,30 @@
                 <a href="./máquinas.html">Máquinas</a>
                 <a href="./cadastro_usuarios.html">Usuários</a>
             </div>
+            <a href="./alertas.html">Alertas</a>
+            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
+            <a href="https://sptech-team-nk7ofb6h.atlassian.net/servicedesk/customer/portal/1" >Chamado</a>
+        </div>
             <div class="menu_lateral_rodape">
                 <span class="menu_grupo"><a href="./index.html">Sair</a></span>
             </div>
         </aside>
 
         <main class="conteudo_dashboard ram_conteudo">
+
+            <div class="banner_relatorio" id="bannerRelatorio" style="display:none;">
+                <div class="banner_relatorio_texto">
+                    <span class="banner_relatorio_titulo">🌙 Relatório da madrugada disponível</span>
+                    <span class="banner_relatorio_sub" id="bannerRelatorioPeriodo">Período: 00:00 → 07:59</span>
+                </div>
+                <button class="maq_filtro" id="btnEnviarRelatorio" style="background:#2b65ca;color:#fff;border:none;"
+                    onclick="enviarRelatorioSlack()">Enviar via Slack</button>
+            </div>
+            <div class="banner_relatorio_confirmacao" id="bannerRelatorioConfirmacao">
+                Relatório enviado com sucesso!
+            </div>
+
             <header class="maq_topo ram_topo_servidores">
                 <div class="ram_topo_titulo">
                     <h1>Monitoramento Individual de Memória (RAM)</h1>
@@ -86,7 +104,8 @@
                     <div class="maq_filtros" id="seletorPeriodo">
                         <button class="maq_filtro" aria-pressed="false" onclick="mudarPeriodo('1h', this)">1h</button>
                         <button class="maq_filtro" aria-pressed="true" onclick="mudarPeriodo('24h', this)">24h</button>
-                        <button class="maq_filtro" aria-pressed="false" onclick="mudarPeriodo('7d', this)">7 dias</button>
+                        <button class="maq_filtro" aria-pressed="false" onclick="mudarPeriodo('7d', this)">7
+                            dias</button>
                     </div>
                 </div>
                 <div class="ram_canvas_wrapper"><canvas id="graficoLinhaRam"></canvas></div>
@@ -112,13 +131,16 @@
                         </div>
                     </div>
                     <div class="ram_canvas_wrapper"><canvas id="graficoScatterRede"></canvas></div>
-                    <p class="ram_diagnostico" id="textoDispersao"><strong>Correlação:</strong> picos de tráfego elevam o uso de RAM.</p>
+                    <p class="ram_diagnostico" id="textoDispersao"><strong>Correlação:</strong> picos de tráfego elevam
+                        o uso de RAM.</p>
                 </article>
             </section>
         </main>
     </div>
 
     <script>
+        validarSessao();
+
         const $ = id => document.getElementById(id);
         const ID_EMPRESA = sessionStorage.FK_EMPRESA || sessionStorage.ID_EMPRESA || 1;
         let idMaquinaAtual = null, periodoAtual = "24h";
@@ -260,6 +282,55 @@
 
         setInterval(atualizarDados, 2000);
         carregarServidores();
+
+        // --- Banner Relatório Noturno ---
+        (function verificarBannerRelatorio() {
+            const agora = new Date();
+            const hora = agora.getHours();
+            const dataHoje = agora.toDateString();
+            const ultimoEnvio = localStorage.getItem("peakstack_relatorio_ram_enviado");
+
+            if (hora >= 8 && ultimoEnvio !== dataHoje) {
+                const banner = document.getElementById("bannerRelatorio");
+                const sub = document.getElementById("bannerRelatorioPeriodo");
+                if (banner) {
+                    sub.innerText = `Período: 00:00 → 07:59 · ${agora.toLocaleDateString("pt-BR")}`;
+                    banner.style.display = "flex";
+                }
+            }
+        })();
+
+        async function enviarRelatorioSlack() {
+            const btn = document.getElementById("btnEnviarRelatorio");
+            const banner = document.getElementById("bannerRelatorio");
+            const conf = document.getElementById("bannerRelatorioConfirmacao");
+
+            btn.disabled = true;
+            btn.innerText = "Enviando...";
+            btn.style.opacity = "0.7";
+
+            try {
+                const resp = await fetch("/ram/relatorio/enviar", { method: "POST" });
+                const json = await resp.json();
+
+                if (resp.ok) {
+                    banner.style.display = "none";
+                    conf.style.display = "flex";
+                    localStorage.setItem("peakstack_relatorio_ram_enviado", new Date().toDateString());
+                    setTimeout(() => { conf.style.display = "none"; }, 5000);
+                } else {
+                    btn.innerText = "❌ Erro — tentar novamente";
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    console.error("Erro ao enviar relatório:", json.detalhe);
+                }
+            } catch (e) {
+                btn.innerText = "❌ Erro — tentar novamente";
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                console.error(e);
+            }
+        }
     </script>
 </body>
 

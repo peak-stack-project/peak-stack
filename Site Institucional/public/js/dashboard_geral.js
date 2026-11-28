@@ -11,28 +11,77 @@ var gradiente = ctxCpu.createLinearGradient(0, 0, 600, 0);
 gradiente.addColorStop(0, "rgba(59, 130, 246, 0.4)");
 gradiente.addColorStop(1, "rgba(168, 85, 247, 0.4)");
 
+// Uso de Componentes — últimas 24h: área = Volume de Requisições (RPS), linha laranja = Latência Média (ms)
+// Os dados vêm de /dashboard/latencia/:idEmpresa (latenciaController) e são preenchidos por carregarLatencia()
+var COR_LATENCIA = "#f58220";
+var COR_LIMITE = "#ef4444";
+var picosLatencia = [];
+var limiteAlertaLatencia = null;
+
+// Escreve um aviso no meio do gráfico enquanto não houver leitura de latência
+var avisoSemLatencia = {
+    id: "avisoSemLatencia",
+    afterDraw: function (chart) {
+        var temDado = chart.data.datasets[1].data.some(function (v) { return v != null; });
+        if (temDado) return;
+        var a = chart.chartArea, c = chart.ctx;
+        c.save();
+        c.fillStyle = "#91a0bb"; c.font = "12px Inter"; c.textAlign = "center";
+        c.fillText("Aguardando leituras de latência...", (a.left + a.right) / 2, (a.top + a.bottom) / 2);
+        c.restore();
+    }
+};
+
 var grafSaude = new Chart(ctxCpu, {
     type: "line",
     data: {
         labels: HORAS,
         datasets: [
-            { label: "Requisições (RPS)", data: [], borderColor: "#3b82f6", backgroundColor: gradiente,
-              fill: true, tension: 0.4, borderWidth: 2, pointRadius: 0, spanGaps: true },
-            { label: "Latência Média (ms)", data: [], borderColor: "#f43f5e",
-              fill: false, tension: 0.4, borderWidth: 2, pointRadius: 0, spanGaps: true },
-            { label: "Meta de SLA (100ms)", data: Array(24).fill(85), borderColor: "#10b981",
-              fill: false, tension: 0, borderWidth: 2, pointRadius: 0 }
+            { label: "Volume de Requisições (RPS)", data: [], yAxisID: "y", order: 2,
+              borderColor: "#3b82f6", backgroundColor: gradiente, fill: true,
+              tension: 0.4, borderWidth: 2, spanGaps: true, pointRadius: 3, pointHoverRadius: 5,
+              pointBackgroundColor: "#3b82f6", pointBorderColor: "#3b82f6" },
+            { label: "Latência Média (ms)", data: [], yAxisID: "y1", order: 1,
+              borderColor: COR_LATENCIA, backgroundColor: "rgba(245, 130, 32, 0.25)", fill: false,
+              tension: 0.4, borderWidth: 2, spanGaps: true, pointRadius: 3, pointHoverRadius: 5,
+              pointBackgroundColor: COR_LATENCIA, pointBorderColor: COR_LATENCIA },
+            { label: "Limite de alerta", data: [], yAxisID: "y1", order: 0,
+              borderColor: COR_LIMITE, backgroundColor: "rgba(239, 68, 68, 0.15)", fill: false,
+              borderDash: [6, 4], borderWidth: 2, tension: 0, pointRadius: 0, pointHoverRadius: 0 }
         ]
     },
     options: {
         responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
         scales: {
-            y: { min: 0, max: 100, title: { display: true, text: "%", font: { family: "Inter", size: 12 } },
-                 ticks: { stepSize: 25, font: { family: "Inter", size: 11 } }, grid: { color: "#f3f4f6" } },
-            x: { grid: { display: false }, ticks: { font: { family: "Inter", size: 11 } } }
+            x: { grid: { display: false },
+                 ticks: { autoSkip: false, maxRotation: 40, minRotation: 40, font: { family: "Inter", size: 11 }, color: "#52617d" } },
+            y: { beginAtZero: true, suggestedMax: 1000, position: "left",
+                 ticks: { maxTicksLimit: 6, font: { family: "Inter", size: 11 }, color: "#52617d",
+                          callback: function (v) { return v >= 1000 ? (v / 1000).toLocaleString("pt-BR") + "k" : v; } },
+                 grid: { color: "#f3f4f6" }, border: { display: false } },
+            y1: { beginAtZero: true, suggestedMax: 100, position: "right",
+                  ticks: { maxTicksLimit: 6, font: { family: "Inter", size: 11 }, color: COR_LATENCIA,
+                           callback: function (v) { return v + " ms"; } },
+                  grid: { drawOnChartArea: false }, border: { display: false } }
         },
-        plugins: { legend: { display: true, position: "top", labels: { font: { family: "Inter", size: 12 }, boxWidth: 12 } } }
-    }
+        plugins: {
+            legend: { display: true, position: "top",
+                      labels: { font: { family: "Inter", size: 12 }, boxWidth: 12, boxHeight: 12, color: "#374151",
+                                sort: function (a, b) { return a.datasetIndex - b.datasetIndex; } } },
+            tooltip: { callbacks: { label: function (c) {
+                if (c.datasetIndex === 2) return " Limite de alerta: " + c.raw + " ms";
+                if (c.raw == null) return " " + c.dataset.label + ": sem leitura";
+                if (c.datasetIndex === 1) {
+                    var pico = picosLatencia[c.dataIndex];
+                    var acima = limiteAlertaLatencia != null && c.raw >= limiteAlertaLatencia ? "  ⚠ acima do limite" : "";
+                    return " Latência média: " + c.raw + " ms" + (pico != null ? " (pico " + pico + " ms)" : "") + acima;
+                }
+                return " Requisições: " + Number(c.raw).toLocaleString("pt-BR") + " por segundo";
+            } } }
+        }
+    },
+    plugins: [avisoSemLatencia]
 });
 
 var grafStatus = new Chart(document.getElementById("graficoStatus").getContext("2d"), {
@@ -97,11 +146,6 @@ function carregarDashboard() {
     fetch(`/dashboard/visaoGeral/${idEmpresa}`)
         .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
         .then(function (d) {
-            // gráfico de saúde
-            grafSaude.data.datasets[0].data = d.serieCpu;
-            grafSaude.data.datasets[1].data = d.serieRam;
-            grafSaude.update();
-
             // donut
             grafStatus.data.datasets[0].data = [d.status.Normal, d.status.Alerta, d.status["Crítico"]];
             grafStatus.update();
@@ -132,5 +176,39 @@ function carregarDashboard() {
         .catch(function (erro) { console.log("Erro ao carregar a dashboard:", erro); });
 }
 
+// ----- gráfico de latência (dados por hora, então atualiza a cada 30s) -----
+function carregarLatencia() {
+    if (!idEmpresa) return;
+
+    fetch(`/dashboard/latencia/${idEmpresa}`)
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) {
+            grafSaude.data.labels = d.rotulos;
+            grafSaude.data.datasets[0].data = d.requisicoes;
+            grafSaude.data.datasets[1].data = d.latencia;
+            picosLatencia = d.picoLatencia;
+
+            // linha do limite de alerta (mesmo valor em todas as horas)
+            limiteAlertaLatencia = d.limiteAlerta;
+            var serieLatencia = grafSaude.data.datasets[1];
+            var serieLimite = grafSaude.data.datasets[2];
+            serieLimite.label = "Limite de alerta (" + d.limiteAlerta + " ms)";
+            serieLimite.data = d.rotulos.map(function () { return d.limiteAlerta; });
+
+            // pontos que passaram do limite ficam vermelhos e maiores
+            var acima = d.latencia.map(function (v) { return v != null && v >= d.limiteAlerta; });
+            serieLatencia.pointBackgroundColor = acima.map(function (a) { return a ? COR_LIMITE : COR_LATENCIA; });
+            serieLatencia.pointBorderColor = serieLatencia.pointBackgroundColor;
+            serieLatencia.pointRadius = acima.map(function (a) { return a ? 5 : 3; });
+
+            // garante que a linha do limite sempre aparece no eixo da direita
+            grafSaude.options.scales.y1.suggestedMax = Math.ceil(d.limiteAlerta * 1.3);
+            grafSaude.update();
+        })
+        .catch(function (erro) { console.log("Erro ao carregar o gráfico de latência:", erro); });
+}
+
 carregarDashboard();
 setInterval(carregarDashboard, 5000);
+carregarLatencia();
+setInterval(carregarLatencia, 30000);

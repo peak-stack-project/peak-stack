@@ -11,6 +11,38 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="./css/dashboard.css" />
     <link rel="stylesheet" href="./css/cadastro_usuarios.css">
+    <style>
+        /* Componentes da máquina no modal de edição */
+        .lista_componentes { display: grid; gap: 6px; }
+        .componente_item {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 9px 13px; border: 1px solid #dce5f2; border-radius: 14px;
+        }
+        .componente_item strong { display: block; color: #25262b; font-size: 11px; }
+        .componente_item small { display: block; color: #91a0bb; font-size: 9px; margin-top: 2px; }
+        .componente_vazio { color: #91a0bb; font-size: 11px; padding: 6px 2px; }
+        .chave_status { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; }
+        .chave_status span { width: 58px; text-align: right; color: #7184a3; font-size: 10px; font-weight: 650; }
+        .chave_status input { display: none; }
+        .chave_status i {
+            position: relative; width: 34px; height: 19px; border-radius: 10px;
+            background: #dce5f2; transition: background .2s;
+        }
+        .chave_status i::after {
+            content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px;
+            border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / 20%); transition: left .2s;
+        }
+        .chave_status input:checked + i { background: #2e67d5; }
+        .chave_status input:checked + i::after { left: 17px; }
+        .linha_adicionar { display: flex; gap: 8px; }
+        .linha_adicionar .campo_edicao { flex: 1; }
+        .linha_adicionar button {
+            padding: 0 16px; border: 1px solid #2e67d5; border-radius: 17px;
+            color: #2e67d5; background: #fff; font-size: 11px; font-weight: 650; cursor: pointer;
+        }
+        .linha_adicionar button:disabled { opacity: .45; cursor: default; }
+        #lista_usuarios .linha_tabela { cursor: pointer; }
+    </style>
     <script src="./js/sessao.js" defer></script>
     <script src="./js/maquinas_comum.js"></script>
 </head>
@@ -47,14 +79,6 @@
                     <p>Gerencie os servidores monitorados</p>
                 </div>
                 <div class="container_pesquisa">
-
-                    <button>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-search"
-                            viewBox="0 0 16 16">
-                            <path
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                        </svg>
-                    </button>
                     <button type="button" class="maq_icone_botao com_aviso" aria-label="Notificações" onclick="irParaAlertas()">
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -74,7 +98,7 @@
             <div class="container_interacao_usuarios">
                 <div class="container_status_usuarios">
                     <div class="status_usuarios">
-                        <p>2 Máquinas Ativos</p>
+                        <p id="contador_maquinas_ativas">0 Máquinas Ativas</p>
                     </div>
 
                 </div>
@@ -89,7 +113,7 @@
                         <div class="email">ENDEREÇO IP</div>
                         <div class="empresa">SISTEMA OPERACIONAL</div>
                         <div class="perfil">EMPRESA</div>
-                        <div class="perfil">COMPONENTE</div>
+                        <div class="perfil">COMPONENTES</div>
                         <div class="perfil">STATUS</div>
                         <div></div>
                     </div>
@@ -99,7 +123,6 @@
             </div>
         </div>
     </section>
-    <!-- EDITADO (inicio): cadastro de maquina e de componente com o mesmo container do modal de empresas -->
     <div id="container_cadastro" class="modal_edicao" style="display: none;">
         <section class="modal_edicao_cartao" aria-modal="true" aria-labelledby="tituloCadastroMaquina">
             <header class="modal_edicao_cabecalho">
@@ -169,6 +192,7 @@
                         <option value="12">REDE (MB)</option>
                         <option value="13">REDE (MB - total)</option>
                         <option value="14">REDE (Mbps)</option>
+                        <option value="15">REDE (ms - latência)</option>
                     </select>
                 </div>
 
@@ -192,7 +216,6 @@
             </div>
         </section>
     </div>
-    <!-- EDITADO (fim) -->
     <div id="modalEdicaoMaquina" class="modal_edicao" style="display: none;">
         <section class="modal_edicao_cartao" aria-modal="true">
 
@@ -224,13 +247,15 @@
                     </select>
                 </div>
 
-                <label for="edicaoSoMaquina">Status</label>
-                <div class="campo_edicao">
-                    <select id="edicaoStatusMaquina" name="status_maquina">
-                        <option value="Ativo">Ativo</option>
-                        <option value="Não Ativo">Não Ativo</option>
-                        <option value="Pendente">Pendente</option>
-                    </select>
+                <label>Componentes monitorados</label>
+                <div class="lista_componentes" id="edicaoListaComponentes"></div>
+
+                <label for="edicaoNovoComponente">Adicionar componente</label>
+                <div class="linha_adicionar">
+                    <div class="campo_edicao">
+                        <select id="edicaoNovoComponente"></select>
+                    </div>
+                    <button type="button" id="botaoAdicionarComponente" onclick="adicionarComponente()">Adicionar</button>
                 </div>
 
                 <div class="acoes_edicao">
@@ -278,11 +303,19 @@
                 resposta.json().then(function (json) {
 
                     let htmlCodigo = "";
+                    // máquina ativa = tem pelo menos um componente ativo
+                    let maquinasAtivas = json.filter(maquina => Number(maquina.componentesAtivos) > 0).length;
+                    contador_maquinas_ativas.textContent = `${maquinasAtivas} Máquinas Ativas`;
 
                     for (let i = 0; i < json.length; i++) {
 
+                        let ativos = Number(json[i].componentesAtivos);
+                        let total = Number(json[i].totalComponentes);
+                        let textoComponentes = total == 0 ? "Nenhum" : `${ativos} de ${total} ativos`;
+                        let textoStatus = total == 0 ? "Sem componentes" : (ativos > 0 ? "Ativo" : "Não Ativo");
+
                         htmlCodigo += `
-                        <div class="linha_tabela">
+                        <div class="linha_tabela" onclick="editarMaquina(${json[i].id})">
 
                             <div class="campo_usuario">
                                 <div>${json[i].nome}/</div>
@@ -303,24 +336,24 @@
                             </div>
                             <div>
                                 <div class="area_usuario">
-                                    ${json[i].componente}
+                                    ${textoComponentes}
                                 </div>
                             </div>
                             <div>
                                 <div class="status_atual_usuario">
-                                    ${json[i].status}
+                                    ${textoStatus}
                                 </div>
                             </div>
 
                             <div class="container_acoes">
-                              <button onclick="editarMaquina(${json[i].id}, ${json[i].idConfigMaq})" type="button">
+                              <button onclick="event.stopPropagation(); editarMaquina(${json[i].id})" type="button">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
         fill="currentColor" viewBox="0 0 16 16">
         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
     </svg>
 </button>
 
-                                <button>
+                                <button onclick="event.stopPropagation()">
                                     <!-- Botão de excluir -->
                                 </button>
                             </div>
@@ -343,29 +376,112 @@
     const modalMaquina = document.getElementById("modalEdicaoMaquina");
 
     let idMaquina;
-    let idConfigMaq;
+    let componentesMaquina = [];   // componentes como estão no banco
+    let statusEditado = {};        // idConfigMaq -> status escolhido no modal (ainda não salvo)
 
-    function editarMaquina(id, idConfig) {
+    // Nome de cada componente, usando as mesmas opções do cadastro (value = id do componente)
+    function nomeDoComponente(c) {
+        let opcao = componente_input.querySelector(`option[value="${c.idComponente}"]`);
+        return opcao ? opcao.textContent : `${c.tipo} (${c.unidade_medida})`;
+    }
 
+    function editarMaquina(id) {
         idMaquina = id;
-        idConfigMaq = idConfig;
+        statusEditado = {};
 
-        fetch(`/maquinas/buscar/${idConfig}`)
+        carregarDetalheMaquina(true)
+            .then(function () { modalMaquina.style.display = "flex"; })
+            .catch(function (erro) { console.error("Erro ao buscar máquina:", erro); });
+    }
+
+    // preencherCampos = false quando só recarrega os componentes (depois de adicionar um)
+    function carregarDetalheMaquina(preencherCampos) {
+        return fetch(`/maquinas/detalhe/${idMaquina}`)
             .then(function (resposta) {
+                if (!resposta.ok) throw new Error("HTTP " + resposta.status);
                 return resposta.json();
             })
             .then(function (json) {
+                if (preencherCampos) {
+                    edicaoNomeMaquina.value = json.nome;
+                    edicaoMacMaquina.value = json.mac;
+                    edicaoSoMaquina.value = json.fk_so;
+                }
+                componentesMaquina = json.componentes;
+                renderizarComponentes();
+            });
+    }
 
-                edicaoNomeMaquina.value = json.nome;
-                edicaoMacMaquina.value = json.mac;
-                edicaoSoMaquina.value = json.fk_so;
-                edicaoStatusMaquina.value = json.status;
+    function statusAtual(c) {
+        return statusEditado[c.idConfigMaq] || c.status;
+    }
 
-                modalMaquina.style.display = "flex";
+    function renderizarComponentes() {
+        let html = "";
+        componentesMaquina.forEach(function (c) {
+            let status = statusAtual(c);
+            html += `
+                <div class="componente_item">
+                    <div>
+                        <strong>${nomeDoComponente(c)}</strong>
+                        <small>${c.nomeComponente}</small>
+                    </div>
+                    <label class="chave_status">
+                        <span id="textoStatus${c.idConfigMaq}">${status}</span>
+                        <input type="checkbox" ${status == "Ativo" ? "checked" : ""}
+                            onchange="mudarStatusComponente(${c.idConfigMaq}, this.checked)">
+                        <i></i>
+                    </label>
+                </div>`;
+        });
+        edicaoListaComponentes.innerHTML = html ||
+            '<div class="componente_vazio">Essa máquina ainda não tem componentes. Adicione abaixo.</div>';
 
+        // no "Adicionar" só aparecem os componentes que a máquina ainda não tem
+        let jaTem = componentesMaquina.map(function (c) { return String(c.idComponente); });
+        let opcoes = "";
+        let temDisponivel = false;
+        Array.from(componente_input.options).forEach(function (o) {
+            if (jaTem.indexOf(o.value) == -1) {
+                opcoes += `<option value="${o.value}">${o.textContent}</option>`;
+                temDisponivel = true;
+            }
+        });
+        edicaoNovoComponente.innerHTML = temDisponivel
+            ? '<option value="">Selecione um componente...</option>' + opcoes
+            : '<option value="">Todos os componentes já foram adicionados</option>';
+        edicaoNovoComponente.disabled = !temDisponivel;
+        botaoAdicionarComponente.disabled = !temDisponivel;
+    }
+
+    function mudarStatusComponente(idConfig, ativo) {
+        let status = ativo ? "Ativo" : "Não Ativo";
+        statusEditado[idConfig] = status;
+        document.getElementById("textoStatus" + idConfig).textContent = status;
+    }
+
+    // Adiciona o componente na hora (já Ativo), reaproveitando a rota do cadastro
+    function adicionarComponente() {
+        let componente = edicaoNovoComponente.value;
+        if (!componente) { alert("Selecione um componente para adicionar."); return; }
+
+        fetch("/maquinas/cadastrarComponente", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                commponenteServer: componente,
+                statusServer: "Ativo",
+                idMaquinaServer: idMaquina
             })
+        })
+            .then(function (resposta) {
+                if (!resposta.ok) throw new Error("HTTP " + resposta.status);
+                return carregarDetalheMaquina(false);
+            })
+            .then(function () { listarMaquinas(); })
             .catch(function (erro) {
-                console.error("Erro ao buscar máquina:", erro);
+                console.error("Erro ao adicionar componente:", erro);
+                alert("Erro ao adicionar componente.");
             });
     }
 
@@ -386,7 +502,11 @@
             let nome = edicaoNomeMaquina.value;
             let mac = edicaoMacMaquina.value;
             let so = edicaoSoMaquina.value;
-            let status = edicaoStatusMaquina.value;
+
+            // manda só os componentes que tiveram o status alterado
+            let componentes = componentesMaquina
+                .filter(function (c) { return statusEditado[c.idConfigMaq] && statusEditado[c.idConfigMaq] != c.status; })
+                .map(function (c) { return { idConfigMaq: c.idConfigMaq, status: statusEditado[c.idConfigMaq] }; });
 
             if (nome.length < 3) {
                 alert("Nome da máquina inválido.");
@@ -398,7 +518,7 @@
                 return;
             }
 
-            fetch(`/maquinas/atualizar/${idMaquina}/${idConfigMaq}`, {
+            fetch(`/maquinas/atualizarCompleta/${idMaquina}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -407,7 +527,9 @@
                     nome: nome,
                     mac: mac,
                     fk_so: so,
-                    status: status,
+                    componentes: componentes,
+                    // se escolheu um componente e não clicou em "Adicionar", adiciona ao salvar
+                    novoComponente: edicaoNovoComponente.value
                 })
             })
                 .then(function (resposta) {
@@ -461,8 +583,7 @@
                 },
                 body: JSON.stringify({
 
-                    // crie um atributo que recebe o valor recuperado aqui
-                    // Agora vá para o arquivo routes/usuario.js
+                    
                     commponenteServer: componenteVar,
                     statusServer: statusVar,
                     idMaquinaServer: idMaquinaVar
@@ -520,7 +641,6 @@
         console.log(nomeUsuarioVar)
         console.log(idEmpresaVar)
 
-        // aguardar();
 
         if (
             nomeVar == "" ||
@@ -557,8 +677,7 @@
                     },
                     body: JSON.stringify({
 
-                        // crie um atributo que recebe o valor recuperado aqui
-                        // Agora vá para o arquivo routes/usuario.js
+                        
                         nomeServer: nomeVar,
                         macServer: macVar,
                         soServer: soVar,
@@ -615,10 +734,8 @@
                         }
                     }
                 }).catch(function () {
-                    // cardErro.style.display = "block";
-                    // mensagem_MAC.innerHTML = "Falha na conexão com o servidor.";
+                    
                     finalizarAguardar();
-                    // registrar_checkpoint("falha_conexao_login_peakstack");
                 });
 
                 return false;

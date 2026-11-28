@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS ec2_custo_intervalo (
   segundos_nao_cobertos DECIMAL(16,6) ,
   custo_ec2 DECIMAL(24,12),
   custo_ebs DECIMAL(24,12),
+  custo_rede DECIMAL(24,12),
   situacao VARCHAR(60) ,
   detalhe VARCHAR(300),
   processado_em DATETIME(6) ,
@@ -173,6 +174,7 @@ CREATE TABLE IF NOT EXISTS leitura (
   dt_hr_leitura DATETIME DEFAULT current_timestamp,
   fk_config_maq INT NOT NULL,
   PRIMARY KEY (id, fk_config_maq),
+  KEY idx_leitura_config_data (fk_config_maq, dt_hr_leitura),
   CONSTRAINT fk_leitura_config_maq
     FOREIGN KEY (fk_config_maq)
     REFERENCES config_maq (id)
@@ -246,8 +248,11 @@ INSERT INTO db_peakstack.configuracao_comp (tipo, unidade_medida, biblioteca, co
 
 INSERT INTO configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
 ('Rede', 'MB',   'psutil', 'net_io_counters().bytes_sent'),   -- upload total
-('Rede', 'Mbps', 'psutil', 'delta bytes_recv (Mbps)'),   	     -- velocidade de download
-('Disco', '%', 'psutil', 'disk_usage("/").percent');
+('Rede', 'Mbps', 'psutil', 'delta bytes_recv (Mbps)'); 	     -- velocidade de download
+
+INSERT INTO configuracao_comp (tipo, unidade_medida, biblioteca, codigo) VALUES
+('Disco', '%', 'psutil', 'disk_usage("/").percent'),
+('Rede', 'ms', 'socket', '8.8.8.8:53');                       -- latência da rede (id 10): tempo de conexão TCP com host:porta
 
 SELECT * FROM configuracao_comp;
 
@@ -270,6 +275,10 @@ INSERT INTO db_peakstack.componentes  (nome, fk_configuracao_comp) VALUES
 ('Amazon.com, Inc. Elastic Network Adapter (ENA)', 7),
 ('Amazon.com, Inc. Elastic Network Adapter (ENA)', 8);
 
+-- componente de latência da rede (id 15) -> na tela de Máquinas é a opção "REDE (ms - latência)"
+INSERT INTO db_peakstack.componentes (nome, fk_configuracao_comp) VALUES
+('Latência de rede (ms)', 10);
+
 SELECT * FROM componentes;
 
 -- Insert de Usuário:
@@ -281,8 +290,13 @@ SELECT * FROM usuario;
 
 -- insert de limite:
 INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
-(1, 0, 100000, 13, 1),   -- upload (MB)
-(1, 0, 1000,   14, 1);   -- velocidade (Mbps)
+(1, 0, 100000, 13, 1);   -- upload (MB)
+
+INSERT INTO limites (nivel, valor_min, valor_max, fk_componentes, fk_empresa) VALUES
+(1, 0, 1000,   14, 1),   -- velocidade (Mbps)
+(1,   0,    99.99, 15, 1),   -- latência (ms): Normal
+(2, 100,   199.99, 15, 1),   -- latência (ms): Alerta
+(3, 200, 99999.99, 15, 1);   -- latência (ms): Crítico
 
 INSERT INTO slack (titulo, descricao, canal, fk_empresa)
 VALUES ('Configuração Inicial', 'Canal de alertas da empresa', 'C0CHGP71RPX', 1);

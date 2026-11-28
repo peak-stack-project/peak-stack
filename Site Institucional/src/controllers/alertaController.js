@@ -42,6 +42,24 @@ function marcarCiente(req, res) {
     }
 }
 
+function marcarCienteTodos(req, res) {
+    var idEmpresa = req.body.idEmpresa;
+
+    if (idEmpresa == undefined) {
+        res.status(400).send("O idEmpresa estÃ¡ undefined!");
+        return;
+    }
+
+    alertaModel.marcarCienteTodos(idEmpresa)
+        .then(function (resultado) {
+            res.json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
-    listarAlerta, marcarCiente
+    listarAlerta, marcarCiente, marcarCienteTodos
 };

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakStack | Dashboard</title>
+    <link rel="icon" href="./assets/react.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <script src="./js/sessao.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="corpo_dashboard" onload="carregando()">
+    <aside class="menu_lateral">
+        <a class="marca marca_lateral">
+            <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
+            <span>PeakStack</span>
+        </a>
+        <div class="menu_grupo">
+            <span class="menu_rotulo">Menu</span>
+            <div class="menu_item_drop">
+                <a class="ativo dropbtn" href="./dashboard_visao_geral.html">Ocorrências</a>
+                <button type="button" class="menu_drop_botao" id="btn_drop_dash" aria-expanded="true"
+                    aria-controls="submenu_dash" aria-label="Mostrar outras dashboards">▾</button>
+            </div>
+            <div class="menu_submenu" id="submenu_dash">
+                <a href="./dashboard_visao_geral.html">Visão Geral</a>
+                <a href="./dashboardRede.html">Rede</a>
+                <a href="./dashboard_ram.html">RAM</a>
+                <a href="./previsao_saturacao.html">Disco</a>
+            </div>
+            <a href="./alertas.html">Alertas</a>
+            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
+            <a href="https://sptech-team-nk7ofb6h.atlassian.net/servicedesk/customer/portal/1" >Chamado</a>
+        </div>
+        <div class="menu_lateral_rodape">
+            <span class="menu_grupo">
+                <a href="./index.html">Sair</a>
+            </span>
+            <!-- <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
+                Sair
+            </button> -->
+        </div>
+    </aside>
+    <main class="conteudo_dashboard">
+
+        <header class="topo_dashboard">
+
+            <div>
+                <span class="etiqueta">PeakStack</span>
+                <h1>Monitoramento</h1>
+            </div>
+
+        </header>
+
+        <section class="kpis_monitoramento">
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone"></div>
+
+                <div>
+                    <span>Disponibilidade de Sistema</span>
+                    <strong id="kpi_disp">--</strong>
+                    <small>Máquinas respondendo agora</small>
+                </div>
+
+            </div>
+
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone verde"></div>
+
+                <div>
+                    <span>Máquina Crítica</span>
+                    <strong id="kpi_critica">--</strong>
+                    <small id="kpi_critica_motivo"></small>
+                </div>
+
+            </div>
+
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone amarelo"></div>
+
+                <div>
+                    <span>Alertas Ativos</span>
+                    <strong id="kpi_alertas">--</strong>
+                    <small id="kpi_alertas_detalhe"></small>
+                </div>
+
+            </div>
+
+
+            <div class="kpi_card">
+
+                <div class="kpi_icone"></div>
+
+                <div>
+                    <span>Previsão de Esgotamento</span>
+                    <strong id="kpi_previsao">--</strong>
+                    <small>Tempo estimado para disco lotar (SRV-DB-01)</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="graficos_dashboard">
+
+            <section class="area_monitoramento_vazia">
+
+                <div class="grafico_monitoramento">
+
+                    <h2>Saúde do sistema</h2>
+
+                    <div class="grafico_container">
+                        <canvas id="graficoCpu"></canvas>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div class="card_status">
+
+                <h2>Status dos servidores</h2>
+
+                <span class="subtitulo">
+                    Distribuição atual
+                </span>
+
+                <div class="status_conteudo">
+
+                    <div class="grafico_pizza">
+                        <canvas id="graficoStatus"></canvas>
+                    </div>
+
+                    <div class="legenda_status">
+
+                        <div>
+                            <span class="bolinha azul"></span>
+                            Normal
+                        </div>
+
+                        <div>
+                            <span class="bolinha laranja"></span>
+                            Atenção
+                        </div>
+
+                        <div>
+                            <span class="bolinha vermelho"></span>
+                            Critico
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="painel_inferior">
+
+            <section class="ranking_monitoramento">
+
+                <div class="titulo_ranking">
+                    <div>
+                        <h2>Ranking de uso — Máquinas</h2>
+                        <span>Servidores ordenados por carga atual</span>
+                    </div>
+
+                    <span class="tempo_real">Ultima Leitura</span>
+                </div>
+
+                <div class="tabela_monitoramento" id="tabela_ranking">
+
+                    <div class="linha_tabela cabecalho">
+                        <span>#</span>
+                        <span>Servidor</span>
+                        <span>Empresa</span>
+                        <span>CPU</span>
+                        <span>RAM</span>
+                        <span>Disco</span>
+                        <span>Status</span>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="card_disco">
+
+                <h2>Uso de disco por servidor</h2>
+                <span class="subtitulo">Capacidade utilizada atualmente</span>
+
+                <div class="grafico_disco_container">
+                    <canvas id="graficoDisco"></canvas>
+                </div>
+
+            </section>
+
+        </section>
+
+
+    </main>
+
+    <script src="./js/dashboard_geral.js"></script>
+    <script src="./js/menu_dropdown.js"></script>
+
+</body>
+
+</html>
+<script>
+    const telaMaquina = document.getElementById("tela_maquinas");
+    const telaUsuarios = document.getElementById("tela_usuarios");
+
+    function carregando() {
+        if (sessionStorage.FKCARGO_USUARIO == 2) {
+            telaMaquina.style.display = "none";
+            telaUsuarios.style.display = "none";
+        } else if (sessionStorage.FKCARGO_USUARIO == 3) {
+            telaUsuarios.style.display = "none";
+        }
+    }
+
+    const btnDrop = document.getElementById("btn_drop_dash");
+    const submenu = document.getElementById("submenu_dash");
+
+    btnDrop.addEventListener("click", () => {
+        const abriu = submenu.classList.toggle("aberto");
+        btnDrop.classList.toggle("aberto", abriu);
+        btnDrop.setAttribute("aria-expanded", abriu);
+    });
+</script>

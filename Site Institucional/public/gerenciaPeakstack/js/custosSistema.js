@@ -1,4 +1,7 @@
-const texto = (id, valor) => { document.getElementById(id).textContent = valor ?? '—'; };
+const texto = (id, valor) => {
+    const elemento = document.getElementById(id);
+    if (elemento) elemento.textContent = valor ?? '—';
+};
 const camposInstancia = {
     tipoInstancia: 'tipo', regiaoInstancia: 'regiao', zonaInstancia: 'zona_disponibilidade',
     imagemInstancia: 'imagem_id', arquiteturaInstancia: 'arquitetura',
@@ -31,8 +34,8 @@ function prepararGraficos() {
         scales: { x: { ticks: { maxTicksLimit: 8 } }, y: { beginAtZero: true, ticks: { callback: valor => moeda(valor) } } }
     };
     if (!graficoBarras) graficoBarras = new Chart(document.getElementById('graficoComponentes'), {
-        type: 'bar', data: { labels: [], datasets: [{ label: 'Acumulado observado (USD)', data: [],
-            backgroundColor: ['#3977d4', '#f2ad19'], borderRadius: 4, maxBarThickness: 54 }] },
+        type: 'bar', data: { labels: ['Rede'], datasets: [{ label: 'Acumulado observado (USD)', data: [null],
+            backgroundColor: ['#3977d4', '#f2ad19', '#21836e'], borderRadius: 4, maxBarThickness: 54 }] },
         options: { ...opcoes, plugins: { ...opcoes.plugins, legend: { display: false } } }
     });
     if (!graficoPrevisao) graficoPrevisao = new Chart(document.getElementById('graficoPrevisao'), {
@@ -48,28 +51,31 @@ function limparCustos() {
     for (const id of ['custoAcumulado', 'tempoExecucao', 'previsaoProximoMes', 'tendenciaCustos']) texto(id, null);
     texto('mesPrevisto', 'Aguardando histórico diário suficiente');
     texto('comparacaoPrevisao', 'Aguardando regressão linear');
-    texto('statusGraficoComponentes', 'Aguardando intervalos calculados.');
-    texto('coberturaCustos', 'Cobertura indisponível.');
-    texto('statusPrevisao', 'Aguardando histórico diário de custos.');
+    texto('statusGraficoComponentes', 'Aguardando custos.');
+    texto('statusPrevisao', 'Aguardando previsão.');
     for (const grafico of [graficoBarras, graficoPrevisao]) {
         if (!grafico) continue;
-        grafico.data.labels = [];
-        for (const dataset of grafico.data.datasets) dataset.data = [];
+        grafico.data.labels = grafico === graficoBarras ? ['Rede'] : [];
+        for (const dataset of grafico.data.datasets) dataset.data = grafico === graficoBarras ? [null] : [];
         grafico.update('none');
     }
 }
 
 function renderizarCustos(custos) {
     limparCustos();
-    if (!custos || custos.estado === 'indisponivel') {
-        texto('statusGraficoComponentes', custos?.mensagem || 'Custos indisponíveis no momento.');
+    const calculoIndisponivel = custos?.estado === 'indisponivel';
+    if (!custos || (calculoIndisponivel && custos.total == null && !custos.diario?.length)) {
+        texto('statusGraficoComponentes', 'Custos indisponíveis.');
         return;
     }
-    texto('mesCustos', `${custos.mes} · EC2 + EBS · mês UTC · estimativa parcial`);
-    texto('custoAcumulado', custos.total === null ? null : moeda(custos.total));
-    texto('tempoExecucao', custos.total === null ? null : duracao(custos.segundos_ec2));
-    texto('premissasGrafico', `Acumulado parcial de ${custos.mes} em USD: computação EC2 e armazenamento EBS somente nos intervalos calculáveis.`);
-    texto('statusGraficoComponentes', custos.total === null ? 'Ainda não há intervalos calculados neste mês.' : 'Valores persistidos no banco; sem dedução dos créditos AWS Student.');
+    const componentes = custos.componentes || [];
+    const custoRede = componentes.find(componente => componente.servico === 'Rede')?.valor;
+    const servicos = custoRede == null ? 'EC2 + EBS' : 'EC2 + EBS + Rede';
+    texto('mesCustos', `${custos.mes} · ${servicos} · mês UTC · estimativa parcial`);
+    texto('custoAcumulado', custos.total == null ? null : moeda(custos.total));
+    texto('tempoExecucao', custos.total == null ? null : duracao(custos.segundos_ec2));
+    const statusCustos = custos.total == null ? 'Aguardando custos.' : 'Custos atualizados.';
+    texto('statusGraficoComponentes', calculoIndisponivel ? 'Atualização falhou. Exibindo custos salvos.' : statusCustos);
     const previsao = custos.previsao;
     if (previsao?.estado === 'disponivel') {
         texto('previsaoProximoMes', moeda(previsao.total));
@@ -77,15 +83,18 @@ function renderizarCustos(custos) {
         texto('tendenciaCustos', previsao.tendencia);
         texto('comparacaoPrevisao', previsao.comparacao);
         texto('baseComparacaoPrevisao', previsao.comparacao);
+        texto('statusPrevisao', 'Previsão calculada.');
     } else {
-        texto('statusPrevisao', previsao?.mensagem || 'Histórico diário insuficiente.');
+        texto('statusPrevisao', 'Histórico insuficiente para previsão.');
     }
     if (!prepararGraficos()) {
-        texto('statusGraficoComponentes', 'Os valores estão disponíveis nos cards. Não foi possível carregar a biblioteca dos gráficos.');
+        texto('statusGraficoComponentes', 'Gráfico indisponível.');
         return;
     }
-    graficoBarras.data.labels = (custos.componentes || []).map(componente => componente.servico);
-    graficoBarras.data.datasets[0].data = (custos.componentes || []).map(componente => Number(componente.valor));
+    if (componentes.length) {
+        graficoBarras.data.labels = componentes.map(componente => componente.servico);
+        graficoBarras.data.datasets[0].data = componentes.map(componente => componente.valor === null ? null : Number(componente.valor));
+    }
     graficoBarras.update('none');
     const historico = new Map((custos.diario || []).map(diaRegistrado => [diaRegistrado.dia, diaRegistrado.total === null ? null : Number(diaRegistrado.total)]));
     const futuro = new Map((previsao?.serie || []).map(diaPrevisto => [diaPrevisto.dia, Number(diaPrevisto.valor)]));

@@ -27,13 +27,16 @@
                     aria-controls="submenu_dash" aria-label="Mostrar outras dashboards">▾</button>
             </div>
             <div class="menu_submenu" id="submenu_dash">
+                 <a href="./dashboardCPU.html">CPU</a>
                 <a href="./dashboardRede.html">Rede</a>
                 <a href="./dashboard_ram.html">RAM</a>
-                <a href="./dashboard_disco.html">Disco</a>
+                <a href="./previsao_saturacao.html">Disco</a>
+                <a href="./dashboardOcorrencias.html">Ocorrências</a>
             </div>
             <a href="./alertas.html">Alertas</a>
             <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
             <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
+            <a href="https://sptech-team-nk7ofb6h.atlassian.net/servicedesk/customer/portal/1" >Chamado</a>
         </div>
         <div class="menu_lateral_rodape">
             <span class="menu_grupo">
@@ -95,19 +98,6 @@
 
             </div>
 
-
-            <div class="kpi_card">
-
-                <div class="kpi_icone"></div>
-
-                <div>
-                    <span>Previsão de Esgotamento</span>
-                    <strong id="kpi_previsao">--</strong>
-                    <small>Tempo estimado para disco lotar (SRV-DB-01)</small>
-                </div>
-
-            </div>
-
         </section>
 
 
@@ -117,7 +107,7 @@
 
                 <div class="grafico_monitoramento">
 
-                    <h2>Saúde do sistema</h2>
+                    <h2>Uso de Componentes — últimas 24h</h2>
 
                     <div class="grafico_container">
                         <canvas id="graficoCpu"></canvas>

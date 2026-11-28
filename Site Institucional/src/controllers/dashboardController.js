@@ -98,7 +98,7 @@ function detalheMaquina(req, res) {
     var idMaquina = req.params.idMaquina;
 
     Promise.all([
-        maquinasModel.buscarMaquinaPorId(idMaquina),  
+        dashboardModel.buscarMaquina(idEmpresa, idMaquina),
         dashboardModel.ultimasLeituras(idEmpresa, idMaquina),
         dashboardModel.historicoTempoReal(idEmpresa, idMaquina, JANELA_MINUTOS),
         dashboardModel.eventosRecentes(idEmpresa, idMaquina)
