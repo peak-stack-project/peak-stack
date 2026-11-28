@@ -14,7 +14,7 @@
 </head>
 
 <body class="corpo_dashboard">
-        <aside class="menu_lateral">
+    <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
             <span>PeakStack</span>
@@ -33,15 +33,11 @@
                 <a href="./dashboard_ram.html">RAM</a>
                 <a href="./previsao_saturacao.html">Disco</a>
             </div>
+
             <a href="./alertas.html">Alertas</a>
             <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
             <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
             <a href="https://sptech-team-nk7ofb6h.atlassian.net/servicedesk/customer/portal/1">Chamado</a>
-        </div>
-        <a href="./alertas.html">Alertas</a>
-            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
-            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
-            <a href="https://sptech-team-nk7ofb6h.atlassian.net/servicedesk/customer/portal/1" >Chamado</a>
         </div>
         <div class="menu_lateral_rodape">
             <span class="menu_grupo">
@@ -176,7 +172,7 @@
             <section class="card_disco">
 
                 <h2>Tráfego de Rede por Servidor</h2>
-                <span class="subtitulo">Azul: Download (Mbps) • Laranja: Upload (Mbps)  </span>
+                <span class="subtitulo">Azul: Download (Mbps) • Laranja: Upload (Mbps) </span>
 
                 <div class="grafico_disco_container">
                     <canvas id="graficoIps"></canvas>
@@ -189,8 +185,8 @@
 
     </main>
 
-        <script src="./js/dashboard_rede.js"></script>
-        
+    <script src="./js/dashboard_rede.js"></script>
+
     <script>
         const telaMaquina = document.getElementById("tela_maquinas");
         const telaUsuarios = document.getElementById("tela_usuarios");
