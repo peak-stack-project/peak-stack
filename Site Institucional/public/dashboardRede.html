@@ -14,17 +14,29 @@
 </head>
 
 <body class="corpo_dashboard">
-    <aside class="menu_lateral">
+        <aside class="menu_lateral">
         <a class="marca marca_lateral">
             <img class="marca_icone" src="./assets/Design sem nome.png" alt="" />
             <span>PeakStack</span>
         </a>
         <div class="menu_grupo">
             <span class="menu_rotulo">Menu</span>
-            <a class="ativo" href="./dashboard_visao_geral.html">Visão geral</a>
+            <div class="menu_item_drop">
+                <a class="ativo dropbtn" href="./dashboardRede.html">Rede</a>
+                <button type="button" class="menu_drop_botao" id="btn_drop_dash" aria-expanded="false"
+                    aria-controls="submenu_dash" aria-label="Mostrar outras dashboards">▾</button>
+            </div>
+            <div class="menu_submenu" id="submenu_dash">
+                <a href="./dashboard_visao_geral.html">Visão Geral</a>
+                <a href="./dashboardOcorrencias.html">Ocorrências</a>
+                <a href="./dashboardCPU.html">CPU</a>
+                <a href="./dashboard_ram.html">RAM</a>
+                <a href="./previsao_saturacao.html">Disco</a>
+            </div>
             <a href="./alertas.html">Alertas</a>
-            <a href="./máquinas.html">Máquinas</a>
-            <a href="./cadastro_usuarios.html">Usuários</a>
+            <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
+            <a href="./cadastro_usuarios.html" id="tela_usuarios">Usuários</a>
+            <a href="https://sptech-team-nk7ofb6h.atlassian.net/servicedesk/customer/portal/1">Chamado</a>
         </div>
         <a href="./alertas.html">Alertas</a>
             <a href="./máquinas.html" id="tela_maquinas">Máquinas</a>
@@ -35,9 +47,6 @@
             <span class="menu_grupo">
                 <a href="./index.html">Sair</a>
             </span>
-            <!-- <button id="btn_logout" class="botao botao_lateral" onclick="limparSessao()">
-                Sair
-            </button> -->
         </div>
     </aside>
     <main class="conteudo_dashboard">
@@ -85,7 +94,7 @@
 
                 <div>
                     <span>Conexões suspeitas</span>
-                    <strong id="kpi_syn ">--</strong>
+                    <strong id="kpi_syn">--</strong>
                     <small id="kpi_syn_detalhe"></small>
                 </div>
 
@@ -167,7 +176,7 @@
             <section class="card_disco">
 
                 <h2>Tráfego de Rede por Servidor</h2>
-                <span class="subtitulo">Azul: Download (Mbps) • Laranja: Upload (Mbps)</span>
+                <span class="subtitulo">Azul: Download (Mbps) • Laranja: Upload (Mbps)  </span>
 
                 <div class="grafico_disco_container">
                     <canvas id="graficoIps"></canvas>
@@ -180,7 +189,31 @@
 
     </main>
 
-    <script src="./js/dashboard_rede.js"></script>
+    <script src="./js/dashboard_rede.js">
+    
+        const telaMaquina = document.getElementById("tela_maquinas");
+        const telaUsuarios = document.getElementById("tela_usuarios");
+
+        if (sessionStorage.FKCARGO_USUARIO == 2) {
+            if (telaMaquina) telaMaquina.style.display = "none";
+            if (telaUsuarios) telaUsuarios.style.display = "none";
+        } else if (sessionStorage.FKCARGO_USUARIO == 3) {
+            if (telaUsuarios) telaUsuarios.style.display = "none";
+        }
+
+        const btnDrop = document.getElementById("btn_drop_dash");
+        const submenu = document.getElementById("submenu_dash");
+
+        if (btnDrop && submenu) {
+            btnDrop.addEventListener("click", () => {
+                const abriu = submenu.classList.toggle("aberto");
+                btnDrop.classList.toggle("aberto", abriu);
+                btnDrop.setAttribute("aria-expanded", abriu);
+            });
+        }
+    
+
+    </script>
 
 </body>
 

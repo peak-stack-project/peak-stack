@@ -1,3 +1,4 @@
+import psutil
 import mysql.connector
 from rich import print
 import time as t
